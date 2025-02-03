@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { t } from "i18next";
-import { drawAward, receive } from "../API";
+import { drawAward } from "../API";
 import { addMessage, showLoding } from "../utils/tool";
 import { Contracts } from "../web3";
 import { useSelector } from "react-redux";
@@ -13,13 +13,10 @@ export const useGetReward = () => {
     chainId,
     isConnected,
   } = useWeb3ModalAccount();
-  function getReward(incomeType: any, callbackFun: any, contractName: string) {
-    if (!web3ModalAccount) return addMessage(t("Please link wallet"));
+  function getReward(callbackFun: any, contractName: string) {
+    if (!web3ModalAccount) return addMessage(t("Please Connect wallet"));
     if (!token) return addMessage(t("1"));
-    if (!incomeType) return addMessage(t("failed"));
-    drawAward({
-      type: incomeType,
-    }).then(async (res: any) => {
+    drawAward({}).then(async (res: any) => {
       showLoding(true);
       if (res?.code === 200) {
         let value: any = null;

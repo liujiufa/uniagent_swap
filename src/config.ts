@@ -1,5 +1,8 @@
 import Token from "./ABI/ERC20Token.json";
 import NFTManage from "./ABI/NFTManage.json";
+import Nstake from "./ABI/Nstake.json";
+import NFT from "./ABI/NFT.json";
+import Bridge from "./ABI/Bridge.json";
 // 正式
 export const isMain = false;
 export const LOCAL_KEY = "UniAgent_LANG";
@@ -7,10 +10,10 @@ const url = window.location.hostname;
 const result = url.split(".").slice(1).join(".");
 export let baseUrl: string = isMain
   ? `https://api.uniagent.co/api/`
-  : "http://47.239.255.25:28889/";
+  : "http://47.239.255.25" + "/api";
 //  "https://yhhyn.com/" + "api"
 // "https://kf-panda.com/" + "api";
-// "http://192.168.1.37:28888/";
+// "http://172.20.10.2:28889/";
 export let ContractUrl: string = isMain
   ? "https://bscscan.com/address/"
   : "https://testnet.bscscan.com/address/";
@@ -43,6 +46,13 @@ export const mainnet = {
     explorerUrl: "https://data-seed-prebsc-2-s1.bnbchain.org:8545",
     rpcUrl: "https://bsc-testnet-rpc.publicnode.com",
   },
+  "0xa0367": {
+    chainId: 656231,
+    name: "BSC",
+    currency: "BNB",
+    explorerUrl: "https://data-seed-prebsc-2-s1.bnbchain.org:8545",
+    rpcUrl: "http://192.252.179.83:8546/",
+  },
 };
 
 interface abiObjType {
@@ -54,8 +64,13 @@ interface contractAddressType {
 }
 
 export const abiObj: abiObjType = {
-  USDT: Token,
+  USDTBSC: Token,
+  USDTUNI: Token,
   NFTManage: NFTManage,
+  Stake: Nstake,
+  NFT: NFT,
+  BridgeBSC: Bridge,
+  BridgeUNI: Bridge,
 };
 
 export const Main: contractAddressType = {
@@ -65,9 +80,13 @@ export const Main: contractAddressType = {
 };
 
 const Test = {
-  USDT: "0x2b11640f31b84dc727841FE6B5a905D366A00e78",
-  nft: "0x113D5ef4c6FE6f2edBcF6915Bf7582c09F342499",
+  USDTBSC: "0x2b11640f31b84dc727841FE6B5a905D366A00e78",
+  BridgeBSC: "0x152Be12C4205095467a5F6fFe73c6f315f33455f",
+  USDTUNI: "0x11Cb2DD8a83d9A231Bf79E7A3ad3f8d39FD02c31",
+  BridgeUNI: "0x07fff13bFdF7D411D887eF14AB5A092254F0ec7B",
+  NFT: "0x182cFca36E3678ae45e9cBc47880Ab034882F9A5",
   NFTManage: "0x0A8C16f9Ed042cf71BeB49e8d8854D189c704aDb",
+  Stake: "0xe9865261f234323e8E77F35E8D111c65650120F7",
 };
 
 export let SwapUrl: string = isMain

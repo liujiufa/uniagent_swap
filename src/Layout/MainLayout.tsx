@@ -55,7 +55,6 @@ import {
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { useNoGas } from "../hooks/useNoGas";
 import useTipLoding from "../components/ModalContent";
-import useUSDTGroup from "../hooks/useUSDTGroup";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -425,12 +424,21 @@ const NavContainer = styled(FlexBox)`
   flex: 1;
   padding: 0px 35.5px;
   > div {
+    cursor: pointer;
+    font-family: Space Grotesk;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: normal;
+    letter-spacing: 0em;
+    font-variation-settings: "opsz" auto;
+    color: #ffffff;
     font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: bold;
     line-height: normal;
     letter-spacing: 0em;
     font-variation-settings: "opsz" auto;
+    margin-right: 35px;
   }
   .active {
     color: #93e63f;
@@ -465,13 +473,7 @@ const MainLayout: any = () => {
   const pathname = startWord(location.pathname);
   const queryParams = new URLSearchParams(location.search);
   const invite = queryParams.get("inviteCode");
-  const {
-    TOKENBalance,
-    TOKENAllowance,
-    handleApprove,
-    handleTransaction,
-    handleUSDTRefresh,
-  } = useUSDTGroup(contractAddress?.BTStar, "USDT");
+
   const [showMask, setShowMask] = useState(false);
 
   function changeLanguage(lang: any) {
@@ -523,7 +525,11 @@ const MainLayout: any = () => {
       menu: "MenuItem pointer",
       menuActive: "MenuItem pointer active",
     },
-    "/Dashboard": {
+    "/Swap": {
+      menu: "MenuItem pointer",
+      menuActive: "MenuItem pointer active",
+    },
+    "/Bridge": {
       menu: "MenuItem pointer",
       menuActive: "MenuItem pointer active",
     },
@@ -559,7 +565,8 @@ const MainLayout: any = () => {
           Login({
             ...res,
             userAddress: web3ModalAccount as string,
-            inviteCode: inviteCode,
+            chainName: "BSC",
+            // inviteCode: inviteCode,
           }).then((res: any) => {
             if (res.code === 200) {
               showLoding(false);
@@ -582,7 +589,7 @@ const MainLayout: any = () => {
           });
         }, `userAddress=${web3ModalAccount as string}`);
       } else {
-        addMessage("Please link wallet");
+        addMessage("Please Connect wallet");
       }
     },
     [web3ModalAccount]
@@ -596,11 +603,12 @@ const MainLayout: any = () => {
       if (!res?.data) return addMessage(t("6"));
       await LoginFun(InputValue);
     } else {
-      addMessage("Please link wallet");
+      addMessage("Please Connect wallet");
     }
   }, [web3ModalAccount, InputValue]);
 
   const SelectBindFun = async () => {
+    // debugger;
     if (!web3ModalAccount) return;
     new Contracts(walletProvider);
     isNewUser(web3ModalAccount as string).then((res: any) => {
@@ -663,6 +671,7 @@ const MainLayout: any = () => {
         createLoginSuccessAction(web3ModalAccount as string, initalToken)
       );
     } else {
+      // preLoginFun();
     }
   }, [web3ModalAccount, token, initalToken]);
 
@@ -695,8 +704,29 @@ const MainLayout: any = () => {
 
           {width > 768 && (
             <NavContainer>
-              <div className={String(ItemActive) === "/" ? "active" : ""}>
+              {/* <div
+                className={String(ItemActive) === "/" ? "active" : ""}
+                onClick={() => {
+                  Navigate("/View/");
+                }}
+              >
                 Home
+              </div> */}
+              <div
+                className={String(ItemActive) === "/" ? "active" : ""}
+                onClick={() => {
+                  Navigate("/View/");
+                }}
+              >
+                Swap
+              </div>
+              <div
+                className={String(ItemActive) === "/Bridge" ? "active" : ""}
+                onClick={() => {
+                  Navigate("/View/Bridge");
+                }}
+              >
+                Bridge
               </div>
             </NavContainer>
           )}
@@ -769,6 +799,7 @@ const MainLayout: any = () => {
           >
             AI Node Key
           </div> */}
+
           <div
             className={menuActive("/")}
             onClick={() => {
@@ -776,7 +807,16 @@ const MainLayout: any = () => {
               Navigate("/View/");
             }}
           >
-            Home
+            Swap
+          </div>
+          <div
+            className={menuActive("/Bridge")}
+            onClick={() => {
+              setShowMask(false);
+              Navigate("/View/Bridge");
+            }}
+          >
+            Bridge
           </div>
         </MobileSlider_Menu>
         <MobileSlider_Connect>
@@ -830,7 +870,7 @@ const MainLayout: any = () => {
       </Content>
 
       <AllModal
-        visible={false}
+        visible={BindModal}
         className="Modal"
         centered
         width={"461px"}
@@ -839,9 +879,9 @@ const MainLayout: any = () => {
       >
         <ModalContainer>
           <ModalContainer_Title>
-            {t("Bind referral code")}
+            {t("Bind referral code")}·
             <ModalContainer_Close>
-              {" "}
+              ·{" "}
               {/* <img
                 src={closeIcon}
                 alt=""

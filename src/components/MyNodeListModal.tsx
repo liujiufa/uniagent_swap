@@ -12,6 +12,11 @@ import MyNode from "../assets/image/Home/MyNode.png";
 import { useSelector } from "react-redux";
 import { getAiNodeList, getMyNft } from "../API";
 import { useViewport } from "./viewportContext";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
+import { contractAddress } from "../config";
+import { Contracts } from "../web3";
+import { addMessage, showLoding } from "../utils/tool";
+import { useNoGas } from "../hooks/useNoGas";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
@@ -282,7 +287,7 @@ const NFTItem = styled.div<{ isUndoLight: boolean }>`
     > div {
       margin-right: 0;
     }
-    &:last-child {
+    &:nth-child(3) {
       padding: 0px 10px 10px;
     }
   }
@@ -424,10 +429,17 @@ const Staking_Btn = styled(FlexCCBox)`
 let NodeInter: any = null;
 export default function ModalContent(props: any) {
   const { t } = useTranslation();
+  const {
+    address: web3ModalAccount,
+    chainId,
+    isConnected,
+  } = useWeb3ModalAccount();
   const { width } = useViewport();
   const [PageNum, setPageNum] = useState(1);
   const [RecordList3, setRecordList3] = useState<any>([]);
   const [SelectedList, setSelectedList] = useState<any>([]);
+  const [IsApproved, setIsApproved] = useState<any>(false);
+  const { isNoGasFun } = useNoGas();
 
   const token = useSelector((state: any) => state?.token);
   const onChange: PaginationProps["onChange"] = (page) => {
@@ -510,8 +522,8 @@ export default function ModalContent(props: any) {
 
   const openFun = (type: any) => {
     let Arr: any = SelectedList;
-    if (Arr?.some((item: any) => String(item) === String(type))) {
-      Arr = Arr?.filter((item: any) => String(item) !== String(type));
+    if (Arr?.some((item: any) => Number(item) === Number(type))) {
+      Arr = Arr?.filter((item: any) => Number(item) !== Number(type));
     } else {
       Arr = [...Arr, type];
     }
@@ -529,47 +541,140 @@ export default function ModalContent(props: any) {
       setSelectedList([]);
     }
   };
+  const ManageFun = async () => {
+    if (!token) return;
+    if (Number(props?.ModalType) === 2) {
+      let res: any = null;
+      try {
+        if (!!(await isNoGasFun())) return;
+        props.close();
+        props?.allTipFun(
+          2,
+          t("Stake 5 AI Nodes for Mining", { num: SelectedList?.length })
+        );
+        res = await Contracts.example?.stakeAiNodes(
+          web3ModalAccount as string,
+          SelectedList
+        );
+        if (!!res?.status) {
+          props?.allTipFun(4);
+          props?.allTipFun(
+            3,
+            t("AI node staking mining successful"),
+            res?.transactionHash
+          );
+        } else if (res?.status === false) {
+          props?.allTipFun(4);
+          return addMessage(t("failed"));
+        }
+      } catch (error: any) {
+        if (error?.code === 4001) {
+          props?.allTipFun(4);
+          return addMessage(t("failed"));
+        }
+      }
+    }
+  };
+  const Release = async () => {
+    if (!token) return;
+    let res: any = null;
+    try {
+      if (!!(await isNoGasFun())) return;
+      props.close();
+      props?.allTipFun(2, t("AI node is stopping mining"));
+      res = await Contracts.example?.unStakeAiNodes(
+        web3ModalAccount as string,
+        SelectedList
+      );
+      if (!!res?.status) {
+        props?.allTipFun(4);
+        props?.allTipFun(
+          3,
+          t("AI node is stopping mining"),
+          res?.transactionHash
+        );
+      } else if (res?.status === false) {
+        props?.allTipFun(4);
+        return addMessage(t("failed"));
+      }
+    } catch (error: any) {
+      if (error?.code === 4001) {
+        props?.allTipFun(4);
+        return addMessage(t("failed"));
+      }
+    }
+  };
+
+  // NFT授权
+  function ApproveEvolveFun() {
+    if (!IsApproved) {
+      if (!web3ModalAccount) {
+        return addMessage(t("Please Connect wallet"));
+      }
+      // showLoding(true);
+      props.close();
+      props?.allTipFun(
+        1,
+        t("Approved 5 AI Nodes", { num: SelectedList?.length })
+      );
+      Contracts.example
+        .setApprovalForAll(
+          web3ModalAccount as string,
+          contractAddress.Stake,
+          true
+        )
+        .then(() => {
+          setIsApproved(true);
+          ManageFun();
+        })
+        .catch((error: any) => {
+          if (error?.code === 4001) return props?.allTipFun(4);
+        });
+    }
+  }
+
   useEffect(() => {
     if (!!token) {
       if (Number(props?.ModalType) === 3) {
-        getMyNft({ pageNum: PageNum, pageSize: width >= 1200 ? 10 : 6 }).then(
-          (res: any) => {
-            if (res.code !== 200) return;
-            let Arr: any =
-              width > 1200
-                ? res?.data?.length % 3 !== 0
-                  ? fillArrayToMultipleOfFour(res?.data, 3)
-                  : res?.data
-                : res?.data?.length % 2 !== 0
-                ? fillArrayToMultipleOfFour(res?.data, 2)
-                : res?.data;
-            res.data = Arr;
-            setRecordList3(res?.data || []);
-          }
-        );
+        // getMyNft({ pageNum: PageNum, pageSize: width >= 1200 ? 10 : 6 }).then(
+        //   (res: any) => {
+        //     if (res.code !== 200) return;
+        //     let Arr: any =
+        //       width > 1200
+        //         ? res?.data?.length % 3 !== 0
+        //           ? fillArrayToMultipleOfFour(res?.data, 3)
+        //           : res?.data
+        //         : res?.data?.length % 2 !== 0
+        //         ? fillArrayToMultipleOfFour(res?.data, 2)
+        //         : res?.data;
+        //     res.data = Arr;
+        //     setRecordList3(res?.data || []);
+        //   }
+        // );
       } else {
         getAiNodeList(props?.ModalType).then((res: any) => {
           if (res.code !== 200) return;
-          let Arr: any =
-            width > 1200
-              ? res?.data?.length % 3 !== 0
-                ? fillArrayToMultipleOfFour(res?.data, 3)
-                : res?.data
-              : res?.data?.length % 2 !== 0
-              ? fillArrayToMultipleOfFour(res?.data, 2)
-              : res?.data;
-          res.data = Arr;
           setRecordList3(res?.data || []);
         });
       }
       getRecordFun();
-    } else {
     }
     setSelectedList([]);
     return () => {
       clearInterval(NodeInter);
     };
   }, [token, props?.ShowTipModal, props?.ModalType]);
+
+  useEffect(() => {
+    if (web3ModalAccount) {
+      Contracts.example
+        ?.isApprovedForAll(web3ModalAccount, contractAddress.Stake)
+        .then((res: boolean) => {
+          setIsApproved(res);
+        });
+    }
+  }, [web3ModalAccount, props?.ShowTipModal]);
+
   return (
     <AllModal
       visible={props?.ShowTipModal}
@@ -599,9 +704,19 @@ export default function ModalContent(props: any) {
           </ModalContainer_SubTitle>
 
           <NFTItems>
-            {RecordList3?.map((item: any, index: any) =>
+            {(width > 1200
+              ? RecordList3?.length % 3 !== 0
+                ? fillArrayToMultipleOfFour(RecordList3, 3)
+                : RecordList3
+              : RecordList3?.length % 2 !== 0
+              ? fillArrayToMultipleOfFour(RecordList3, 2)
+              : RecordList3
+            )?.map((item: any, index: any) =>
               !!item?.tokenId ? (
-                <NFTItem key={index} isUndoLight={true}>
+                <NFTItem
+                  key={index}
+                  isUndoLight={Number(props?.ModalType) === 3}
+                >
                   <img src={!!item?.imgUrl ? item?.imgUrl : MyNode} alt="" />
                   <div>
                     #{item?.tokenId}{" "}
@@ -612,7 +727,7 @@ export default function ModalContent(props: any) {
                       }}
                     >
                       {SelectedList?.some(
-                        (item1: any) => String(item1) === String(item?.tokenId)
+                        (item1: any) => Number(item1) === Number(item?.tokenId)
                       ) ? (
                         <div className="active">
                           <img src={selectedIcon} alt="" />
@@ -628,21 +743,7 @@ export default function ModalContent(props: any) {
                 <div></div>
               )
             )}
-
-            {/* <div style={{ flex: 1 }}></div> */}
           </NFTItems>
-
-          {/* <PaginationContainer>
-            <Pagination
-              current={PageNum}
-              pageSize={width >= 1200 ? 10 : 6}
-              onChange={onChange}
-              total={RecordList3?.total}
-              showQuickJumper
-              defaultCurrent={1}
-              itemRender={itemRender}
-            />
-          </PaginationContainer> */}
 
           <Modal_Footer>
             <Modal_Footer_Left>
@@ -665,7 +766,24 @@ export default function ModalContent(props: any) {
               </Selected_Box>
             </Modal_Footer_Left>
             <Modal_Footer_Right>
-              <Staking_Btn>{t(modalText[props?.ModalType]?.btn)}</Staking_Btn>
+              <Staking_Btn
+                onClick={() => {
+                  // 1=挖矿节点 2=未挖矿节点
+                  if (SelectedList?.length > 0) {
+                    if (Number(props?.ModalType) === 2) {
+                      if (!!IsApproved) {
+                        ManageFun();
+                      } else {
+                        ApproveEvolveFun();
+                      }
+                    } else if (Number(props?.ModalType) === 1) {
+                      Release();
+                    }
+                  }
+                }}
+              >
+                {t(modalText[props?.ModalType]?.btn)}
+              </Staking_Btn>
             </Modal_Footer_Right>
           </Modal_Footer>
         </ModalContainer_Content>

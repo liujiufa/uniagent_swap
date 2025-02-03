@@ -9,7 +9,7 @@ import leftIcon from "../assets/image/Home/leftIcon.svg";
 import rightIcon from "../assets/image/Home/rightIcon.svg";
 import { useSelector } from "react-redux";
 import { getMyNft, getRefereeData, getRefereeList } from "../API";
-import { AddrHandle } from "../utils/tool";
+import { AddrHandle, dateFormat } from "../utils/tool";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
@@ -324,7 +324,7 @@ export default function ModalContent(props: any) {
     } else {
       setRecordList3({});
     }
-  }, [token, PageNum]);
+  }, [token, PageNum, props?.ShowTipModal]);
 
   return (
     <AllModal
@@ -364,9 +364,11 @@ export default function ModalContent(props: any) {
               {RecordList3?.list?.map((item: any, index: any) => (
                 <Items key={index}>
                   <div>{Number(index) + (Number(PageNum) - 1) * 10 + 1}</div>
-                  <div>{AddrHandle(item?.userAddress, 6, 4)}</div>
-                  <div>{item?.buyNum}</div>
-                  <div>{item?.returnAwardNum} USDT</div>
+                  <div>{AddrHandle(item?.address, 6, 4)}</div>
+                  <div>{item?.num}</div>
+                  <div>
+                    {dateFormat("YYYY-mm-dd HH:MM:SS", new Date(item?.time))}
+                  </div>
                 </Items>
               ))}
             </Table_Content>

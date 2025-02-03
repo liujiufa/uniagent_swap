@@ -13,7 +13,7 @@ export const useSign = () => {
     isConnected,
   } = useWeb3ModalAccount();
   function signFun(callback: any, msg: string) {
-    if (!web3ModalAccount) return addMessage(t("Please link wallet"));
+    if (!web3ModalAccount) return addMessage(t("Please Connect wallet"));
     let time = new Date().valueOf();
     showLoding(true);
     Contracts.example

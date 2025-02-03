@@ -13,14 +13,15 @@ type CoinAddressType = string;
 
 export default function useUSDTGroup(
   contractAddress: AddressType,
-  coinName: CoinAddressType
+  tokenAddress: CoinAddressType
 ) {
+  console.log(contractAddress, tokenAddress, "-----");
+  // debugger;
   const {
     address: web3ModalAccount,
     chainId,
     isConnected,
   } = useWeb3ModalAccount();
-  const { account } = useWeb3React();
   const [hash, setHash] = useState(0);
   const [TOKENBalance, setTOKENBalance] = useState("0");
   const [TOKENAllowance, setTOKENAllowance] = useState("0");
@@ -30,10 +31,10 @@ export default function useUSDTGroup(
    *  TOKENBalance 余额
    */
   const initTOKENBalance = useCallback(async () => {
-    if (!!web3ModalAccount) {
+    if (!!web3ModalAccount && tokenAddress) {
       const balance = await Contracts.example?.balanceOf(
         web3ModalAccount,
-        coinName
+        tokenAddress
       );
       // debugger;
       console.log(balance, "balance");
@@ -42,7 +43,7 @@ export default function useUSDTGroup(
         decimalNum(Web3.utils.fromWei(!!balance ? balance.toString() : "0"), 2)
       );
     }
-  }, [web3ModalAccount, coinName]);
+  }, [web3ModalAccount, contractAddress, tokenAddress]);
 
   /**
    *  授权USDT
@@ -54,7 +55,7 @@ export default function useUSDTGroup(
       onDoingFun = () => {},
       failFun = () => {}
     ) => {
-      if (web3ModalAccount) {
+      if (web3ModalAccount && tokenAddress) {
         // setTip("授权中");
         // setShowTipModal(true);
         try {
@@ -63,7 +64,7 @@ export default function useUSDTGroup(
           const res = await Contracts.example?.approve(
             web3ModalAccount,
             contractAddress,
-            coinName,
+            tokenAddress,
             num
           );
           // const info = await res.wait();
@@ -82,44 +83,44 @@ export default function useUSDTGroup(
         }
       }
     },
-    [showLoding, coinName, web3ModalAccount]
+    [showLoding, tokenAddress, contractAddress, web3ModalAccount]
   );
 
   /**
    *  TOKENBalance 授权额度
    */
   const initTOKENAllowance = useCallback(async () => {
-    if (!!web3ModalAccount) {
+    if (!!web3ModalAccount && tokenAddress) {
       const allowance = await Contracts.example?.Tokenapprove(
         web3ModalAccount,
         contractAddress,
-        coinName
+        tokenAddress
       );
       setTOKENAllowance(
         Web3.utils.fromWei(!!allowance ? allowance.toString() : "0", "ether")
       );
     }
-  }, [web3ModalAccount, contractAddress, coinName]);
+  }, [web3ModalAccount, contractAddress, tokenAddress]);
 
   /**
    *  TOKENBalance 授权额度
    */
   const initSymbol = useCallback(async () => {
-    if (!!web3ModalAccount) {
+    if (!!web3ModalAccount && tokenAddress) {
       const symbol = await Contracts.example?.symbol(
         web3ModalAccount,
-        coinName
+        tokenAddress
       );
       setSymbol(symbol);
     }
-  }, [web3ModalAccount, contractAddress, coinName]);
+  }, [web3ModalAccount, contractAddress, tokenAddress]);
 
   /**
    *  TOKENBalance 授权额度
    */
   const handleUSDTRefresh = useCallback(() => {
     setHash(+new Date());
-  }, [coinName]);
+  }, [tokenAddress, contractAddress]);
 
   /**
    *  TOKENBalance 授权额度
@@ -146,7 +147,8 @@ export default function useUSDTGroup(
       handleApprove,
       symbol,
       handleUSDTRefresh,
-      coinName,
+      tokenAddress,
+      contractAddress,
       TOKENBalance,
       TOKENAllowance,
       addMessage,
@@ -154,12 +156,12 @@ export default function useUSDTGroup(
   );
 
   useEffect(() => {
-    if (!!web3ModalAccount) {
+    if (!!web3ModalAccount && tokenAddress) {
       initTOKENAllowance();
       initTOKENBalance();
       initSymbol();
     }
-  }, [web3ModalAccount, hash, coinName]);
+  }, [web3ModalAccount, hash, tokenAddress, contractAddress]);
 
   return {
     TOKENBalance,

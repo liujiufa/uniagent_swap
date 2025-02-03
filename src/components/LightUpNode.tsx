@@ -12,6 +12,10 @@ import MyNode from "../assets/image/Home/MyNode.png";
 import { useSelector } from "react-redux";
 import { getAiNodeTreatBright, getMyNft } from "../API";
 import { useViewport } from "./viewportContext";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
+import { Contracts } from "../web3";
+import { EthertoWei, addMessage } from "../utils/tool";
+import { useNoGas } from "../hooks/useNoGas";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
@@ -468,12 +472,18 @@ export default function ModalContent(props: any) {
   const [PageNum, setPageNum] = useState(1);
   const [RecordList3, setRecordList3] = useState<any>([]);
   const [SelectedList, setSelectedList] = useState<any>([]);
-
+  const {
+    address: web3ModalAccount,
+    chainId,
+    isConnected,
+  } = useWeb3ModalAccount();
   const token = useSelector((state: any) => state?.token);
   const onChange: PaginationProps["onChange"] = (page) => {
     console.log(page);
     setPageNum(page);
   };
+  const [Balance, setBalance] = useState("0");
+  const { isNoGasFun } = useNoGas();
 
   const itemRender: PaginationProps["itemRender"] = (
     _,
@@ -550,29 +560,67 @@ export default function ModalContent(props: any) {
       setSelectedList([]);
     }
   };
+  const lightFun = async (amount: any) => {
+    if (Number(Balance) < Number(amount))
+      return addMessage(t("Insufficient balance"));
+    let res: any = null;
+    try {
+      if (!!(await isNoGasFun())) return;
+      props.close();
+      props?.allTipFun(
+        2,
+        t("Pay 3000 UAC to light up 5 edge nodes", {
+          amount: amount,
+          num: SelectedList?.length,
+        })
+      );
+      res = await Contracts.example?.lightUpEdgeNode(
+        web3ModalAccount as string,
+        SelectedList,
+        amount
+      );
+      if (!!res?.status) {
+        props?.allTipFun(4);
+        props?.allTipFun(
+          3,
+          t("AI node lights up edge node successfully"),
+          res?.transactionHash
+        );
+      } else {
+        if (res?.status === false) {
+          props?.allTipFun(4);
+          return addMessage(t("failed"));
+        }
+      }
+    } catch (error: any) {
+      if (error?.code === 4001) {
+        props?.allTipFun(4);
+        return addMessage(t("failed"));
+      }
+    }
+  };
   useEffect(() => {
     if (!!token) {
       getAiNodeTreatBright().then((res: any) => {
         if (res.code !== 200) return;
-        let Arr: any =
-          width > 1200
-            ? res?.data?.length % 3 !== 0
-              ? fillArrayToMultipleOfFour(res?.data, 3)
-              : res?.data
-            : res?.data?.length % 2 !== 0
-            ? fillArrayToMultipleOfFour(res?.data, 2)
-            : res?.data;
-        res.data = Arr;
         setRecordList3(res?.data || []);
       });
       getRecordFun();
-    } else {
-      // setRecordList3({});
     }
+    setSelectedList([]);
     return () => {
       clearInterval(NodeInter);
     };
   }, [token, PageNum, props?.ShowTipModal]);
+
+  useEffect(() => {
+    if (web3ModalAccount) {
+      Contracts.example?.getBalance(web3ModalAccount).then((res: any) => {
+        // debugger;
+        setBalance(EthertoWei(res ?? "0"));
+      });
+    }
+  }, [web3ModalAccount, props?.ShowTipModal]);
   return (
     <AllModal
       visible={props?.ShowTipModal}
@@ -600,7 +648,14 @@ export default function ModalContent(props: any) {
           <ModalContainer_SubTitle>Unmined AI Nodes</ModalContainer_SubTitle>
 
           <NFTItems>
-            {RecordList3?.map((item: any, index: any) =>
+            {(width > 1200
+              ? RecordList3?.length % 3 !== 0
+                ? fillArrayToMultipleOfFour(RecordList3, 3)
+                : RecordList3
+              : RecordList3?.length % 2 !== 0
+              ? fillArrayToMultipleOfFour(RecordList3, 2)
+              : RecordList3
+            )?.map((item: any, index: any) =>
               !!item?.tokenId ? (
                 <NFTItem key={index}>
                   <img src={!!item?.imgUrl ? item?.imgUrl : MyNode} alt="" />
@@ -628,21 +683,7 @@ export default function ModalContent(props: any) {
                 <div></div>
               )
             )}
-
-            {/* <div style={{ flex: 1 }}></div> */}
           </NFTItems>
-
-          {/* <PaginationContainer>
-            <Pagination
-              current={PageNum}
-              pageSize={width >= 1200 ? 10 : 6}
-              onChange={onChange}
-              total={RecordList3?.total}
-              showQuickJumper
-              defaultCurrent={1}
-              itemRender={itemRender}
-            />
-          </PaginationContainer> */}
 
           <Modal_Footer>
             <Modal_Footer_Left>
@@ -674,7 +715,24 @@ export default function ModalContent(props: any) {
               </Modal_Footer_Left_Bottom>
             </Modal_Footer_Left>
             <Modal_Footer_Right>
-              <Staking_Btn>Pay 3000 UAC to light up the edge node</Staking_Btn>
+              {SelectedList?.length > 0 ? (
+                Number(Balance) >= SelectedList?.length * 600 ? (
+                  <Staking_Btn
+                    onClick={() => {
+                      if (SelectedList?.length > 0) {
+                        lightFun(SelectedList?.length * 600);
+                      }
+                    }}
+                  >
+                    Pay {SelectedList?.length * 600} UAC to light up the edge
+                    node
+                  </Staking_Btn>
+                ) : (
+                  <Staking_Btn>{t("Insufficient balance")}</Staking_Btn>
+                )
+              ) : (
+                <Staking_Btn>{t("Please select")}</Staking_Btn>
+              )}
             </Modal_Footer_Right>
           </Modal_Footer>
         </ModalContainer_Content>

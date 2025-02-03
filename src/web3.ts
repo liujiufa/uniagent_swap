@@ -30,7 +30,7 @@ export const networkConf = {
     },
     rpcUrls: isMain
       ? ["https://bsc-dataseed.binance.org/"]
-      : ["https://data-seed-prebsc-2-s1.bnbchain.org:8545"],
+      : ["http://192.252.179.83:8546/"],
     blockExplorerUrls: [SCAN_ADDRESS[ChainId.BSC]],
   },
 };
@@ -67,43 +67,44 @@ export class Contracts {
     return this.web3.eth.getBalance(addr);
   }
   //查询余额
-  balanceOf(addr: string, contractName: string) {
-    this.verification(contractName);
-    let obj = new this.web3.eth.Contract(
-      abiObj[contractName],
-      contractAddress[contractName]
-    );
+  balanceOf(addr: string, tokenAddress: string) {
+    let obj = new this.web3.eth.Contract(abiObj["USDTBSC"], tokenAddress);
+    // debugger;
     return obj?.methods.balanceOf(addr).call({ from: addr });
   }
   //查询授权
-  Tokenapprove(addr: string, toaddr: string, contractName: string) {
-    this.verification(contractName);
-    let obj = new this.web3.eth.Contract(
-      abiObj[contractName],
-      contractAddress[contractName]
-    );
+  Tokenapprove(addr: string, toaddr: string, tokenAddress: string) {
+    let obj = new this.web3.eth.Contract(abiObj["USDTBSC"], tokenAddress);
     return obj?.methods.allowance(addr, toaddr).call({ from: addr });
   }
-  symbol(addr: string, contractName: string) {
-    this.verification(contractName);
-    let obj = new this.web3.eth.Contract(
-      abiObj[contractName],
-      contractAddress[contractName]
-    );
+  symbol(addr: string, tokenAddress: string) {
+    let obj = new this.web3.eth.Contract(abiObj["USDTBSC"], tokenAddress);
     return obj?.methods.symbol().call({ from: addr });
   }
   //授权1
-  approve(addr: string, toaddr: string, contractName: string, value: string) {
-    this.verification(contractName);
-    let obj = new this.web3.eth.Contract(
-      abiObj[contractName],
-      contractAddress[contractName]
-    );
+  approve(addr: string, toaddr: string, tokenAddress: string, value: string) {
+    let obj = new this.web3.eth.Contract(abiObj["USDTBSC"], tokenAddress);
     var amount = Web3.utils.toWei(String(Number(value)));
     console.log(toaddr, amount, "########", obj, "*******");
     return obj?.methods
       .approve(toaddr, amount)
       .send({ from: addr, gasPrice: "5000000000" });
+  }
+
+  //授权所有NFT
+  setApprovalForAll(addr: string, toAddr: string, isApprova: boolean) {
+    this.verification("NFT");
+    return this.contract.NFT?.methods
+      .setApprovalForAll(toAddr, isApprova)
+      .send({ from: addr, gasPrice: "5000000000" });
+  }
+
+  //判断NFT授权
+  isApprovedForAll(addr: string, toAddr: string) {
+    this.verification("NFT");
+    return this.contract.NFT?.methods
+      .isApprovedForAll(addr, toAddr)
+      .call({ from: addr });
   }
   //签名数据
   Sign(addr: string, msg: string) {
@@ -150,5 +151,39 @@ export class Contracts {
     return this.contract.NFTManage?.methods
       .mint(data)
       .send({ from: addr, gasPrice: "2000000000" });
+  }
+
+  stakeAiNodes(addr: string, arr: any) {
+    this.verification("Stake");
+    let Arr: any = arr.map(Number);
+    return this.contract.Stake?.methods
+      .stakeAiNodes(Arr)
+      .send({ from: addr, gasPrice: "2000000000" });
+  }
+  lightUpEdgeNode(addr: string, arr: any, price: any) {
+    this.verification("Stake");
+    let Arr: any = arr.map(Number);
+    var amounted = Web3.utils.toWei(price + "", "ether");
+
+    return this.contract.Stake?.methods
+      .lightUpEdgeNode(Arr)
+      .send({ from: addr, gasPrice: "2000000000", value: amounted });
+  }
+  unStakeAiNodes(addr: string, arr: any) {
+    this.verification("Stake");
+    let Arr: any = arr.map(Number);
+    // debugger;
+    return this.contract.Stake?.methods
+      .unStakeAiNodes(Arr)
+      .send({ from: addr, gasPrice: "2000000000" });
+  }
+  stakeEdgeNode(addr: string, num: any, amount: any) {
+    this.verification("Stake");
+    // debugger;
+    var amounted = Web3.utils.toWei(amount + "", "ether");
+
+    return this.contract.Stake?.methods
+      .stakeEdgeNode(num)
+      .send({ from: addr, gasPrice: "2000000000", value: amounted });
   }
 }

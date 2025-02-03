@@ -71,8 +71,9 @@ import useTime from "../hooks/useTime";
 import LightUpNode from "../components/LightUpNode";
 import RecommendedOuputModal from "../components/RecommendedOuputModal";
 import RevokeNode from "../components/RevokeNode";
-import StakingMiningModal from "../components/StakingMiningModal";
 import RecommendedMintedModal from "../components/RecommendedMintedModal";
+import { useGetReward } from "../hooks/useGetReward";
+import StakingMiningModal from "../components/StakingMiningModal";
 const HomeContainerBox = styled(ContainerBox)`
   padding: 56px;
   width: 100%;
@@ -421,13 +422,13 @@ export default function Rank() {
   const [ShowTipModal, setShowTipModal] = useState(false);
   const [ShowSuccessTipModal, setShowSuccessTipModal] = useState(false);
   const [ReferListStateModal, setReferListStateModal] = useState(false);
-  const [MyNodeListStateModal, setMyNodeListStateModal] = useState(false);
   const [NodeMintModalState, setNodeMintModalState] = useState(false);
   const [LightUpNodeModalState, setLightUpNodeModalState] = useState(false);
   const [RecommendedOuputModalState, setRecommendedOuputModalState] =
     useState(false);
   const [RevokeNodeModalState, setRevokeNodeModalState] = useState(false);
   const [StakingMiningModalState, setStakingMiningModalState] = useState(false);
+  const [EdgeNodeModalState, setEdgeNodeModalState] = useState(false);
 
   const [SuccessFulHash, setSuccessFulHash] = useState("");
   const [RecordList3, setRecordList3] = useState<any>({});
@@ -449,13 +450,13 @@ export default function Rank() {
     handleApprove,
     handleTransaction,
     handleUSDTRefresh,
-  } = useUSDTGroup(contractAddress?.NFTManage, "USDT");
+  } = useUSDTGroup(contractAddress?.NFTManage, contractAddress?.USDTBSC);
   const { isNoGasFun } = useNoGas();
 
   const [IsNode, setIsNode] = useState(false);
   const { open } = useWeb3Modal();
   const { disconnect } = useDisconnect();
-
+  const { getReward } = useGetReward();
   const inputFun = (amount: any, num = 0) => {
     let amounted: any = Number(amount) + num;
     // debugger;
@@ -470,7 +471,7 @@ export default function Rank() {
   const CopyCodeFun = (code: string) => {
     if (!IsBindState) return addMessage(t("9"));
     if (!web3ModalAccount) {
-      return addMessage(t("Please link wallet"));
+      return addMessage(t("Please Connect wallet"));
     } else {
       copyFun(window.location.origin + `?inviteCode=${code}`);
       addMessage(t("Copied successfully"));
@@ -478,7 +479,7 @@ export default function Rank() {
   };
 
   const buyNFTFun = (value: any) => {
-    if (!web3ModalAccount) return addMessage(t("Please link wallet"));
+    if (!web3ModalAccount) return addMessage(t("Please Connect wallet"));
     if (!IsBindState) return addMessage(t("9"));
     if (Number(value) <= 0) return;
     handleTransaction(
@@ -515,7 +516,6 @@ export default function Rank() {
             await getInitData();
             setSuccessFulHash(res?.transactionHash);
             setShowTipModal(false);
-
             setShowSuccessTipModal(true);
             return setTip(
               t("AI node staking mining successful", { num: Amount })
@@ -546,18 +546,15 @@ export default function Rank() {
   };
 
   const getWebsocketData = () => {
-    // timer = setInterval(() => {
-    //   getNftBase().then((res: any) => {
-    //     setNftBase(res?.data || {});
-    //   });
-    //   if (!!token) {
-    //     getInitData();
-    //     getMyNft({ pageNum: 1, pageSize: 10 }).then((res: any) => {
-    //       if (res.code !== 200) return;
-    //       setRecordList3(res?.data || {});
-    //     });
-    //   }
-    // }, 8000);
+    timer = setInterval(() => {
+      getAllData().then((res: any) => {
+        setAllData(res?.data || {});
+      });
+
+      if (!!token) {
+        getInitData();
+      }
+    }, 3000);
   };
 
   const getInitData = () => {
@@ -571,6 +568,20 @@ export default function Rank() {
         setPersonData(res?.data || {});
       }
     });
+  };
+
+  const allTipFun = async (type: any, tip: any = "", hash: any = "") => {
+    // 1:授权 2:loding 3:success 4:取消授权
+    if (Number(type) === 1 || Number(type) === 2) {
+      setTip(tip);
+      setShowTipModal(true);
+    } else if (Number(type) === 3) {
+      setTip(tip);
+      setSuccessFulHash(hash);
+      setShowSuccessTipModal(true);
+    } else if (Number(type) === 4) {
+      setShowTipModal(false);
+    }
   };
 
   useEffect(() => {
@@ -606,10 +617,10 @@ export default function Rank() {
   }, [web3ModalAccount, token, selectedNetworkId]);
   useEffect(() => {
     if (!!token) {
-      getMyNft({ pageNum: 1, pageSize: 10 }).then((res: any) => {
-        if (res.code !== 200) return;
-        setRecordList3(res?.data || {});
-      });
+      // getMyNft({ pageNum: 1, pageSize: 10 }).then((res: any) => {
+      //   if (res.code !== 200) return;
+      //   setRecordList3(res?.data || {});
+      // });
     } else {
       setRecordList3({});
     }
@@ -658,7 +669,7 @@ export default function Rank() {
                   <div>Total Staking</div>
                 </div>
                 <div>
-                  {AllData?.nextHalvedTime ?? "-"}
+                  {AllData?.nextHalvedTime?.split(" ")[0] ?? "-"}
                   <div>Next Reduction</div>
                 </div>
               </All_Items>
@@ -673,7 +684,15 @@ export default function Rank() {
                 Unclaimed Revenue{" "}
                 <div>
                   {DrawData ?? "-"}
-                  <Withdrawn_Btn>Withdrawn</Withdrawn_Btn>
+                  <Withdrawn_Btn
+                    onClick={() => {
+                      if (Number(DrawData || 0) > 0) {
+                        getReward(() => {}, "Stake");
+                      }
+                    }}
+                  >
+                    Withdrawn
+                  </Withdrawn_Btn>
                 </div>
               </div>
             ) : (
@@ -681,7 +700,15 @@ export default function Rank() {
                 <div className="Mobile_Box_Left">
                   Unclaimed Revenue <div>{DrawData ?? "-"}</div>
                 </div>
-                <Withdrawn_Btn>Withdrawn</Withdrawn_Btn>
+                <Withdrawn_Btn
+                  onClick={() => {
+                    if (Number(DrawData || 0) > 0) {
+                      getReward(() => {}, "Stake");
+                    }
+                  }}
+                >
+                  Withdrawn
+                </Withdrawn_Btn>
               </Mobile_Box>
             )}
           </Title>
@@ -736,17 +763,25 @@ export default function Rank() {
                   </Btn>
                 </div>
               </Personal_Item>
-              {Number(PersonData?.alreadyBrightAINode ?? 0) > 0 ? (
-                <Personal_Item>
-                  <div>
-                    Illuminated{" "}
-                    {thousandsSeparator(PersonData?.alreadyBrightAINode ?? "-")}{" "}
-                    AI Nodes
-                    <div>NFT light up edge node</div>
-                    <Btn>Cancel</Btn>
-                  </div>
-                </Personal_Item>
-              ) : (
+              {
+                // Number(PersonData?.alreadyBrightAINode ?? 0) > 0 ? (
+                //   <Personal_Item>
+                //     <div>
+                //       Illuminated{" "}
+                //       {thousandsSeparator(PersonData?.alreadyBrightAINode ?? "-")}{" "}
+                //       AI Nodes
+                //       <div>NFT light up edge node</div>
+                //       <Btn
+                //         onClick={() => {
+                //           setModalType(3);
+                //           setNodeMintModalState(true);
+                //         }}
+                //       >
+                //         Cancel
+                //       </Btn>
+                //     </div>
+                //   </Personal_Item>
+                // ) : (
                 <Personal_Item>
                   <div>
                     Unlit
@@ -760,7 +795,8 @@ export default function Rank() {
                     </Btn>
                   </div>
                 </Personal_Item>
-              )}
+                // )
+              }
               <Personal_Item>
                 <div>
                   {thousandsSeparator(PersonData?.nftPower ?? "-")} T
@@ -782,7 +818,8 @@ export default function Rank() {
               </Personal_Item>
               <Personal_Item>
                 <div>
-                  {thousandsSeparator(PersonData?.uacPledgeNum ?? "-")} AI Nodes
+                  {thousandsSeparator(PersonData?.uacPledgeNum ?? "-")} Edge
+                  Node
                   <div>UAC Staking</div>
                   <Btn
                     onClick={() => {
@@ -795,7 +832,8 @@ export default function Rank() {
               </Personal_Item>
               <Personal_Item>
                 <div>
-                  {thousandsSeparator(PersonData?.edgeMineNode ?? "-")} AI Nodes
+                  {thousandsSeparator(PersonData?.edgeMineNode ?? "-")} Edge
+                  Nodes
                   <div>Mining Edge Node</div>
                   <Btn
                     onClick={() => {
@@ -810,7 +848,13 @@ export default function Rank() {
                 <div>
                   {thousandsSeparator(PersonData?.edgeNodeMineEarn ?? "-")}
                   <div>Edge Node Mining Revenue</div>
-                  <CheckBtn>Check&gt;&gt;</CheckBtn>
+                  <CheckBtn
+                    onClick={() => {
+                      setEdgeNodeModalState(true);
+                    }}
+                  >
+                    Check&gt;&gt;
+                  </CheckBtn>
                 </div>
               </Personal_Item>
             </Personal_Items>
@@ -861,12 +905,12 @@ export default function Rank() {
           setRecommendedOuputModalState(false);
         }}
       />
-
+      {/* Edge Node Mining Revenue */}
       <RecommendedMintedModal
-        ShowTipModal={false}
+        ShowTipModal={EdgeNodeModalState}
         Tip={Tip}
         close={() => {
-          setReferListStateModal(false);
+          setEdgeNodeModalState(false);
         }}
       />
       {/* AI Node Mining/AI Nodes De-mining/Undo the lighting of edge nodes */}
@@ -877,6 +921,7 @@ export default function Rank() {
         close={() => {
           setNodeMintModalState(false);
         }}
+        allTipFun={allTipFun}
       />
       {/* AI nodes light up edge nodes */}
       <LightUpNode
@@ -885,6 +930,7 @@ export default function Rank() {
         close={() => {
           setLightUpNodeModalState(false);
         }}
+        allTipFun={allTipFun}
       />
       {/* UAC Staking */}
       <RevokeNode
@@ -893,6 +939,7 @@ export default function Rank() {
         close={() => {
           setRevokeNodeModalState(false);
         }}
+        allTipFun={allTipFun}
       />
 
       <StakingMiningModal
@@ -901,6 +948,7 @@ export default function Rank() {
         close={() => {
           setStakingMiningModalState(false);
         }}
+        allTipFun={allTipFun}
       />
     </HomeContainerBox>
   );

@@ -10,8 +10,11 @@ import rightIcon from "../assets/image/Home/rightIcon.svg";
 import selectedIcon from "../assets/image/Home/selectedIcon.svg";
 import MyNode from "../assets/image/Home/MyNode.png";
 import { useSelector } from "react-redux";
-import { getMyNft } from "../API";
+import { getEdgeNodeList, getMyNft, quitEdgeNode } from "../API";
 import { useViewport } from "./viewportContext";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
+import { useSign } from "../hooks/useSign";
+import { addMessage } from "../utils/tool";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
@@ -491,15 +494,20 @@ export default function ModalContent(props: any) {
   const { t } = useTranslation();
   const { width } = useViewport();
   const [PageNum, setPageNum] = useState(1);
-  const [RecordList3, setRecordList3] = useState<any>({});
+  const [RecordList3, setRecordList3] = useState<any>([]);
   const [SelectedList, setSelectedList] = useState<any>([]);
-  const [ActiveSub, setActiveSub] = useState(1);
-
+  const [ActiveSub, setActiveSub] = useState<1 | 2>(1);
   const token = useSelector((state: any) => state?.token);
   const onChange: PaginationProps["onChange"] = (page) => {
     console.log(page);
     setPageNum(page);
   };
+  const {
+    address: web3ModalAccount,
+    chainId,
+    isConnected,
+  } = useWeb3ModalAccount();
+  const { signFun } = useSign();
 
   const itemRender: PaginationProps["itemRender"] = (
     _,
@@ -522,6 +530,14 @@ export default function ModalContent(props: any) {
     }
     return originalElement;
   };
+
+  const pledgeType = {
+    "-1": "Waiting",
+    "0": "Mining",
+    "1": "Mining",
+    "2": "Mining",
+  };
+
   function fillArrayToMultipleOfFour(arr: any, num: number) {
     // 计算需要填充的元素数量
     const fillCount = (3 - (arr.length % num)) % num; // 使用% 4确保当数组长度已经是4的倍数时不添加额外元素
@@ -536,21 +552,21 @@ export default function ModalContent(props: any) {
   const getRecordFun = () => {
     NodeInter = setInterval(() => {
       if (!!token) {
-        getMyNft({ pageNum: PageNum, pageSize: width >= 1200 ? 10 : 6 }).then(
-          (res: any) => {
-            if (res.code !== 200) return;
-            let Arr: any =
-              width > 1200
-                ? res?.data?.list?.length % 4 !== 0
-                  ? fillArrayToMultipleOfFour(res?.data?.list, 4)
-                  : res?.data?.list
-                : res?.data?.list?.length % 2 !== 0
-                ? fillArrayToMultipleOfFour(res?.data?.list, 2)
-                : res?.data?.list;
-            res.data.list = Arr;
-            setRecordList3(res?.data || {});
-          }
-        );
+        // getMyNft({ pageNum: PageNum, pageSize: width >= 1200 ? 10 : 6 }).then(
+        //   (res: any) => {
+        //     if (res.code !== 200) return;
+        //     let Arr: any =
+        //       width > 1200
+        //         ? res?.data?.list?.length % 4 !== 0
+        //           ? fillArrayToMultipleOfFour(res?.data?.list, 4)
+        //           : res?.data?.list
+        //         : res?.data?.list?.length % 2 !== 0
+        //         ? fillArrayToMultipleOfFour(res?.data?.list, 2)
+        //         : res?.data?.list;
+        //     res.data.list = Arr;
+        //     setRecordList3(res?.data || {});
+        //   }
+        // );
       }
     }, 8000);
   };
@@ -569,38 +585,54 @@ export default function ModalContent(props: any) {
     let Arr1: any = [];
     if (Arr?.length > 0 && SelectedList?.length < Arr?.length) {
       for (let item of Arr) {
-        Arr1?.push(item?.tokenId);
+        Arr1?.push(item?.id);
       }
       setSelectedList(Arr1);
     } else {
       setSelectedList([]);
     }
   };
+  const cancelFun = async () => {
+    if (web3ModalAccount) {
+      // debugger;
+      // debugger;
+      await signFun((res: any) => {
+        props.close();
+        props?.allTipFun(2, t("AI node cancels the light edge node"));
+        quitEdgeNode({
+          ...res,
+          orderIds: SelectedList,
+        }).then((res: any) => {
+          props?.allTipFun(4);
+          if (res.code === 200) {
+            props?.allTipFun(
+              3,
+              t("AI node successfully cancels the edge node lighting"),
+              res?.transactionHash
+            );
+          } else {
+            return addMessage(t("failed"));
+          }
+        });
+      }, `userAddress=${web3ModalAccount as string}`);
+    } else {
+      return addMessage(t("Please Connect wallet"));
+    }
+  };
   useEffect(() => {
     if (!!token) {
-      getMyNft({ pageNum: PageNum, pageSize: width >= 1200 ? 10 : 6 }).then(
-        (res: any) => {
-          if (res.code !== 200) return;
-          let Arr: any =
-            width > 1200
-              ? res?.data?.list?.length % 4 !== 0
-                ? fillArrayToMultipleOfFour(res?.data?.list, 4)
-                : res?.data?.list
-              : res?.data?.list?.length % 2 !== 0
-              ? fillArrayToMultipleOfFour(res?.data?.list, 2)
-              : res?.data?.list;
-          res.data.list = Arr;
-          setRecordList3(res?.data || {});
-        }
-      );
+      getEdgeNodeList(ActiveSub).then((res: any) => {
+        if (res.code !== 200) return;
+        setRecordList3(res?.data || []);
+      });
       getRecordFun();
-    } else {
-      // setRecordList3({});
     }
+    setSelectedList([]);
     return () => {
       clearInterval(NodeInter);
     };
-  }, [token, PageNum, props?.ShowTipModal]);
+  }, [token, PageNum, ActiveSub, props?.ShowTipModal]);
+
   return (
     <AllModal
       visible={props?.ShowTipModal}
@@ -646,50 +678,41 @@ export default function ModalContent(props: any) {
 
           {Number(ActiveSub) === 1 && (
             <NFTItems>
-              {[
-                { tokenId: "1" },
-                { tokenId: "2" },
-                { tokenId: "3" },
-                { tokenId: "4" },
-                { tokenId: "5" },
-                { tokenId: "6" },
-                { tokenId: "7" },
-              ]?.map((item: any, index: any) => (
+              {RecordList3?.map((item: any, index: any) => (
                 <NFTItem key={index}>
                   <NFTItem_Top>
                     <div>
                       Number of edge nodes
-                      <div>3</div>
+                      <div>{item?.nodeNum}</div>
                     </div>
                     <div>
                       Pledge Quantity
-                      <div>600 UAC</div>
+                      <div>{item?.pledgeNum} UAC</div>
                     </div>
                     <div>
                       Staking Block
-                      <div>214214</div>
+                      <div>{item?.pledgeBlock}</div>
                     </div>
                   </NFTItem_Top>
                   <NFTItem_Bottom>
                     <div>
                       Start mining blocks
-                      <div>3</div>
+                      <div>{item?.startBlock}</div>
                     </div>
                     <div>
                       Mining Status
-                      <div>Waiting</div>
+                      <div>{pledgeType[item?.status]}</div>
                     </div>
                     <div>
                       <div className="selectBox">
                         <Select_All_Box1
                           onClick={() => {
                             // debugger;
-                            openFun(item?.tokenId + "");
+                            openFun(item?.id);
                           }}
                         >
                           {SelectedList?.some(
-                            (item1: any) =>
-                              String(item1) === String(item?.tokenId)
+                            (item1: any) => String(item1) === String(item?.id)
                           ) ? (
                             <div className="active">
                               <img src={selectedIcon} alt="" />
@@ -708,38 +731,30 @@ export default function ModalContent(props: any) {
           )}
           {Number(ActiveSub) === 2 && (
             <NFTItems>
-              {[
-                { tokenId: "1" },
-                { tokenId: "2" },
-                { tokenId: "3" },
-                { tokenId: "4" },
-                { tokenId: "5" },
-                { tokenId: "6" },
-                { tokenId: "7" },
-              ]?.map((item: any, index: any) => (
+              {RecordList3?.map((item: any, index: any) => (
                 <NFTItem key={index}>
                   <NFTItem_Top>
                     <div>
                       Number of edge nodes
-                      <div>3</div>
+                      <div>{item?.nodeNum}</div>
                     </div>
                     <div>
                       Pledge Quantity
-                      <div>600 UAC</div>
+                      <div>{item?.pledgeNum} UAC</div>
                     </div>
                     <div>
                       Staking Block
-                      <div>214214</div>
+                      <div>{item?.pledgeBlock}</div>
                     </div>
                   </NFTItem_Top>
                   <NFTItem_Bottom>
                     <div>
                       Start mining blocks
-                      <div>244521</div>
+                      <div>{item?.startBlock}</div>
                     </div>
                     <div>
                       Unblock
-                      <div>244521</div>
+                      <div>{item?.cancelBlock}</div>
                     </div>
                     <div>
                       Mining Status
@@ -756,27 +771,10 @@ export default function ModalContent(props: any) {
               <Modal_Footer_Left>
                 <Select_All_Box
                   onClick={() => {
-                    selectAllFun([
-                      { tokenId: "1" },
-                      { tokenId: "2" },
-                      { tokenId: "3" },
-                      { tokenId: "4" },
-                      { tokenId: "5" },
-                      { tokenId: "6" },
-                      { tokenId: "7" },
-                    ]);
+                    selectAllFun(RecordList3);
                   }}
                 >
-                  {SelectedList?.length ===
-                  [
-                    { tokenId: "1" },
-                    { tokenId: "2" },
-                    { tokenId: "3" },
-                    { tokenId: "4" },
-                    { tokenId: "5" },
-                    { tokenId: "6" },
-                    { tokenId: "7" },
-                  ]?.length ? (
+                  {SelectedList?.length === RecordList3?.length ? (
                     <div className="active">
                       <img src={selectedIcon} alt="" />
                     </div>
@@ -786,11 +784,19 @@ export default function ModalContent(props: any) {
                 </Select_All_Box>
                 Select All
                 <Selected_Box>
-                  Selected <span>5 AI Nodes</span>
+                  Selected <span>{SelectedList?.length} AI Nodes</span>
                 </Selected_Box>
               </Modal_Footer_Left>
               <Modal_Footer_Right>
-                <Staking_Btn>Cancel edge node mining</Staking_Btn>
+                <Staking_Btn
+                  onClick={() => {
+                    if (SelectedList?.length > 0) {
+                      cancelFun();
+                    }
+                  }}
+                >
+                  Cancel edge node mining
+                </Staking_Btn>
               </Modal_Footer_Right>
             </Modal_Footer>
           )}

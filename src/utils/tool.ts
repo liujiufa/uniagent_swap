@@ -223,7 +223,7 @@ export function startWord(name: string) {
 }
 
 export function EthertoWei(amount: string) {
-  let amounted = Web3.utils.fromWei(amount, "ether");
+  let amounted = Web3.utils.fromWei(amount + "", "ether");
   // console.log(amounted, typeof (amounted), 'eht');
 
   return amounted;

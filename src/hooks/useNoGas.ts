@@ -13,7 +13,7 @@ export const useNoGas = () => {
   } = useWeb3ModalAccount();
   const { t } = useTranslation();
   async function isNoGasFun() {
-    if (!web3ModalAccount) return addMessage(t("Please link wallet"));
+    if (!web3ModalAccount) return addMessage(t("Please Connect wallet"));
 
     let BNBBalance = await Contracts?.example?.getBalance(web3ModalAccount);
     let gasPrice = await Contracts?.example?.getGasPrice(web3ModalAccount);

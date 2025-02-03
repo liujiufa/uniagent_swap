@@ -12,6 +12,7 @@ export function Login(data: any) {
     method: "post",
     data: {
       ...data,
+      Encrypt: true,
     },
   });
 }
@@ -74,7 +75,7 @@ export function getNftBase() {
 }
 export function drawAward(data: any) {
   return axois.request({
-    url: `/user/drawAward`,
+    url: `/mine/draw`,
     method: "post",
     data: {
       ...data,
@@ -128,7 +129,7 @@ export function getPersonData() {
 }
 export function getRefereeData(data: any) {
   return axois.request({
-    url: `/user/getRefereeData`,
+    url: `/mine/getRefereeData`,
     method: "post",
     data: {
       ...data,
@@ -154,5 +155,38 @@ export function getAiNodeTreatBright() {
   return axois.request({
     url: `/mine/getAiNodeTreatBright`,
     method: "get",
+  });
+}
+export function getEdgeNodeList(type: 1 | 2) {
+  return axois.request({
+    url: `/mine/getEdgeNodeList/${type}`,
+    method: "get",
+  });
+}
+export function quitEdgeNode(data: any) {
+  return axois.request({
+    url: `/mine/quitEdgeNode`,
+    method: "post",
+    data: {
+      ...data,
+    },
+  });
+}
+export function getEdgeNodeEarnList(data: any) {
+  return axois.request({
+    url: `/mine/getEdgeNodeEarnList`,
+    method: "post",
+    data: {
+      ...data,
+    },
+  });
+}
+export function runBridge(data: any) {
+  return axois.request({
+    url: `/user/runBridge`,
+    method: "post",
+    data: {
+      ...data,
+    },
   });
 }
