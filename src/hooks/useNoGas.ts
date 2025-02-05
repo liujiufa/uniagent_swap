@@ -3,14 +3,13 @@ import { addMessage, showLoding } from "../utils/tool";
 import { Contracts } from "../web3";
 import { useEffect } from "react";
 import useConnectWallet from "./useConnectWallet";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { useTranslation } from "react-i18next";
+import { useAppKitAccount } from "@reown/appkit/react";
 export const useNoGas = () => {
   const {
     address: web3ModalAccount,
-    chainId,
     isConnected,
-  } = useWeb3ModalAccount();
+  } = useAppKitAccount();
   const { t } = useTranslation();
   async function isNoGasFun() {
     if (!web3ModalAccount) return addMessage(t("Please Connect wallet"));

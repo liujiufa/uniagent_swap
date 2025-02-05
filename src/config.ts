@@ -3,6 +3,7 @@ import NFTManage from "./ABI/NFTManage.json";
 import Nstake from "./ABI/Nstake.json";
 import NFT from "./ABI/NFT.json";
 import Bridge from "./ABI/Bridge.json";
+import { defineChain } from "@reown/appkit/networks";
 // 正式
 export const isMain = false;
 export const LOCAL_KEY = "UniAgent_LANG";
@@ -54,6 +55,53 @@ export const mainnet = {
     rpcUrl: "http://192.252.179.83:8546/",
   },
 };
+//@ts-ignore
+export const customNetwork_BSC = defineChain({
+  id: 56,
+  caipNetworkId: "eip155:56",
+  chainNamespace: "eip155",
+  name: "BSC",
+  nativeCurrency: {
+    decimals: 18,
+    name: "BNB",
+    symbol: "BNB",
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://bsc-dataseed.binance.org"],
+      webSocket: ["WS_RPC_URL"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Explorer",
+      url: "https://bscscan.com",
+    },
+  },
+});
+export const customNetwork_UNI = defineChain({
+  id: 656231,
+  caipNetworkId: "eip155:656231",
+  chainNamespace: "eip155",
+  name: "UNI",
+  nativeCurrency: {
+    decimals: 18,
+    name: "UAC",
+    symbol: "UAC",
+  },
+  rpcUrls: {
+    default: {
+      http: ["http://192.252.179.83:8546"],
+      webSocket: ["WS_RPC_URL"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Explorer",
+      url: "https://data-seed-prebsc-2-s1.bnbchain.org:8545",
+    },
+  },
+});
 
 interface abiObjType {
   [propName: string]: any;

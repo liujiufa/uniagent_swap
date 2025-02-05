@@ -1,3 +1,4 @@
+//@ts-ignore
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
@@ -11,9 +12,13 @@ import { BrowserRouter } from "react-router-dom";
 import { ChainId, Contracts } from "./web3";
 import "antd/dist/antd.min.css";
 import "animate.css";
-import { createWeb3Modal, defaultConfig } from "@web3modal/ethers/react";
-import { mainnet } from "./config";
+// import { customNetwork_BSC, mainnet } from "./config";
 
+import { createAppKit } from "@reown/appkit/react";
+import { EthersAdapter } from "@reown/appkit-adapter-ethers";
+//@ts-ignore
+import { bscTestnet, bsc, mainnet } from "@reown/appkit/networks";
+import { customNetwork_BSC } from "./config";
 function getLibrary(provider: any): Web3 {
   const library = new Web3(provider);
   new Contracts(provider);
@@ -37,32 +42,42 @@ const metadata = {
 };
 
 // 4. Create Ethers config
-const ethersConfig = defaultConfig({
-  /*Required*/
-  metadata,
+// const ethersConfig = defaultConfig({
+//   /*Required*/
+//   metadata,
 
-  /*Optional*/
-  enableEIP6963: true, // true by default
-  enableInjected: true, // true by default
-  enableCoinbase: false, // true by default
-  rpcUrl: "...", // used for the Coinbase SDK
-  defaultChainId: 1, // used for the Coinbase SDK
-});
+//   /*Optional*/
+//   enableEIP6963: true, // true by default
+//   enableInjected: true, // true by default
+//   enableCoinbase: false, // true by default
+//   rpcUrl: "...", // used for the Coinbase SDK
+//   defaultChainId: 1, // used for the Coinbase SDK
+// });
 
 // 5. Create a Web3Modal instance
-createWeb3Modal({
-  allWallets: "SHOW",
-  ethersConfig,
-  chains: [mainnet[ChainId?.BSC]],
+// createWeb3Modal({
+//   allWallets: "SHOW",
+//   ethersConfig,
+//   chains: [mainnet[ChainId?.BSC]],
+//   projectId,
+//   enableAnalytics: true, // Optional - defaults to your Cloud configuration
+//   themeMode: "dark",
+//   featuredWalletIds: [
+//     "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96",
+//     "971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709",
+//     "38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662",
+//     "20459438007b75f4f4acb98bf29aa3b800550309646d375da5fd4aac6c2a2c66",
+//   ],
+// });
+
+createAppKit({
+  adapters: [new EthersAdapter()],
+  networks: [customNetwork_BSC, mainnet],
+  metadata,
   projectId,
-  enableAnalytics: true, // Optional - defaults to your Cloud configuration
-  themeMode: "dark",
-  featuredWalletIds: [
-    "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96",
-    "971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709",
-    "38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662",
-    "20459438007b75f4f4acb98bf29aa3b800550309646d375da5fd4aac6c2a2c66",
-  ],
+  features: {
+    analytics: true, // Optional - defaults to your Cloud configuration
+  },
 });
 
 const root = ReactDOM.createRoot(

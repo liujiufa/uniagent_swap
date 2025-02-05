@@ -4,9 +4,9 @@ import Web3 from "web3";
 import { addMessage, showLoding, decimalNum } from "../utils/tool";
 import { t } from "i18next";
 import { Contracts } from "../web3";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { useNoGas } from "./useNoGas";
 import useTipLoding from "../components/ModalContent";
+import { useAppKitAccount } from "@reown/appkit/react";
 
 type AddressType = string;
 type CoinAddressType = string;
@@ -17,11 +17,7 @@ export default function useUSDTGroup(
 ) {
   console.log(contractAddress, tokenAddress, "-----");
   // debugger;
-  const {
-    address: web3ModalAccount,
-    chainId,
-    isConnected,
-  } = useWeb3ModalAccount();
+  const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const [hash, setHash] = useState(0);
   const [TOKENBalance, setTOKENBalance] = useState("0");
   const [TOKENAllowance, setTOKENAllowance] = useState("0");

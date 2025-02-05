@@ -4,15 +4,11 @@ import { drawAward } from "../API";
 import { addMessage, showLoding } from "../utils/tool";
 import { Contracts } from "../web3";
 import { useSelector } from "react-redux";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
+import { useAppKitAccount } from "@reown/appkit/react";
 export const useGetReward = () => {
   const token = useSelector<any>((state) => state?.token);
   const { account } = useWeb3React();
-  const {
-    address: web3ModalAccount,
-    chainId,
-    isConnected,
-  } = useWeb3ModalAccount();
+  const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   function getReward(callbackFun: any, contractName: string) {
     if (!web3ModalAccount) return addMessage(t("Please Connect wallet"));
     if (!token) return addMessage(t("1"));

@@ -12,12 +12,14 @@ import MyNode from "../assets/image/Home/MyNode.png";
 import { useSelector } from "react-redux";
 import { getMyNft } from "../API";
 import { useViewport } from "./viewportContext";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { Contracts } from "../web3";
 import { AddrHandle, EthertoWei, addMessage } from "../utils/tool";
 import { useNoGas } from "../hooks/useNoGas";
 import roundIcon from "../assets/image/Swap/roundIcon.svg";
 import React from "react";
+import { useAppKitAccount, useAppKitNetwork } from "@reown/appkit/react";
+import { customNetwork_BSC } from "../config";
+import { bscTestnet, bsc, mainnet } from "@reown/appkit/networks";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
@@ -549,11 +551,7 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
   const [SelectedList, setSelectedList] = useState<any>([]);
   const [ActiveSub, setActiveSub] = useState(1);
   const [Amount, setAmount] = useState(1);
-  const {
-    address: web3ModalAccount,
-    chainId,
-    isConnected,
-  } = useWeb3ModalAccount();
+  const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const token = useSelector((state: any) => state?.token);
   const onChange: PaginationProps["onChange"] = (page) => {
     console.log(page);
@@ -561,6 +559,9 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
   };
   const [Balance, setBalance] = useState("0");
   const { isNoGasFun } = useNoGas();
+
+  const { caipNetwork, caipNetworkId, chainId, switchNetwork } =
+    useAppKitNetwork();
   // 当前链
   // useImperativeHandle(
   //   ref,
@@ -686,6 +687,7 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
                   key={index}
                   onClick={() => {
                     props?.SelectTypeFun("from", item?.ChainName);
+                    switchNetwork(mainnet);
                     // setLinkType2(
                     //   props?.ChainArr?.filter(
                     //     (item1: any) =>

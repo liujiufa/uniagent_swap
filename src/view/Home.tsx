@@ -43,13 +43,6 @@ import goToIcon from "../assets/image/Home/goToIcon.svg";
 import copy from "../assets/image/Home/copy.svg";
 import exitIcon from "../assets/image/Home/exitIcon.svg";
 import useTipLoding from "../components/ModalContent";
-import {
-  useDisconnect,
-  useWeb3Modal,
-  useWeb3ModalAccount,
-  useWeb3ModalProvider,
-  useWeb3ModalState,
-} from "@web3modal/ethers/react";
 import copyFun from "copy-to-clipboard";
 import { Contracts } from "../web3";
 import useUSDTGroup from "../hooks/useUSDTGroup";
@@ -74,6 +67,12 @@ import RevokeNode from "../components/RevokeNode";
 import RecommendedMintedModal from "../components/RecommendedMintedModal";
 import { useGetReward } from "../hooks/useGetReward";
 import StakingMiningModal from "../components/StakingMiningModal";
+import {
+  useAppKit,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useDisconnect,
+} from "@reown/appkit/react";
 const HomeContainerBox = styled(ContainerBox)`
   padding: 56px;
   width: 100%;
@@ -412,7 +411,8 @@ export default function Rank() {
   const { t, i18n } = useTranslation();
   const Navigate = useNavigate();
   let dispatch = useDispatch();
-  const { selectedNetworkId } = useWeb3ModalState();
+  const { caipNetwork, caipNetworkId, chainId, switchNetwork } =
+    useAppKitNetwork();
   const [IsBindState, setIsBindState] = useState(false);
   const { token } = useSelector<stateType, stateType>((state) => state);
   const [NodeInfo, setNodeInfo] = useState<any>({});
@@ -439,11 +439,7 @@ export default function Rank() {
   const [ModalType, setModalType] = useState<any>(1);
 
   const [Amount, setAmount] = useState(1);
-  const {
-    address: web3ModalAccount,
-    chainId,
-    isConnected,
-  } = useWeb3ModalAccount();
+  const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const {
     TOKENBalance,
     TOKENAllowance,
@@ -454,7 +450,7 @@ export default function Rank() {
   const { isNoGasFun } = useNoGas();
 
   const [IsNode, setIsNode] = useState(false);
-  const { open } = useWeb3Modal();
+  const { open } = useAppKit();
   const { disconnect } = useDisconnect();
   const { getReward } = useGetReward();
   const inputFun = (amount: any, num = 0) => {
@@ -614,7 +610,7 @@ export default function Rank() {
         setIsBindState(!res.data || false);
       }
     });
-  }, [web3ModalAccount, token, selectedNetworkId]);
+  }, [web3ModalAccount, token, chainId]);
   useEffect(() => {
     if (!!token) {
       // getMyNft({ pageNum: 1, pageSize: 10 }).then((res: any) => {

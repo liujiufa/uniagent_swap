@@ -12,9 +12,9 @@ import MyNode from "../assets/image/Home/MyNode.png";
 import { useSelector } from "react-redux";
 import { getEdgeNodeList, getMyNft, quitEdgeNode } from "../API";
 import { useViewport } from "./viewportContext";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { useSign } from "../hooks/useSign";
 import { addMessage } from "../utils/tool";
+import { useAppKitAccount } from "@reown/appkit/react";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
@@ -502,11 +502,7 @@ export default function ModalContent(props: any) {
     console.log(page);
     setPageNum(page);
   };
-  const {
-    address: web3ModalAccount,
-    chainId,
-    isConnected,
-  } = useWeb3ModalAccount();
+  const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const { signFun } = useSign();
 
   const itemRender: PaginationProps["itemRender"] = (

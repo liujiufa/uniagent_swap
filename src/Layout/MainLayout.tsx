@@ -22,7 +22,6 @@ import { useWeb3React } from "@web3-react/core";
 import { useSelector, useDispatch } from "react-redux";
 import { stateType } from "../store/reducer";
 import { Contracts } from "../web3";
-import { useThrottleFn } from "@umijs/hooks";
 import { createLoginSuccessAction, savePriceAction } from "../store/actions";
 import BigNumber from "big.js";
 import copy from "copy-to-clipboard";
@@ -46,15 +45,15 @@ import { FlexBox, FlexCCBox, FlexSBCBox } from "../components/FlexBox";
 import CodeInputBox from "../components/CodeInputBox";
 import { useSign } from "../hooks/useSign";
 import { Logo, ReturnIcon } from "../assets/image/layoutBox";
-import {
-  useDisconnect,
-  useWeb3Modal,
-  useWeb3ModalProvider,
-  useWeb3ModalState,
-} from "@web3modal/ethers/react";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { useNoGas } from "../hooks/useNoGas";
 import useTipLoding from "../components/ModalContent";
+import {
+  useAppKit,
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
+  useDisconnect,
+} from "@reown/appkit/react";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -459,14 +458,11 @@ const MainLayout: any = () => {
   const [IsBindState, setIsBindState] = useState(false);
   const { signFun } = useSign();
   const { isNoGasFun } = useNoGas();
-  const { walletProvider } = useWeb3ModalProvider();
-  const {
-    address: web3ModalAccount,
-    chainId,
-    isConnected,
-  } = useWeb3ModalAccount();
-  const { selectedNetworkId } = useWeb3ModalState();
-  const { open, close } = useWeb3Modal();
+  const { walletProvider } = useAppKitProvider("eip155");
+  const { address: web3ModalAccount, isConnected } = useAppKitAccount();
+  const { caipNetwork, caipNetworkId, chainId, switchNetwork } =
+    useAppKitNetwork();
+  const { open, close } = useAppKit();
   const { disconnect } = useDisconnect();
 
   const location = useLocation();
@@ -556,99 +552,44 @@ const MainLayout: any = () => {
     }
   }
 
-  const LoginFun = useCallback(
-    async (inviteCode = "") => {
-      if (web3ModalAccount) {
-        // debugger;
-        // debugger;
-        await signFun((res: any) => {
-          Login({
-            ...res,
-            userAddress: web3ModalAccount as string,
-            chainName: "BSC",
-            // inviteCode: inviteCode,
-          }).then((res: any) => {
-            if (res.code === 200) {
-              showLoding(false);
-              // setBindModal(false);
-              dispatch(
-                createLoginSuccessAction(
-                  web3ModalAccount as string,
-                  res.data.token
-                )
-              );
-              SelectBindFun();
-              localStorage.setItem(
-                (web3ModalAccount as string)?.toLowerCase(),
-                res.data.token
-              );
-            } else {
-              showLoding(false);
-              addMessage(res.msg);
-            }
-          });
-        }, `userAddress=${web3ModalAccount as string}`);
-      } else {
-        addMessage("Please Connect wallet");
-      }
-    },
-    [web3ModalAccount]
-  );
-
-  const BindFun = useCallback(async () => {
+  const LoginFun = useCallback(async () => {
     if (web3ModalAccount) {
-      if (!InputValue) return addMessage(t("5"));
-      let res: any = await checkInviteCode(InputValue);
-      // debugger;
-      if (!res?.data) return addMessage(t("6"));
-      await LoginFun(InputValue);
-    } else {
-      addMessage("Please Connect wallet");
+      await signFun((res: any) => {
+        Login({
+          ...res,
+          userAddress: web3ModalAccount as string,
+          chainName: "BSC",
+          // inviteCode: inviteCode,
+        }).then((res: any) => {
+          if (res.code === 200) {
+            showLoding(false);
+            // setBindModal(false);
+            dispatch(
+              createLoginSuccessAction(
+                web3ModalAccount as string,
+                res.data.token
+              )
+            );
+            localStorage.setItem(
+              (web3ModalAccount as string)?.toLowerCase(),
+              res.data.token
+            );
+          } else {
+            showLoding(false);
+            addMessage(res.msg);
+          }
+        });
+      }, `userAddress=${web3ModalAccount as string}`);
     }
-  }, [web3ModalAccount, InputValue]);
-
-  const SelectBindFun = async () => {
-    // debugger;
-    if (!web3ModalAccount) return;
-    new Contracts(walletProvider);
-    isNewUser(web3ModalAccount as string).then((res: any) => {
-      // debugger;
-      if (!!res.data) {
-        if (codeInputRef.current) {
-          codeInputRef.current?.setCodes(InputValue || null);
-        }
-        dispatch(createLoginSuccessAction(web3ModalAccount as string, ""));
-        setBindModal(true);
-      } else {
-        setIsBindState(!res.data);
-        setBindModal(false);
-        dispatch(createLoginSuccessAction(web3ModalAccount as string, ""));
-
-        if (codeInputRef.current) {
-          codeInputRef.current?.setCodes(null);
-        }
-      }
-    });
-    // await Contracts.example
-    //   .userBindInfo(web3ModalAccount as string)
-    //   .then((res: any) => {
-    //     if (!!res["0"]) {
-    //       setIsBindState(!!res["0"]);
-    //       setBindModal(false);
-    //     } else {
-    //       setBindModal(true);
-    //     }
-    //   });
-  };
+    //  else {
+    //   addMessage("Please Connect wallet");
+    // }
+  }, [web3ModalAccount]);
 
   const preLoginFun = async () => {
     // 先绑定再登录
     if (!initalToken) await LoginFun();
   };
-
-  useEffect(() => {
-    SelectBindFun();
-  }, [web3ModalAccount, selectedNetworkId, initalToken, BindModal]);
 
   useEffect(() => {
     if (!!pathname) {
@@ -657,37 +598,15 @@ const MainLayout: any = () => {
   }, [pathname]);
 
   useEffect(() => {
-    if (!!invite && String(invite).length >= 6) {
-      let str = String(invite).length > 6 ? String(invite).slice(0, 6) : invite;
-      // debugger;
-      setInputValue(str);
-    } else {
-    }
-  }, [web3ModalAccount, selectedNetworkId, invite]);
-
-  useEffect(() => {
+    new Contracts(walletProvider);
     if (!!initalToken) {
       dispatch(
         createLoginSuccessAction(web3ModalAccount as string, initalToken)
       );
     } else {
-      // preLoginFun();
-    }
-  }, [web3ModalAccount, token, initalToken]);
-
-  useEffect(() => {
-    if (!!web3ModalAccount && !!IsBindState) {
-      new Contracts(walletProvider);
       preLoginFun();
-    } else {
     }
-  }, [IsBindState]);
-
-  useEffect(() => {
-    if (!!web3ModalAccount && selectedNetworkId) {
-      new Contracts(walletProvider);
-    }
-  }, [web3ModalAccount, selectedNetworkId, token]);
+  }, [web3ModalAccount, token, initalToken, chainId]);
 
   return (
     <MyLayout>
@@ -868,49 +787,6 @@ const MainLayout: any = () => {
           ></div>
         )}
       </Content>
-
-      <AllModal
-        visible={BindModal}
-        className="Modal"
-        centered
-        width={"461px"}
-        closable={false}
-        footer={null}
-      >
-        <ModalContainer>
-          <ModalContainer_Title>
-            {t("Bind referral code")}·
-            <ModalContainer_Close>
-              ·{" "}
-              {/* <img
-                src={closeIcon}
-                alt=""
-                onClick={() => {
-                  // setBindModal(false);
-                }}
-              /> */}
-            </ModalContainer_Close>
-          </ModalContainer_Title>
-          <ModalContainer_Content>
-            <InputBox>
-              <CodeInputBox
-                ref={codeInputRef}
-                defaultCode={InputValue ?? null}
-                onValueChange={(codes: any) => setInputValue(codes)}
-              />
-            </InputBox>
-            <ConfirmBtn>
-              <Btn
-                onClick={() => {
-                  BindFun();
-                }}
-              >
-                {t("Confirm")}
-              </Btn>
-            </ConfirmBtn>
-          </ModalContainer_Content>
-        </ModalContainer>
-      </AllModal>
     </MyLayout>
   );
 };

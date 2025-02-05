@@ -12,10 +12,10 @@ import MyNode from "../assets/image/Home/MyNode.png";
 import { useSelector } from "react-redux";
 import { getAiNodeTreatBright, getMyNft } from "../API";
 import { useViewport } from "./viewportContext";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { Contracts } from "../web3";
 import { EthertoWei, addMessage } from "../utils/tool";
 import { useNoGas } from "../hooks/useNoGas";
+import { useAppKitAccount } from "@reown/appkit/react";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
@@ -472,11 +472,7 @@ export default function ModalContent(props: any) {
   const [PageNum, setPageNum] = useState(1);
   const [RecordList3, setRecordList3] = useState<any>([]);
   const [SelectedList, setSelectedList] = useState<any>([]);
-  const {
-    address: web3ModalAccount,
-    chainId,
-    isConnected,
-  } = useWeb3ModalAccount();
+  const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const token = useSelector((state: any) => state?.token);
   const onChange: PaginationProps["onChange"] = (page) => {
     console.log(page);

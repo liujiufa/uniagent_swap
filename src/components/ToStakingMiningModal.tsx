@@ -12,12 +12,12 @@ import MyNode from "../assets/image/Home/MyNode.png";
 import { useSelector } from "react-redux";
 import { getMyNft } from "../API";
 import { useViewport } from "./viewportContext";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { Contracts } from "../web3";
 import { AddrHandle, EthertoWei, addMessage } from "../utils/tool";
 import { useNoGas } from "../hooks/useNoGas";
 import roundIcon from "../assets/image/Swap/roundIcon.svg";
 import React from "react";
+import { useAppKitAccount } from "@reown/appkit/react";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
@@ -577,9 +577,8 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
   const [Amount, setAmount] = useState(1);
   const {
     address: web3ModalAccount,
-    chainId,
     isConnected,
-  } = useWeb3ModalAccount();
+  } = useAppKitAccount();
   const token = useSelector((state: any) => state?.token);
   const onChange: PaginationProps["onChange"] = (page) => {
     console.log(page);
