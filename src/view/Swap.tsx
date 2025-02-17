@@ -1,15 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  getAllData,
-  getDrawData,
-  getMyNft,
-  getNftBase,
-  getPersonData,
-  getProductOff,
-  getUserInfo,
-  isNewUser,
-  payNft,
-} from "../API/index";
 import "../assets/style/Home.scss";
 import Table from "../components/Table";
 import { useWeb3React } from "@web3-react/core";
@@ -21,9 +10,11 @@ import {
   AddrHandle,
   EthertoWei,
   NumSplic,
+  NumSplic1,
   addMessage,
   dateFormat,
   decimalNum,
+  getFullNum,
   thousandsSeparator,
 } from "../utils/tool";
 import { useTranslation } from "react-i18next";
@@ -41,13 +32,12 @@ import roundIcon from "../assets/image/Swap/roundIcon.svg";
 import copyIcon from "../assets/image/Swap/copyIcon.png";
 import dropIcon from "../assets/image/Swap/dropIcon.svg";
 import toSwaps from "../assets/image/Swap/toSwaps.png";
-import receiveIcon from "../assets/image/Swap/receiveIcon.svg";
-import refreshIcon from "../assets/image/Swap/refreshIcon.svg";
-import fromToLine from "../assets/image/Swap/fromToLine.png";
+import closeIcon from "../assets/image/closeIcon.svg";
 import toIcon from "../assets/image/Swap/toIcon.svg";
 import dropdownIcon from "../assets/image/Swap/dropdownIcon.svg";
 import addIcon from "../assets/image/Swap/addIcon.png";
 import nodata from "../assets/image/Swap/nodata.png";
+import setIcon from "../assets/image/Swap/setIcon.svg";
 
 import copyFun from "copy-to-clipboard";
 import { Contracts } from "../web3";
@@ -57,21 +47,18 @@ import { createLoginSuccessAction } from "../store/actions";
 import { useNoGas } from "../hooks/useNoGas";
 import ModalContent from "../components/ModalContent";
 import ModalContentSuccess from "../components/ModalContentSuccess";
-import ReferListModal from "../components/ReferListModal";
-import MyNodeListModal from "../components/MyNodeListModal";
-import useTime from "../hooks/useTime";
-import LightUpNode from "../components/LightUpNode";
-import RecommendedOuputModal from "../components/RecommendedOuputModal";
-import RevokeNode from "../components/RevokeNode";
-import RecommendedMintedModal from "../components/RecommendedMintedModal";
-import { useGetReward } from "../hooks/useGetReward";
 import SelectTokensModal from "../components/SelectTokensModal";
+
 import {
   useAppKit,
   useAppKitAccount,
   useAppKitNetwork,
   useDisconnect,
 } from "@reown/appkit/react";
+import Web3 from "web3";
+import { isNumber } from "lodash";
+import AddLiquidityModalContentSuccess from "../components/AddLiquidityModalContentSuccess";
+import { Modal } from "antd";
 const HomeContainerBox = styled(ContainerBox)`
   max-width: 748px;
   padding: 56px 15px;
@@ -105,18 +92,18 @@ const SwapContainer_Title = styled(FlexBox)`
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #93e63f;
+  color: #FF8B36;
   > img {
     margin-right: 14px;
   }
   @media (max-width: 768px) {
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 18px;
     font-weight: bold;
     line-height: 18px;
     letter-spacing: 0em;
     font-variation-settings: "opsz" auto;
-    color: #93e63f;
+    color: #FF8B36;
     > img {
       margin-right: 8px;
     }
@@ -132,7 +119,7 @@ const SwapItemBottom = styled.div`
 `;
 
 const SwapItem_Title = styled(FlexSBCBox)`
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 18px;
   font-weight: bold;
   line-height: normal;
@@ -141,7 +128,7 @@ const SwapItem_Title = styled(FlexSBCBox)`
   color: #ffffff;
   margin: 36px 0px 15px;
   > div {
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: normal;
     line-height: normal;
@@ -150,19 +137,19 @@ const SwapItem_Title = styled(FlexSBCBox)`
     font-variation-settings: "opsz" auto;
     color: #ffffff;
     > span {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 16px;
       font-weight: normal;
       line-height: normal;
       text-align: right;
       letter-spacing: 0em;
       font-variation-settings: "opsz" auto;
-      color: #93e63f;
+      color: #FF8B36;
       margin-left: 12px;
     }
   }
   @media (max-width: 768px) {
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: bold;
     line-height: normal;
@@ -171,7 +158,7 @@ const SwapItem_Title = styled(FlexSBCBox)`
     color: #ffffff;
     margin: 24px 0px 10px;
     > div {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 16px;
       font-weight: bold;
       line-height: normal;
@@ -179,7 +166,7 @@ const SwapItem_Title = styled(FlexSBCBox)`
       font-variation-settings: "opsz" auto;
       color: #ffffff;
       > span {
-        font-family: Space Grotesk;
+        font-family: "Space Grotesk";
         font-size: 14px;
         font-weight: normal;
         line-height: normal;
@@ -202,6 +189,7 @@ const Item = styled(FlexSBCBox)`
   }
 `;
 const Item_Left = styled(FlexSBCBox)`
+  cursor: pointer;
   padding: 18px;
   width: fit-content;
   min-width: 228px;
@@ -214,7 +202,7 @@ const Item_Left = styled(FlexSBCBox)`
   }
   .coin_info {
     flex: 1;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 14px;
     font-weight: normal;
     line-height: normal;
@@ -222,7 +210,7 @@ const Item_Left = styled(FlexSBCBox)`
     font-variation-settings: "opsz" auto;
     color: #999999;
     .coin {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 24px;
       font-weight: bold;
       line-height: normal;
@@ -246,7 +234,7 @@ const Item_Left = styled(FlexSBCBox)`
     }
     .coin_info {
       .coin {
-        font-family: Space Grotesk;
+        font-family: "Space Grotesk";
         font-size: 14px;
         font-weight: bold;
         line-height: normal;
@@ -270,7 +258,7 @@ const Item_Right = styled(FlexBox)`
   padding: 18px;
   > input {
     width: 100%;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 32px;
     font-weight: bold;
     line-height: normal;
@@ -286,7 +274,7 @@ const Item_Right = styled(FlexBox)`
     padding: 15px 12px;
     > input {
       height: 26px;
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 20px;
       font-weight: bold;
       line-height: 20px;
@@ -312,9 +300,10 @@ const SwapToIcon = styled(FlexCCBox)`
   }
 `;
 const Btn = styled(FlexCCBox)<{ isActive: boolean }>`
+  cursor: pointer;
   margin: 36px 0px;
   padding: 12px;
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 16px;
   font-weight: bold;
   line-height: normal;
@@ -323,10 +312,10 @@ const Btn = styled(FlexCCBox)<{ isActive: boolean }>`
   color: #0a0a0a;
   border-radius: 6px;
   opacity: 1;
-  background: ${({ isActive }) => (isActive ? "#93E63F" : "#517130")};
+  background: ${({ isActive }) => (isActive ? "#FF8B36" : "#ff8a36bf")};
   @media (max-width: 768px) {
     margin: 32px 0px 0px;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: bold;
     line-height: normal;
@@ -346,7 +335,7 @@ const SwapInfo = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: normal;
     line-height: normal;
@@ -357,7 +346,9 @@ const SwapInfo = styled.div`
       margin-bottom: 0px;
     }
     > span {
-      font-family: Space Grotesk;
+      display: flex;
+      align-items: center;
+      font-family: "Space Grotesk";
       font-size: 16px;
       font-weight: normal;
       line-height: normal;
@@ -372,7 +363,7 @@ const SwapInfo = styled.div`
     padding: 13px 10px;
     > div {
       margin-bottom: 15px;
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 16px;
       font-weight: normal;
       line-height: normal;
@@ -380,7 +371,7 @@ const SwapInfo = styled.div`
       font-variation-settings: "opsz" auto;
       color: #999999;
       > span {
-        font-family: Space Grotesk;
+        font-family: "Space Grotesk";
         font-size: 16px;
         font-weight: normal;
         line-height: normal;
@@ -399,14 +390,14 @@ const SwapContainer_Tabs = styled(FlexSBCBox)`
   opacity: 1;
   background: #0a0a0a;
   box-sizing: border-box;
-  border: 1px solid #93e63f;
+  border: 1px solid #FF8B36;
   padding: 7px;
 
   > div {
     width: 33%;
     padding: 12px;
     border: none;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 18px;
     font-weight: bold;
     line-height: normal;
@@ -419,7 +410,7 @@ const SwapContainer_Tabs = styled(FlexSBCBox)`
     color: #000000;
     border-radius: 6px;
     opacity: 1;
-    background: #93e63f;
+    background: #FF8B36;
   }
   @media (max-width: 768px) {
     margin-top: 30px;
@@ -427,7 +418,7 @@ const SwapContainer_Tabs = styled(FlexSBCBox)`
     > div {
       padding: 11px;
 
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 18px;
       font-weight: bold;
       line-height: normal;
@@ -477,7 +468,7 @@ const Token = styled(FlexSBCBox)`
   > div {
     padding: 0 12px;
     flex: 1;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 18px;
     font-weight: bold;
     line-height: normal;
@@ -489,7 +480,7 @@ const Token = styled(FlexSBCBox)`
     max-width: fit-content;
     padding: 11px 8px;
     > div {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 18px;
       font-weight: bold;
       line-height: normal;
@@ -507,7 +498,7 @@ const SwapItem_Title_Item = styled(FlexSBCBox)`
       display: flex;
       align-items: center;
 
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 18px;
       font-weight: bold;
       line-height: normal;
@@ -519,7 +510,7 @@ const SwapItem_Title_Item = styled(FlexSBCBox)`
         height: 24px;
       }
       div {
-        font-family: Space Grotesk;
+        font-family: "Space Grotesk";
         font-size: 18px;
         font-weight: bold;
         line-height: normal;
@@ -530,7 +521,7 @@ const SwapItem_Title_Item = styled(FlexSBCBox)`
       }
     }
     &:nth-child(2) {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 16px;
       font-weight: normal;
       line-height: normal;
@@ -544,7 +535,7 @@ const SwapItem_Title_Item = styled(FlexSBCBox)`
     margin-bottom: 10px;
     > div {
       &:first-child {
-        font-family: Space Grotesk;
+        font-family: "Space Grotesk";
         font-size: 16px;
         font-weight: bold;
         line-height: normal;
@@ -560,7 +551,7 @@ const SwapItem_Title_Item = styled(FlexSBCBox)`
   }
 `;
 const SwapInfo_Title = styled.div`
-  font-family: Space Grotesk !important;
+  font-family: "Space Grotesk" !important;
   font-size: 18px !important;
   font-weight: bold !important;
   line-height: normal !important;
@@ -576,7 +567,7 @@ const SwapInfo_Item = styled(FlexSBCBox)`
   width: 100%;
 `;
 const SwapInfo_Item_Left = styled.div`
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 16px;
   font-weight: normal;
   line-height: normal;
@@ -586,7 +577,7 @@ const SwapInfo_Item_Left = styled.div`
   > div {
     display: flex;
     align-items: center;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 18px;
     font-weight: bold;
     line-height: normal;
@@ -601,7 +592,7 @@ const SwapInfo_Item_Left = styled.div`
     }
   }
   @media (max-width: 768px) {
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 14px;
     font-weight: normal;
     line-height: normal;
@@ -609,7 +600,7 @@ const SwapInfo_Item_Left = styled.div`
     font-variation-settings: "opsz" auto;
     color: #999999;
     > div {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 16px;
       font-weight: bold;
       line-height: normal;
@@ -625,25 +616,26 @@ const SwapInfo_Item_Left = styled.div`
 `;
 const SwapInfo_Item_Right = styled.div``;
 const Remove_Btn = styled(FlexCCBox)`
+  cursor: pointer;
   padding: 9px 18px;
   border-radius: 8px;
   opacity: 1;
   background: rgba(147, 230, 63, 0.1);
   box-sizing: border-box;
-  border: 1px solid #557930;
-  font-family: Space Grotesk;
+  border: 1px solid #FF8B36;
+  font-family: "Space Grotesk";
   font-size: 16px;
   font-weight: normal;
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #93e63f;
+  color: #FF8B36;
   @media (max-width: 768px) {
     border-radius: 8px;
     opacity: 1;
     background: rgba(147, 230, 63, 0.1);
     box-sizing: border-box;
-    border: 1px solid #557930;
+    border: 1px solid #FF8B36;
     padding: 9px;
   }
 `;
@@ -652,7 +644,7 @@ const NoData = styled(FlexBox)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 14px;
   font-weight: normal;
   line-height: normal;
@@ -673,7 +665,7 @@ const LiquidityItem = styled.div`
   box-sizing: border-box;
   border: 1px solid #666666;
   > input {
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 48px;
     font-weight: bold;
     line-height: normal;
@@ -687,7 +679,7 @@ const LiquidityItem = styled.div`
   @media (max-width: 768px) {
     padding: 14px;
     > input {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 32px;
       font-weight: bold;
       line-height: normal;
@@ -706,8 +698,8 @@ const PercentageBox = styled(FlexBox)`
     opacity: 1;
     background: rgba(147, 230, 63, 0.1);
     box-sizing: border-box;
-    border: 1px solid #557930;
-    font-family: Space Grotesk;
+    border: 1px solid #FF8B36;
+    font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: bold;
     line-height: normal;
@@ -720,7 +712,7 @@ const PercentageBox = styled(FlexBox)`
   @media (max-width: 768px) {
     > div {
       padding: 7px 16px;
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 14px;
       font-weight: bold;
       line-height: normal;
@@ -762,7 +754,7 @@ const ReceivedBox_Item = styled(FlexSBCBox)`
       width: 24px;
       margin-right: 8px;
     }
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 18px;
     font-weight: bold;
     line-height: normal;
@@ -772,7 +764,7 @@ const ReceivedBox_Item = styled(FlexSBCBox)`
   }
   @media (max-width: 768px) {
     > div {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 14px;
       font-weight: bold;
       line-height: normal;
@@ -784,7 +776,7 @@ const ReceivedBox_Item = styled(FlexSBCBox)`
 `;
 const LiquidityPrice = styled.div`
   margin: 15px 0px 120px;
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 16px;
   font-weight: normal;
   line-height: normal;
@@ -793,7 +785,7 @@ const LiquidityPrice = styled.div`
   color: #999999;
   @media (max-width: 768px) {
     margin: 10px 0px 66px;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 12px;
     font-weight: normal;
     line-height: normal;
@@ -802,6 +794,163 @@ const LiquidityPrice = styled.div`
     color: #999999;
   }
 `;
+
+const AllModal = styled(Modal)`
+  z-index: 10000;
+  .ant-modal-content {
+    overflow: hidden;
+    border-radius: 12px;
+    opacity: 1;
+    background: #0a0a0a;
+    box-sizing: border-box;
+    border: 1px solid #FF8B36;
+    .ant-modal-body {
+      position: relative;
+      padding: 0px;
+    }
+  }
+`;
+
+const ModalContainer = styled(FlexBox)`
+  /* position: relative; */
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ModalContainer_Close = styled(FlexCCBox)`
+  position: absolute;
+  z-index: 100;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+`;
+
+export const ModalContainer_Title_Container = styled(FlexCCBox)`
+  width: 100%;
+  > img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+  }
+  > svg {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+  }
+`;
+
+export const ModalContainer_Title = styled(FlexBox)`
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  font-family: "Space Grotesk";
+  font-size: 24px;
+  font-weight: bold;
+  line-height: normal;
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" auto;
+  color: #ffffff;
+  padding: 39px 39px 0px;
+  @media (max-width: 1200px) {
+    font-size: 18px;
+  }
+  @media (max-width: 768px) {
+    padding: 39px 16px 0px;
+    font-size: 18px;
+  }
+`;
+const ModalContainer_Content = styled.div`
+  padding: 39px 30px;
+  width: 100%;
+  @media (max-width: 768px) {
+    padding: 29px 12px;
+  }
+`;
+const ModalContainer_Content_Tip = styled.div`
+  font-family: Space Grotesk;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: normal;
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" auto;
+  color: #ffffff;
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+`;
+const ModalContainer_Content_Input = styled(FlexSBCBox)`
+  font-family: Space Grotesk;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: normal;
+  text-align: right;
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" auto;
+  color: #ffffff;
+  border-radius: 6px;
+  opacity: 1;
+  background: #0f0f0f;
+  box-sizing: border-box;
+  border: 1px solid #666666;
+  padding: 15px 18px;
+  margin: 17px auto 30px;
+  > input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: Space Grotesk;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: normal;
+    letter-spacing: 0em;
+    font-variation-settings: "opsz" auto;
+    color: #ffffff;
+  }
+  @media (max-width: 768px) {
+    margin: 14px auto 25px;
+    padding: 15px 13px;
+  }
+`;
+const Confirm_Btn = styled(FlexCCBox)`
+  font-family: Space Grotesk;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" auto;
+  color: #0a0a0a;
+  padding: 14px;
+  border-radius: 8px;
+  opacity: 1;
+  background: #FF8B36;
+  @media (max-width: 768px) {
+    font-family: Space Grotesk;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0em;
+    font-variation-settings: "opsz" auto;
+    color: #0a0a0a;
+  }
+`;
+
+let tokenList: any = [
+  {
+    icon: "",
+    name: "USDT",
+    tokenAddress: contractAddress?.USDTUNI,
+    symbol: "Tether USD",
+  },
+  {
+    icon: "",
+    name: "UAC",
+    tokenAddress: contractAddress?.WUAC,
+    symbol: "UniAgent",
+  },
+];
 let timer: any = null;
 export default function Rank() {
   const { width } = useViewport();
@@ -812,56 +961,61 @@ export default function Rank() {
     useAppKitNetwork();
   const [IsBindState, setIsBindState] = useState(false);
   const { token } = useSelector<stateType, stateType>((state) => state);
-  const [NodeInfo, setNodeInfo] = useState<any>({});
-  const [UserInfo, setUserInfo] = useState<any>({});
-  const [NftBase, setNftBase] = useState<any>({});
   const [Tip, setTip] = useState("");
+  const [Title, setTitle] = useState("");
   const [ShowTipModal, setShowTipModal] = useState(false);
   const [ShowSuccessTipModal, setShowSuccessTipModal] = useState(false);
-  const [ReferListStateModal, setReferListStateModal] = useState(false);
-  const [NodeMintModalState, setNodeMintModalState] = useState(false);
-  const [LightUpNodeModalState, setLightUpNodeModalState] = useState(false);
-  const [RecommendedOuputModalState, setRecommendedOuputModalState] =
+  const [ShowAddLiquiditySuccessTipModal, setShowAddLiquiditySuccessTipModal] =
     useState(false);
-  const [RevokeNodeModalState, setRevokeNodeModalState] = useState(false);
   const [SelectTokensModalState, setSelectTokensModalState] = useState(false);
-  const [EdgeNodeModalState, setEdgeNodeModalState] = useState(false);
+  const [SettingSlippage, setSettingSlippage] = useState(false);
+  const [
+    SelectTokensAddLiquidityModalState,
+    setSelectTokensAddLiquidityModalState,
+  ] = useState(false);
 
   const [SuccessFulHash, setSuccessFulHash] = useState("");
-  const [RecordList3, setRecordList3] = useState<any>({});
-  const [AllData, setAllData] = useState<any>({});
-  const [PersonData, setPersonData] = useState<any>({});
-  const [DrawData, setDrawData] = useState<any>(0);
-  // 1=挖矿节点 2=未挖矿节点
-  const [ModalType, setModalType] = useState<any>(1);
   const [LiquidityType, setLiquidityType] = useState<any>(2);
   const [TabActive, setTabActive] = useState("Trade");
 
-  const [Amount, setAmount] = useState(1);
   const { address: web3ModalAccount, isConnected } = useAppKitAccount();
+  const { isNoGasFun } = useNoGas();
+  const [CoinListObj, setCoinListObj] = useState<any>([]);
+  const [FromToken, setFromToken] = useState("UAC");
+  const [ToToken, setToToken] = useState("USDT");
+  const [AddLiquidityToken1, setAddLiquidityToken1] = useState("UAC");
+  const [AddLiquidityToken2, setAddLiquidityToken2] = useState("USDT");
+  const [CurrentSelectedState, setCurrentSelectedState] = useState("from");
+  const [AddLiquidityTokenType, setAddLiquidityTokenType] = useState(1);
+  const [InputAmount, setInputAmount] = useState(1);
+  const [ReceiveAmount, setReceiveAmount] = useState("0");
+  const [OneUACToUSDT, setOneUACToUSDT] = useState("0");
+  const [LPBalance, setLPBalance] = useState("0");
+  const [PriceImpact, setPriceImpact] = useState("0");
+  const [SlippageValue, setSlippageValue] = useState("5");
+  const [LpAddress, setLpAddress] = useState("");
+  const [PercentValue, setPercentValue] = useState("0%");
+  const [AddLiquidityTokenAmount1, setAddLiquidityTokenAmount1] = useState("1");
+  const [AddLiquidityTokenAmount2, setAddLiquidityTokenAmount2] = useState("1");
+  const [AddLiquidityTokenBalance1, setAddLiquidityTokenBalance1] =
+    useState("0");
+  const [AddLiquidityTokenBalance2, setAddLiquidityTokenBalance2] =
+    useState("0");
+  // TabActive等于Liquidity
   const {
     TOKENBalance,
     TOKENAllowance,
     handleApprove,
     handleTransaction,
     handleUSDTRefresh,
-  } = useUSDTGroup(contractAddress?.NFTManage, "USDT");
-  const { isNoGasFun } = useNoGas();
-
-  const [IsNode, setIsNode] = useState(false);
-  const { open } = useAppKit();
-  const { disconnect } = useDisconnect();
-  const { getReward } = useGetReward();
-  const inputFun = (amount: any, num = 0) => {
-    let amounted: any = Number(amount) + num;
-    // debugger;
-    let filteredValue: any = String(amounted)?.replace(/[+-]/g, "");
-    // Remove + and - characters
-    const decimalIndex = filteredValue?.replace(/[^0-9]/g, "");
-    // debugger;
-    if (Number(decimalIndex) <= 0) return;
-    setAmount(decimalIndex);
-  };
+  } = useUSDTGroup(contractAddress?.Router, contractAddress?.USDTUNI);
+  const {
+    TOKENBalance: LPTOKENBalance,
+    TOKENAllowance: LPTOKENAllowance,
+    handleApprove: LPhandleApprove,
+    handleTransaction: LPhandleTransaction,
+    handleUSDTRefresh: LPhandleUSDTRefresh,
+  } = useUSDTGroup(contractAddress?.Router, LpAddress);
 
   const CopyCodeFun = (code: string) => {
     if (!IsBindState) return addMessage(t("9"));
@@ -873,97 +1027,18 @@ export default function Rank() {
     }
   };
 
-  const buyNFTFun = (value: any) => {
-    if (!web3ModalAccount) return addMessage(t("Please Connect wallet"));
-    if (!IsBindState) return addMessage(t("9"));
-    if (Number(value) <= 0) return;
-    handleTransaction(
-      value + "",
-      async (call: any) => {
-        let res: any = null;
-        let item: any = await payNft({ buyNum: Amount });
-        console.log(item, "item?.data");
-
-        if (item?.code === 200) {
-          try {
-            if (!!(await isNoGasFun())) return;
-            setTip(
-              t("Stake 5 AI Nodes for Mining", {
-                amount: Number(NftBase?.currentPrice) * Amount ?? 0,
-                num: Amount,
-              })
-            );
-            setShowTipModal(true);
-            res = await Contracts.example?.mint(
-              web3ModalAccount as string,
-              item?.data
-            );
-          } catch (error: any) {
-            if (error?.code === 4001) {
-              setShowTipModal(false);
-              return addMessage(t("11"));
-            }
-          }
-          setShowTipModal(false);
-
-          if (!!res?.status) {
-            await call();
-            await getInitData();
-            setSuccessFulHash(res?.transactionHash);
-            setShowTipModal(false);
-            setShowSuccessTipModal(true);
-            return setTip(
-              t("AI node staking mining successful", { num: Amount })
-            );
-            // setShowTipModal(true);
-          } else if (res?.status === false) {
-            setShowTipModal(false);
-            return addMessage(t("11"));
-          }
-        } else {
-          setShowTipModal(false);
-          return addMessage(t("11"));
-        }
-      },
-      () => {
-        setTip(
-          t("Approving 5 AI Nodes", {
-            amount: Number(NftBase?.currentPrice) * Amount ?? 0,
-            num: Amount,
-          })
-        );
-        setShowTipModal(true);
-      },
-      () => {
-        setShowTipModal(false);
-      }
-    );
-  };
-
   const getWebsocketData = () => {
     timer = setInterval(() => {
-      getAllData().then((res: any) => {
-        setAllData(res?.data || {});
-      });
-
-      if (!!token) {
-        getInitData();
-      }
+      // getAllData().then((res: any) => {
+      //   setAllData(res?.data || {});
+      // });
+      // if (!!token) {
+      //   getInitData();
+      // }
     }, 3000);
   };
 
-  const getInitData = () => {
-    getDrawData().then((res: any) => {
-      if (res.code === 200) {
-        setDrawData(res?.data || 0);
-      }
-    });
-    getPersonData().then((res: any) => {
-      if (res.code === 200) {
-        setPersonData(res?.data || {});
-      }
-    });
-  };
+  const getInitData = () => {};
 
   const allTipFun = async (type: any, tip: any = "", hash: any = "") => {
     // 1:授权 2:loding 3:success 4:取消授权
@@ -978,48 +1053,616 @@ export default function Rank() {
       setShowTipModal(false);
     }
   };
+  const getCoinList = async () => {
+    let Arr = [];
+    if (!!web3ModalAccount) {
+      for (let item of tokenList) {
+        let value: any = 0;
+        if (String(item?.name) === "USDT") {
+          try {
+            value = await Contracts.example.balanceOf(
+              web3ModalAccount as string,
+              item?.tokenAddress
+              // "0x27e199Afb97612542d8dcD88C8DCE83b4b516992"
+            );
+          } catch (error: any) {}
+          console.log(value, "value");
+          item = {
+            ...item,
+            balance: Web3.utils.fromWei(value + "", "ether") || 0,
+          };
+        } else if (String(item?.name) === "UAC") {
+          try {
+            value = await Contracts.example.getBalance(
+              web3ModalAccount as string
+            );
+          } catch (error: any) {}
+          item = {
+            ...item,
+            balance: Web3.utils.fromWei(value + "", "ether") || 0,
+          };
+        }
+        Arr.push(item);
+      }
+      setCoinListObj(Arr || []);
+    }
+  };
+  const SelectTokenFun = (tokenName: any) => {
+    if (String(CurrentSelectedState) === "from") {
+      setFromToken(tokenName);
+      setToToken(
+        tokenList?.filter(
+          (item: any) => String(item?.name) !== String(tokenName)
+        )[0].name
+      );
+    } else if (String(CurrentSelectedState) === "to") {
+      setToToken(tokenName);
+      setFromToken(
+        tokenList?.filter(
+          (item: any) => String(item?.name) !== String(tokenName)
+        )[0].name
+      );
+    }
+  };
+  const SelectAddLiquidityTokenFun = (tokenName: any) => {
+    if (Number(AddLiquidityTokenType) === 1) {
+      setAddLiquidityToken1(tokenName);
+
+      setAddLiquidityToken2(
+        tokenList?.filter(
+          (item: any) => String(item?.name) !== String(tokenName)
+        )[0].name
+      );
+    } else if (Number(AddLiquidityTokenType) === 2) {
+      setAddLiquidityToken2(tokenName);
+      setAddLiquidityToken1(
+        tokenList?.filter(
+          (item: any) => String(item?.name) !== String(tokenName)
+        )[0].name
+      );
+    }
+  };
+
+  // 解析 Transfer 事件
+  function parseTransferEvent(log: any) {
+    const transferEventSignature =
+      "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
+    if (
+      String(log.raw.topics[0])?.toUpperCase() ===
+      String(transferEventSignature)?.toUpperCase()
+    ) {
+      const from = `0x${log.raw.topics[1].slice(26)}`;
+      const to = `0x${log.raw.topics[2].slice(26)}`;
+      let web3 = new Web3();
+      const value = web3.utils.hexToNumberString(log.raw.data);
+
+      return {
+        from,
+        to,
+        value,
+      };
+    }
+
+    return null;
+  }
+
+  const SwapFun = async () => {
+    if (String(FromToken) === "USDT") {
+      handleTransaction(
+        InputAmount + "",
+        async (call: any) => {
+          let res: any = null;
+          try {
+            if (!!(await isNoGasFun())) return;
+            setTip(
+              t("UAC exchanging for USDT", {
+                FromToken: FromToken,
+                ToToken: ToToken,
+              })
+            );
+            setShowTipModal(true);
+            res = await Contracts.example?.swapExactTokensForETH(
+              web3ModalAccount as string,
+              InputAmount,
+              Number(ReceiveAmount) * (1 - Number(SlippageValue) / 100),
+              [
+                tokenList?.find(
+                  (item: any) => String(item?.name) === String(FromToken)
+                )?.tokenAddress,
+                tokenList?.find(
+                  (item: any) => String(item?.name) === String(ToToken)
+                )?.tokenAddress,
+              ]
+            );
+          } catch (error: any) {
+            if (error?.code === 4001) {
+              setShowTipModal(false);
+              return addMessage(t("failed"));
+            }
+          }
+          setShowTipModal(false);
+
+          if (!!res?.status) {
+            await call();
+            await getCoinList();
+            setSuccessFulHash(res?.transactionHash);
+            setShowTipModal(false);
+            setShowSuccessTipModal(true);
+            return setTip(
+              t("Exchange successful, received 100.0000 USDT", {
+                amount: NumSplic1(ReceiveAmount, 4),
+                ToToken: ToToken,
+              })
+            );
+            // setShowTipModal(true);
+          } else if (res?.status === false) {
+            setShowTipModal(false);
+            return addMessage(t("failed"));
+          }
+        },
+        () => {
+          setTip(
+            t("Approve 100.0000 USDT", {
+              num: InputAmount,
+            })
+          );
+          setShowTipModal(true);
+        },
+        () => {
+          setShowTipModal(false);
+        }
+      );
+    } else if (String(FromToken) === "UAC") {
+      let res: any = null;
+      try {
+        if (!!(await isNoGasFun())) return;
+        setTip(
+          t("UAC exchanging for USDT", {
+            FromToken: FromToken,
+            ToToken: ToToken,
+          })
+        );
+        setShowTipModal(true);
+        res = await Contracts.example?.swapExactETHForTokens(
+          web3ModalAccount as string,
+          InputAmount,
+          [
+            tokenList?.find(
+              (item: any) => String(item?.name) === String(FromToken)
+            )?.tokenAddress,
+            tokenList?.find(
+              (item: any) => String(item?.name) === String(ToToken)
+            )?.tokenAddress,
+          ]
+        );
+      } catch (error: any) {
+        if (error?.code === 4001) {
+          setShowTipModal(false);
+          return addMessage(t("failed"));
+        }
+      }
+      setShowTipModal(false);
+
+      if (!!res?.status) {
+        await getCoinList();
+        setSuccessFulHash(res?.transactionHash);
+        setShowTipModal(false);
+        setShowSuccessTipModal(true);
+        return setTip(
+          t("Exchange successful, received 100.0000 USDT", {
+            amount: NumSplic1(ReceiveAmount, 4),
+            ToToken: ToToken,
+          })
+        );
+        // setShowTipModal(true);
+      } else if (res?.status === false) {
+        setShowTipModal(false);
+        return addMessage(t("failed"));
+      }
+    }
+  };
+
+  const AddLiquidityFun = async () => {
+    let USDTAmount =
+      String(AddLiquidityToken1) === "USDT"
+        ? AddLiquidityTokenAmount1
+        : AddLiquidityTokenAmount2;
+    let UACAmount =
+      String(AddLiquidityToken1) === "UAC"
+        ? AddLiquidityTokenAmount1
+        : AddLiquidityTokenAmount2;
+    handleTransaction(
+      USDTAmount,
+      async (call: any) => {
+        let res: any = null;
+        try {
+          if (!!(await isNoGasFun())) return;
+          setTip(
+            t("Adding UAC-USDT LP", {
+              AddLiquidityToken1: AddLiquidityToken1,
+              AddLiquidityToken2: AddLiquidityToken2,
+            })
+          );
+          setShowTipModal(true);
+          res = await Contracts.example?.addLiquidityETH(
+            web3ModalAccount as string,
+            tokenList?.find(
+              (item: any) => String(item?.name) === String("USDT")
+            )?.tokenAddress,
+            UACAmount,
+            USDTAmount
+          );
+        } catch (error: any) {
+          if (error?.code === 4001) {
+            setShowTipModal(false);
+            return addMessage(t("failed"));
+          }
+        }
+        setShowTipModal(false);
+
+        let lastEvent: any = null;
+        if (!!res?.status) {
+          try {
+            for (const key in res?.events) {
+              const log = res?.events[key];
+              const event = parseTransferEvent(log);
+
+              if (event) {
+                lastEvent = event;
+              }
+              if (lastEvent) {
+                // setCurrentLPBalance(EthertoWei(lastEvent?.value ?? "0"));
+              }
+            }
+          } catch (error: any) {}
+          debugger;
+          await call();
+          await getCoinList();
+          await getLpBalance();
+          // setCurrentLPBalance();
+          setSuccessFulHash(res?.transactionHash);
+          setShowTipModal(false);
+          setShowAddLiquiditySuccessTipModal(true);
+          setTitle(t("Liquidity Added Successfully"));
+          return setTip(
+            t("Received 12.0000 UAC-USDT LP", {
+              amount: NumSplic1(EthertoWei(lastEvent?.value ?? "0"), 4),
+              AddLiquidityToken1: AddLiquidityToken1,
+              AddLiquidityToken2: AddLiquidityToken2,
+            })
+          );
+          // setShowTipModal(true);
+        } else if (res?.status === false) {
+          setShowTipModal(false);
+          return addMessage(t("failed"));
+        }
+      },
+      () => {
+        setTip(
+          t("Approve 100.0000 USDT", {
+            num: USDTAmount,
+          })
+        );
+        setShowTipModal(true);
+      },
+      () => {
+        setShowTipModal(false);
+      }
+    );
+  };
+  const RemoveLiquidityFun = async () => {
+    LPhandleTransaction(
+      (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
+        Number(LPBalance ?? 0) +
+        "",
+      async (call: any) => {
+        let res: any = null;
+        try {
+          if (!!(await isNoGasFun())) return;
+          setTip(
+            t("Removing UAC-USDT LP", {
+              AddLiquidityToken1: AddLiquidityToken1,
+              AddLiquidityToken2: AddLiquidityToken2,
+            })
+          );
+          setShowTipModal(true);
+          res = await Contracts.example?.removeLiquidityETH(
+            web3ModalAccount as string,
+            tokenList?.find(
+              (item: any) => String(item?.name) === String("USDT")
+            )?.tokenAddress,
+            (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
+              Number(LPBalance ?? 0) +
+              ""
+          );
+        } catch (error: any) {
+          if (error?.code === 4001) {
+            setShowTipModal(false);
+            return addMessage(t("failed"));
+          }
+        }
+        setShowTipModal(false);
+        let lastEvent: any = null;
+        if (!!res?.status) {
+          try {
+            for (const key in res?.events) {
+              const log = res?.events[key];
+              const event = parseTransferEvent(log);
+
+              if (event) {
+                lastEvent = event;
+              }
+              if (lastEvent) {
+                // setCurrentLPBalance(EthertoWei(lastEvent?.value ?? "0"));
+              }
+            }
+          } catch (error: any) {}
+          debugger;
+          await call();
+          await getCoinList();
+          await getLpBalance();
+          // setCurrentLPBalance();
+          setSuccessFulHash(res?.transactionHash);
+          setShowTipModal(false);
+          setShowAddLiquiditySuccessTipModal(true);
+          setTitle(t("Liquidity removed successfully"));
+          return setTip(t(""));
+          // setShowTipModal(true);
+        } else if (res?.status === false) {
+          setShowTipModal(false);
+          return addMessage(t("failed"));
+        }
+      },
+      () => {
+        setTip(
+          t("Approve 100.0000 UAC-USDT", {
+            num:
+              (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
+              Number(LPBalance ?? 0),
+            token1: AddLiquidityToken1,
+            token2: AddLiquidityToken2,
+          })
+        );
+        setShowTipModal(true);
+      },
+      () => {
+        setShowTipModal(false);
+      }
+    );
+  };
+
+  const InputFun = async (e: any) => {
+    let filteredValue: any = String(e.target.value)
+      ?.replace(/[+-]/g, "")
+      .replace(/[^0-9.]/g, "");
+    // Remove + and - characters
+    const decimalIndex = filteredValue;
+    setInputAmount(decimalIndex);
+    if (Number(decimalIndex) <= 0 || !isNumber(Number(decimalIndex))) return;
+    let receiveAmount: any = await Contracts.example?.getAmountsOut(
+      web3ModalAccount as string,
+      decimalIndex,
+      [
+        tokenList?.find((item: any) => String(item?.name) === String(FromToken))
+          ?.tokenAddress,
+        tokenList?.find((item: any) => String(item?.name) === String(ToToken))
+          ?.tokenAddress,
+      ]
+    );
+    setReceiveAmount(EthertoWei(receiveAmount[1] ?? "0"));
+  };
+  const InputAddLiquidityFun = async (e: any, type: 1 | 2) => {
+    let filteredValue: any = String(e.target.value)
+      ?.replace(/[+-]/g, "")
+      .replace(/[^0-9.]/g, "");
+    // Remove + and - characters
+    const decimalIndex = filteredValue;
+    if (type === 1) {
+      setAddLiquidityTokenAmount1(decimalIndex);
+      if (Number(decimalIndex) <= 0 || !isNumber(Number(decimalIndex))) return;
+      let receiveAmount: any = await Contracts.example?.getAmountsOut(
+        web3ModalAccount as string,
+        decimalIndex,
+        [
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(AddLiquidityToken1)
+          )?.tokenAddress,
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(AddLiquidityToken2)
+          )?.tokenAddress,
+        ]
+      );
+      setAddLiquidityTokenAmount2(EthertoWei(receiveAmount[1] ?? "0"));
+    } else {
+      setAddLiquidityTokenAmount2(decimalIndex);
+      if (Number(decimalIndex) <= 0 || !isNumber(Number(decimalIndex))) return;
+      let receiveAmount: any = await Contracts.example?.getAmountsOut(
+        web3ModalAccount as string,
+        decimalIndex,
+        [
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(AddLiquidityToken2)
+          )?.tokenAddress,
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(AddLiquidityToken1)
+          )?.tokenAddress,
+        ]
+      );
+      setAddLiquidityTokenAmount1(EthertoWei(receiveAmount[1] ?? "0"));
+    }
+  };
+  const getLpBalance = async () => {
+    let lpAddress: any = await Contracts.example?.getPair(
+      web3ModalAccount as string,
+      tokenList?.find(
+        (item: any) => String(item?.name) === String(AddLiquidityToken1)
+      )?.tokenAddress,
+      tokenList?.find(
+        (item: any) => String(item?.name) === String(AddLiquidityToken2)
+      )?.tokenAddress
+    );
+    setLpAddress(lpAddress ?? "");
+    try {
+      let LPbalance = await Contracts.example.balanceOf(
+        web3ModalAccount as string,
+        lpAddress
+        // "0x27e199Afb97612542d8dcD88C8DCE83b4b516992"
+      );
+      // debugger;
+      setLPBalance(EthertoWei(LPbalance ?? "0"));
+    } catch (error: any) {}
+  };
+  const getPriceImpact = async () => {
+    let lpAddress: any = await Contracts.example?.getPair(
+      web3ModalAccount as string,
+      tokenList?.find(
+        (item: any) => String(item?.name) === String(AddLiquidityToken1)
+      )?.tokenAddress,
+      tokenList?.find(
+        (item: any) => String(item?.name) === String(AddLiquidityToken2)
+      )?.tokenAddress
+    );
+
+    let LPTokenBalance1: any = await Contracts.example.balanceOf(
+      lpAddress as string,
+      tokenList?.find((item: any) => String(item?.name) === String(FromToken))
+        ?.tokenAddress
+    );
+    let LPTokenBalance2: any = await Contracts.example.balanceOf(
+      lpAddress as string,
+      tokenList?.find((item: any) => String(item?.name) === String(ToToken))
+        ?.tokenAddress
+    );
+    let SwapOutAmount: any = await Contracts.example?.getAmountsOut(
+      web3ModalAccount as string,
+      InputAmount,
+      [
+        tokenList?.find((item: any) => String(item?.name) === String(FromToken))
+          ?.tokenAddress,
+        tokenList?.find((item: any) => String(item?.name) === String(ToToken))
+          ?.tokenAddress,
+      ]
+    );
+    // debugger;
+
+    // 价格影响= |兑换之后的价格 - 兑换之前的价格| / 兑换之前的价格  * 100%
+    let SwapPriceLate: any =
+      (Number(EthertoWei(LPTokenBalance1 ?? "0")) + Number(InputAmount)) /
+      (Number(EthertoWei(LPTokenBalance2 ?? "0")) -
+        Number(EthertoWei(SwapOutAmount[1] ?? "0")));
+    let SwapPriceBefore: any =
+      Number(EthertoWei(LPTokenBalance1 ?? "0")) /
+      Number(EthertoWei(LPTokenBalance2 ?? "0"));
+    let priceImpact: any =
+      (Math.abs(
+        Number(getFullNum(SwapPriceLate ?? 0)) -
+          Number(getFullNum(SwapPriceBefore ?? 0))
+      ) /
+        Number(getFullNum(SwapPriceBefore ?? 0))) *
+      100;
+    // debugger;
+    console.log();
+    setPriceImpact(priceImpact ?? "0");
+  };
+
+  const getPrice = async () => {
+    Contracts.example
+      ?.getAmountsOut(web3ModalAccount as string, 1, [
+        tokenList?.find((item: any) => String(item?.name) === String(FromToken))
+          ?.tokenAddress,
+        tokenList?.find((item: any) => String(item?.name) === String(ToToken))
+          ?.tokenAddress,
+      ])
+      .then((res: any) => {
+        // debugger;
+        setOneUACToUSDT(EthertoWei(res[1] ?? "0"));
+      });
+  };
+  const getRemoveLiquidityInfo = async () => {
+    let lpAddress: any = await Contracts.example?.getPair(
+      web3ModalAccount as string,
+      tokenList?.find(
+        (item: any) => String(item?.name) === String(AddLiquidityToken1)
+      )?.tokenAddress,
+      tokenList?.find(
+        (item: any) => String(item?.name) === String(AddLiquidityToken2)
+      )?.tokenAddress
+    );
+    let LiquidityTokenBalance1: any = await Contracts.example.balanceOf(
+      lpAddress as string,
+      tokenList?.find(
+        (item: any) => String(item?.name) === String(AddLiquidityToken1)
+      )?.tokenAddress
+    );
+    let LiquidityTokenBalance2: any = await Contracts.example.balanceOf(
+      lpAddress as string,
+      tokenList?.find(
+        (item: any) => String(item?.name) === String(AddLiquidityToken2)
+      )?.tokenAddress
+    );
+    setAddLiquidityTokenBalance1(EthertoWei(LiquidityTokenBalance1 ?? "0"));
+    setAddLiquidityTokenBalance2(EthertoWei(LiquidityTokenBalance2 ?? "0"));
+  };
 
   useEffect(() => {
-    getAllData().then((res: any) => {
-      setAllData(res?.data || {});
-    });
-
     if (!!token) {
       getInitData();
     } else {
     }
   }, [web3ModalAccount, token]);
 
-  // useEffect(() => {
-  //   if (!!web3ModalAccount) {
-  //     Contracts.example?.mint(web3ModalAccount).then((res: any) => {
-  //       console.log(res, "res");
-  //       debugger;
-  //       setIsNode(!!res);
-  //     });
-  //     handleUSDTRefresh();
-  //   } else {
-  //   }
-  // }, [token, web3ModalAccount]);
+  useEffect(() => {
+    if (!!web3ModalAccount && Number(InputAmount) > 0) {
+      Contracts.example
+        ?.getAmountsOut(web3ModalAccount as string, InputAmount, [
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(FromToken)
+          )?.tokenAddress,
+          tokenList?.find((item: any) => String(item?.name) === String(ToToken))
+            ?.tokenAddress,
+        ])
+        .then((res: any) => {
+          // debugger;
+          setReceiveAmount(EthertoWei(res[1] ?? "0"));
+        });
+
+      Contracts.example
+        ?.getAmountsOut(web3ModalAccount as string, AddLiquidityTokenAmount1, [
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(AddLiquidityToken1)
+          )?.tokenAddress,
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(AddLiquidityToken2)
+          )?.tokenAddress,
+        ])
+        .then((res: any) => {
+          setAddLiquidityTokenAmount2(EthertoWei(res[1] ?? "0"));
+        });
+      getLpBalance();
+      // 计算价格影响
+      getPriceImpact();
+    } else {
+    }
+  }, [web3ModalAccount, token, InputAmount, FromToken, ToToken]);
+
+  useEffect(() => {
+    if (!!web3ModalAccount) {
+      getPrice();
+    }
+  }, [web3ModalAccount, token, FromToken, ToToken]);
 
   useEffect(() => {
     handleUSDTRefresh();
-    isNewUser(web3ModalAccount as string).then((res: any) => {
-      if (res?.code === 200) {
-        setIsBindState(!res.data || false);
-      }
-    });
   }, [web3ModalAccount, token, chainId]);
   useEffect(() => {
-    if (!!token) {
-      // getMyNft({ pageNum: 1, pageSize: 10 }).then((res: any) => {
-      //   if (res.code !== 200) return;
-      //   setRecordList3(res?.data || {});
-      // });
-    } else {
-      setRecordList3({});
-    }
-  }, [token]);
+    getCoinList();
+  }, [
+    TabActive,
+    web3ModalAccount,
+    SelectTokensModalState,
+    SelectTokensAddLiquidityModalState,
+  ]);
 
   useEffect(() => {
     getWebsocketData();
@@ -1028,11 +1671,96 @@ export default function Rank() {
     };
   }, [token]);
   useEffect(() => {
-    if (!token) {
-      setUserInfo({});
-      setNodeInfo({});
+    if (!!web3ModalAccount && String(PercentValue) !== "0%") {
+      getRemoveLiquidityInfo();
+    } else {
     }
-  }, []);
+  }, [web3ModalAccount, token, PercentValue]);
+
+  const BtnBox = () => {
+    if (!web3ModalAccount) return <Btn isActive={true}>Connect Wallet</Btn>;
+    if (!InputAmount || Number(InputAmount) <= 0)
+      return <Btn isActive={false}>Please enter amount</Btn>;
+
+    if (
+      Number(InputAmount) >
+      Number(
+        CoinListObj?.find(
+          (item: any) => String(item?.name) === String(FromToken)
+        )?.balance
+      )
+    )
+      return <Btn isActive={false}>Insufficient {FromToken} balance</Btn>;
+    return (
+      <Btn
+        isActive={true}
+        onClick={() => {
+          SwapFun();
+        }}
+      >
+        {String(FromToken) === "UAC" ? "Exchange" : "Authorization"}
+      </Btn>
+    );
+  };
+  const AddLiquidityBtnBox = () => {
+    if (!web3ModalAccount) return <Btn isActive={true}>Connect Wallet</Btn>;
+    if (
+      !AddLiquidityTokenAmount1 ||
+      !AddLiquidityTokenAmount2 ||
+      Number(AddLiquidityTokenAmount1) <= 0 ||
+      Number(AddLiquidityTokenAmount2) <= 0
+    )
+      return <Btn isActive={false}>Please enter amount</Btn>;
+
+    if (
+      Number(AddLiquidityTokenAmount1) >
+      Number(
+        CoinListObj?.find(
+          (item: any) => String(item?.name) === String(AddLiquidityToken1)
+        )?.balance
+      )
+    )
+      return (
+        <Btn isActive={false}>Insufficient {AddLiquidityToken1} balance</Btn>
+      );
+    if (
+      Number(AddLiquidityTokenAmount2) >
+      Number(
+        CoinListObj?.find(
+          (item: any) => String(item?.name) === String(AddLiquidityToken2)
+        )?.balance
+      )
+    )
+      return (
+        <Btn isActive={false}>Insufficient {AddLiquidityToken2} balance</Btn>
+      );
+    return (
+      <Btn
+        isActive={true}
+        onClick={() => {
+          AddLiquidityFun();
+        }}
+      >
+        Authorization
+      </Btn>
+    );
+  };
+  const RemoveLiquidityBtn = () => {
+    if (!web3ModalAccount) return <Btn isActive={true}>Connect Wallet</Btn>;
+    if (String(PercentValue) === "0%")
+      return <Btn isActive={false}>Enter withdrawal percentage</Btn>;
+
+    return (
+      <Btn
+        isActive={true}
+        onClick={() => {
+          RemoveLiquidityFun();
+        }}
+      >
+        Authorize LP
+      </Btn>
+    );
+  };
 
   return (
     <HomeContainerBox>
@@ -1048,6 +1776,7 @@ export default function Rank() {
         <div
           className={String(TabActive) === "TWAP" ? "active" : ""}
           onClick={() => {
+            return addMessage("Coming soon");
             setTabActive("TWAP");
           }}
         >
@@ -1067,21 +1796,35 @@ export default function Rank() {
           <SwapContainer_Title>UniAgent Swap</SwapContainer_Title>
           <SwapItem>
             <SwapItem_Title>
-              Transfer out <div>Balance: 100</div>
+              Transfer out{" "}
+              <div>
+                Balance:{" "}
+                {NumSplic1(
+                  CoinListObj?.find(
+                    (item: any) => String(item?.name) === String(FromToken)
+                  )?.balance,
+                  4
+                ) || 0}
+              </div>
             </SwapItem_Title>
 
             <Item>
-              <Item_Left>
+              <Item_Left
+                onClick={() => {
+                  setCurrentSelectedState("from");
+                  setSelectTokensModalState(true);
+                }}
+              >
                 <img src={roundIcon} alt="" />
                 <div className="coin_info">
                   {/* <div className="chain">BSC Chain</div> */}
-                  <div className="coin">UAC</div>
+                  <div className="coin">{FromToken}</div>
                 </div>
                 <img src={dropIcon} alt="" />
               </Item_Left>
               <Devider></Devider>
               <Item_Right>
-                <input type="text" value={0} />
+                <input type="text" value={InputAmount} onChange={InputFun} />
               </Item_Right>
             </Item>
           </SwapItem>
@@ -1098,17 +1841,30 @@ export default function Rank() {
             </SwapItem_Title>
 
             <Item>
-              <Item_Left>
+              <Item_Left
+                onClick={() => {
+                  setCurrentSelectedState("to");
+                  setSelectTokensModalState(true);
+                }}
+              >
                 <img src={roundIcon} alt="" />
                 <div className="coin_info">
                   {/* <div className="chain">UniAgent Chain</div> */}
-                  <div className="coin">USDT</div>
+                  <div className="coin">{ToToken}</div>
                 </div>
                 <img src={dropIcon} alt="" />
               </Item_Left>
               <Devider></Devider>
               <Item_Right>
-                <input type="text" value={0} />
+                <input
+                  type="text"
+                  value={
+                    Number(ReceiveAmount) > 0
+                      ? NumSplic1(ReceiveAmount, 4)
+                      : "-"
+                  }
+                  readOnly={true}
+                />
               </Item_Right>
             </Item>
           </SwapItem>
@@ -1124,26 +1880,45 @@ export default function Rank() {
           </ReceiveBox>
         </ReceiveItem> */}
 
-          <Btn isActive={true}>Connect Wallet</Btn>
+          {/* <Btn isActive={true}>Connect Wallet</Btn> */}
+          {BtnBox()}
 
           <SwapInfo>
             {/* <div>
             Exchange Path <span>uniAgent Bridge</span>
           </div> */}
             <div>
-              Reference Price <span>1 UAC = 10.02814 USDT</span>
+              Reference Price{" "}
+              <span>
+                1 {FromToken} = {NumSplic1(OneUACToUSDT, 4)} {ToToken}
+              </span>
             </div>
             <div>
-              Price Impact <span>0.133%</span>
+              Price Impact <span>{NumSplic1(PriceImpact, 4)}%</span>
             </div>
             <div>
-              Slippage Limit <span>5.00%</span>
+              Slippage Limit{" "}
+              <span>
+                {SlippageValue ?? "-"}%{" "}
+                <img
+                  src={setIcon}
+                  alt=""
+                  onClick={() => {
+                    setSettingSlippage(true);
+                  }}
+                />
+              </span>
             </div>
+
             <div>
-              Transaction Fee <span>0.2UAC</span>
-            </div>
-            <div>
-              Minimum Received <span>98.299700</span>
+              Minimum Received{" "}
+              <span>
+                {NumSplic1(
+                  Number(ReceiveAmount) * (1 - Number(SlippageValue) / 100),
+                  4
+                )}{" "}
+                {ToToken}
+              </span>
             </div>
             <div>
               Swap Path<span>UniAgent Swap</span>
@@ -1154,7 +1929,11 @@ export default function Rank() {
       {String(TabActive) === "Liquidity" &&
         (Number(LiquidityType) === 1 ? (
           <SwapContainer>
-            <SwapContainer_Title>
+            <SwapContainer_Title
+              onClick={() => {
+                setLiquidityType(2);
+              }}
+            >
               {" "}
               <img src={toIcon} alt="" /> Remove UAC-USDT Liquidity
             </SwapContainer_Title>
@@ -1162,12 +1941,36 @@ export default function Rank() {
             <SwapItem_Title>Enter Withdrawal Percentage</SwapItem_Title>
             <SwapItem>
               <LiquidityItem>
-                <input type="text" value={"0%"} />
+                <input type="text" value={PercentValue} readOnly={true} />
                 <PercentageBox>
-                  <div>25%</div>
-                  <div>50%</div>
-                  <div>75%</div>
-                  <div>100%</div>
+                  <div
+                    onClick={() => {
+                      setPercentValue("25%");
+                    }}
+                  >
+                    25%
+                  </div>
+                  <div
+                    onClick={() => {
+                      setPercentValue("50%");
+                    }}
+                  >
+                    50%
+                  </div>
+                  <div
+                    onClick={() => {
+                      setPercentValue("75%");
+                    }}
+                  >
+                    75%
+                  </div>
+                  <div
+                    onClick={() => {
+                      setPercentValue("100%");
+                    }}
+                  >
+                    100%
+                  </div>
                 </PercentageBox>
               </LiquidityItem>
             </SwapItem>
@@ -1179,24 +1982,39 @@ export default function Rank() {
                 <ReceivedBox_Item>
                   <div>
                     <img src={roundIcon} alt="" />
-                    UAC
+                    {AddLiquidityToken1}
                   </div>
-                  <div>1000.0000</div>
+                  <div>
+                    {NumSplic1(
+                      (Number(AddLiquidityTokenBalance1) *
+                        parseFloat(String(PercentValue)?.replace("%", ""))) /
+                        100,
+                      4
+                    )}{" "}
+                  </div>
                 </ReceivedBox_Item>
                 <ReceivedBox_Item>
                   <div>
                     <img src={roundIcon} alt="" />
-                    UAC
+                    {AddLiquidityToken2}
                   </div>
-                  <div>1000.0000</div>
+                  <div>
+                    {NumSplic1(
+                      (Number(AddLiquidityTokenBalance2) *
+                        parseFloat(String(PercentValue)?.replace("%", ""))) /
+                        100,
+                      4
+                    )}
+                  </div>
                 </ReceivedBox_Item>
               </ReceivedBox>
             </SwapItemBottom>
             <LiquidityPrice>
-              Reference Price 1 UAC = 10.02814 USDT
+              Reference Price 1 {FromToken} = {NumSplic1(OneUACToUSDT, 4)}{" "}
+              {ToToken}
             </LiquidityPrice>
 
-            <Btn isActive={true}>Enter withdrawal percentage</Btn>
+            {RemoveLiquidityBtn()}
           </SwapContainer>
         ) : (
           <SwapContainer>
@@ -1208,15 +2026,25 @@ export default function Rank() {
             <SelectTokenPair>
               <SwapItem_Title>Select Token Pair</SwapItem_Title>
               <Tokens>
-                <Token>
+                <Token
+                  onClick={() => {
+                    setAddLiquidityTokenType(1);
+                    setSelectTokensAddLiquidityModalState(true);
+                  }}
+                >
                   <img src={roundIcon} alt="" />
-                  <div>UAC</div>
+                  <div>{AddLiquidityToken1}</div>
                   <img src={dropdownIcon} alt="" />
                 </Token>
                 <img src={addIcon} alt="" />
-                <Token>
+                <Token
+                  onClick={() => {
+                    setAddLiquidityTokenType(2);
+                    setSelectTokensAddLiquidityModalState(true);
+                  }}
+                >
                   <img src={roundIcon} alt="" />
-                  <div>UAC</div>
+                  <div>{AddLiquidityToken2}</div>
                   <img src={dropdownIcon} alt="" />
                 </Token>
               </Tokens>
@@ -1227,11 +2055,20 @@ export default function Rank() {
               <SwapItem_Title_Item>
                 <div>
                   <img src={roundIcon} alt="" />
-                  <div>UAC</div>
+                  <div>{AddLiquidityToken1}</div>
 
                   <img src={copyIcon} alt="" />
                 </div>
-                <div>Balance: 100</div>
+                <div>
+                  Balance:{" "}
+                  {NumSplic1(
+                    CoinListObj?.find(
+                      (item: any) =>
+                        String(item?.name) === String(AddLiquidityToken1)
+                    )?.balance,
+                    4
+                  ) || 0}
+                </div>
               </SwapItem_Title_Item>
 
               <Item>
@@ -1244,7 +2081,13 @@ export default function Rank() {
               </Item_Left>
               <Devider></Devider> */}
                 <Item_Right>
-                  <input type="text" value={0} />
+                  <input
+                    type="text"
+                    value={AddLiquidityTokenAmount1}
+                    onChange={(e: any) => {
+                      InputAddLiquidityFun(e, 1);
+                    }}
+                  />
                 </Item_Right>
               </Item>
             </SwapItem>
@@ -1256,11 +2099,20 @@ export default function Rank() {
               <SwapItem_Title_Item>
                 <div>
                   <img src={roundIcon} alt="" />
-                  <div>USDT</div>
+                  <div>{AddLiquidityToken2}</div>
 
                   <img src={copyIcon} alt="" />
                 </div>
-                <div>Balance: 100</div>
+                <div>
+                  Balance:{" "}
+                  {NumSplic1(
+                    CoinListObj?.find(
+                      (item: any) =>
+                        String(item?.name) === String(AddLiquidityToken2)
+                    )?.balance,
+                    4
+                  ) || 0}
+                </div>
               </SwapItem_Title_Item>
 
               <Item>
@@ -1273,7 +2125,13 @@ export default function Rank() {
               </Item_Left>
               <Devider></Devider> */}
                 <Item_Right>
-                  <input type="text" value={0} />
+                  <input
+                    type="text"
+                    value={NumSplic1(AddLiquidityTokenAmount2, 4)}
+                    onChange={(e: any) => {
+                      InputAddLiquidityFun(e, 2);
+                    }}
+                  />
                 </Item_Right>
               </Item>
             </SwapItemBottom>
@@ -1289,23 +2147,29 @@ export default function Rank() {
           </ReceiveBox>
         </ReceiveItem> */}
 
-            <Btn isActive={true}>Connect Wallet</Btn>
+            {AddLiquidityBtnBox()}
 
             <SwapInfo>
               <SwapInfo_Title>Your Position</SwapInfo_Title>
-              {false ? (
+              {Number(LPBalance) > 0 ? (
                 <SwapInfo_Content>
                   <SwapInfo_Item>
                     <SwapInfo_Item_Left>
                       <div>
                         <img src={roundIcon} alt="" />
                         <img src={roundIcon} alt="" />
-                        UAC-USDT V2 LP
+                        {AddLiquidityToken1}-{AddLiquidityToken2} V2 LP
                       </div>
-                      1000.0000LP
+                      {NumSplic1(LPBalance, 4)}LP
                     </SwapInfo_Item_Left>
                     <SwapInfo_Item_Right>
-                      <Remove_Btn>Remove</Remove_Btn>
+                      <Remove_Btn
+                        onClick={() => {
+                          setLiquidityType(true);
+                        }}
+                      >
+                        Remove
+                      </Remove_Btn>
                     </SwapInfo_Item_Right>
                   </SwapInfo_Item>
                 </SwapInfo_Content>
@@ -1321,6 +2185,57 @@ export default function Rank() {
           </SwapContainer>
         ))}
 
+      <AllModal
+        visible={SettingSlippage}
+        className="Modal"
+        centered
+        width={"483px"}
+        closable={false}
+        footer={null}
+      >
+        <ModalContainer>
+          <ModalContainer_Title>
+            {t("Setting Slippage")}
+            <ModalContainer_Close>
+              {" "}
+              <img
+                src={closeIcon}
+                alt=""
+                onClick={() => {
+                  setSettingSlippage(false);
+                }}
+              />
+            </ModalContainer_Close>
+          </ModalContainer_Title>
+          <ModalContainer_Content>
+            <ModalContainer_Content_Tip>
+              Set max slippage (default 5%)
+            </ModalContainer_Content_Tip>
+            <ModalContainer_Content_Input>
+              <input
+                type="text"
+                value={SlippageValue}
+                onChange={(e: any) => {
+                  setSlippageValue(e.target.value.replace(/[^0-9.]/g, ""));
+                }}
+              />
+              %
+            </ModalContainer_Content_Input>
+            <Confirm_Btn
+              onClick={() => {
+                if (Number(SlippageValue) > 0) {
+                  setSettingSlippage(false);
+                } else {
+                  return addMessage("Please set the slippage correctly");
+                }
+              }}
+            >
+              Confirm
+            </Confirm_Btn>
+          </ModalContainer_Content>
+        </ModalContainer>
+      </AllModal>
+
       <ModalContent
         ShowTipModal={ShowTipModal}
         Tip={Tip}
@@ -1333,81 +2248,50 @@ export default function Rank() {
         Tip={Tip}
         hash={SuccessFulHash}
         fun={() => {
-          getNftBase().then((res: any) => {
-            setNftBase(res?.data || {});
-          });
           if (!!token) {
-            getInitData();
-            getMyNft({ pageNum: 1, pageSize: 10 }).then((res: any) => {
-              if (res.code !== 200) return;
-              setRecordList3(res?.data || {});
-            });
+            getCoinList();
           }
         }}
         close={() => {
           setShowSuccessTipModal(false);
         }}
       />
-      {/* Referral Revenue */}
-      <ReferListModal
-        ShowTipModal={ReferListStateModal}
+      <AddLiquidityModalContentSuccess
+        ShowTipModal={ShowAddLiquiditySuccessTipModal}
         Tip={Tip}
+        Title={Title}
+        hash={SuccessFulHash}
+        fun={() => {
+          if (!!token) {
+            getCoinList();
+          }
+        }}
         close={() => {
-          setReferListStateModal(false);
+          setShowAddLiquiditySuccessTipModal(false);
         }}
       />
-      {/* AI Node Mining Revenue */}
-      <RecommendedOuputModal
-        ShowTipModal={RecommendedOuputModalState}
-        Tip={Tip}
-        close={() => {
-          setRecommendedOuputModalState(false);
-        }}
-      />
-      {/* Edge Node Mining Revenue */}
-      <RecommendedMintedModal
-        ShowTipModal={EdgeNodeModalState}
-        Tip={Tip}
-        close={() => {
-          setEdgeNodeModalState(false);
-        }}
-      />
-      {/* AI Node Mining/AI Nodes De-mining/Undo the lighting of edge nodes */}
-      <MyNodeListModal
-        ModalType={ModalType}
-        ShowTipModal={NodeMintModalState}
-        Tip={Tip}
-        close={() => {
-          setNodeMintModalState(false);
-        }}
-        allTipFun={allTipFun}
-      />
-      {/* AI nodes light up edge nodes */}
-      <LightUpNode
-        ShowTipModal={LightUpNodeModalState}
-        Tip={Tip}
-        close={() => {
-          setLightUpNodeModalState(false);
-        }}
-        allTipFun={allTipFun}
-      />
-      {/* UAC Staking */}
-      <RevokeNode
-        ShowTipModal={RevokeNodeModalState}
-        Tip={Tip}
-        close={() => {
-          setRevokeNodeModalState(false);
-        }}
-        allTipFun={allTipFun}
-      />
+
       {/* Select Send Tokens */}
       <SelectTokensModal
         ShowTipModal={SelectTokensModalState}
         Tip={Tip}
+        tokenList={CoinListObj}
         close={() => {
           setSelectTokensModalState(false);
         }}
         allTipFun={allTipFun}
+        SelectTokenFun={SelectTokenFun}
+      />
+      {/* Add Liquidity */}
+      <SelectTokensModal
+        ShowTipModal={SelectTokensAddLiquidityModalState}
+        Tip={Tip}
+        tokenList={CoinListObj}
+        close={() => {
+          setSelectTokensAddLiquidityModalState(false);
+        }}
+        allTipFun={allTipFun}
+        SelectTokenFun={SelectAddLiquidityTokenFun}
       />
     </HomeContainerBox>
   );

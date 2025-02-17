@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   getAllData,
   getDrawData,
+  getExchangeFormDataList,
+  getExchangeRecord,
   getMyNft,
   getNftBase,
   getPersonData,
@@ -23,9 +25,11 @@ import {
   AddrHandle,
   EthertoWei,
   NumSplic,
+  NumSplic1,
   addMessage,
   dateFormat,
   decimalNum,
+  getFullNum,
   thousandsSeparator,
 } from "../utils/tool";
 import { useTranslation } from "react-i18next";
@@ -48,7 +52,7 @@ import fromToLine from "../assets/image/Swap/fromToLine.png";
 import copyFun from "copy-to-clipboard";
 import { Contracts } from "../web3";
 import useUSDTGroup from "../hooks/useUSDTGroup";
-import { contractAddress } from "../config";
+import { contractAddress, loginNetworkId } from "../config";
 import { createLoginSuccessAction } from "../store/actions";
 import { useNoGas } from "../hooks/useNoGas";
 import ModalContent from "../components/ModalContent";
@@ -101,14 +105,14 @@ const SwapContainer_Title = styled.div`
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #93e63f;
+  color: #FF8B36;
   @media (max-width: 768px) {
     font-size: 18px;
   }
 `;
 const SwapItem = styled.div``;
 const SwapItem_Title = styled(FlexSBCBox)`
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 18px;
   font-weight: bold;
   line-height: normal;
@@ -117,7 +121,7 @@ const SwapItem_Title = styled(FlexSBCBox)`
   color: #ffffff;
   margin: 24px 0px 15px;
   > div {
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: normal;
     line-height: normal;
@@ -127,19 +131,19 @@ const SwapItem_Title = styled(FlexSBCBox)`
     color: #ffffff;
     > span {
       cursor: pointer;
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 16px;
       font-weight: normal;
       line-height: normal;
       text-align: right;
       letter-spacing: 0em;
       font-variation-settings: "opsz" auto;
-      color: #93e63f;
+      color: #FF8B36;
       margin-left: 12px;
     }
   }
   @media (max-width: 768px) {
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: bold;
     line-height: normal;
@@ -148,7 +152,7 @@ const SwapItem_Title = styled(FlexSBCBox)`
     color: #ffffff;
     margin: 24px 0px 10px;
     > div {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 14px;
       font-weight: normal;
       line-height: normal;
@@ -182,7 +186,7 @@ const Item_Left = styled(FlexSBCBox)`
     }
   }
   .coin_info {
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 14px;
     font-weight: normal;
     line-height: normal;
@@ -190,7 +194,7 @@ const Item_Left = styled(FlexSBCBox)`
     font-variation-settings: "opsz" auto;
     color: #999999;
     .coin {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 24px;
       font-weight: bold;
       line-height: normal;
@@ -214,7 +218,7 @@ const Item_Left = styled(FlexSBCBox)`
       }
     }
     .coin_info {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 10px;
       font-weight: normal;
       line-height: normal;
@@ -222,7 +226,7 @@ const Item_Left = styled(FlexSBCBox)`
       font-variation-settings: "opsz" auto;
       color: #999999;
       .coin {
-        font-family: Space Grotesk;
+        font-family: "Space Grotesk";
         font-size: 14px;
         font-weight: bold;
         line-height: normal;
@@ -246,7 +250,7 @@ const Item_Right = styled(FlexBox)`
   padding: 18px;
   > input {
     width: 100%;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 32px;
     font-weight: bold;
     line-height: normal;
@@ -261,7 +265,7 @@ const Item_Right = styled(FlexBox)`
   @media (max-width: 768px) {
     padding: 15px 12px;
     > input {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 20px;
       font-weight: bold;
       line-height: normal;
@@ -281,7 +285,7 @@ const SwapToIcon = styled(FlexCCBox)`
 `;
 const ReceiveItem = styled.div`
   margin-top: 36px;
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 18px;
   font-weight: bold;
   line-height: normal;
@@ -303,7 +307,7 @@ const ReceiveBox = styled(FlexSBCBox)`
   padding: 20px;
   > input {
     flex: 1;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 18px;
     font-weight: normal;
     line-height: normal;
@@ -314,7 +318,7 @@ const ReceiveBox = styled(FlexSBCBox)`
     outline: none;
     border: none;
     &::placeholder {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 18px;
       font-weight: normal;
       line-height: normal;
@@ -345,7 +349,7 @@ const Btn = styled(FlexCCBox)<{ isActive: boolean }>`
   cursor: pointer;
   margin: 36px 0px;
   padding: 12px;
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 16px;
   font-weight: bold;
   line-height: normal;
@@ -354,7 +358,7 @@ const Btn = styled(FlexCCBox)<{ isActive: boolean }>`
   color: #0a0a0a;
   border-radius: 6px;
   opacity: 1;
-  background: ${({ isActive }) => (isActive ? "#93E63F" : "#517130")};
+  background: ${({ isActive }) => (isActive ? "#FF8B36" : "#517130")};
   @media (max-width: 768px) {
     margin: 32px 0px 16px;
   }
@@ -369,7 +373,7 @@ const SwapInfo = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: normal;
     line-height: normal;
@@ -380,7 +384,7 @@ const SwapInfo = styled.div`
       margin-bottom: 0px;
     }
     > span {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 16px;
       font-weight: normal;
       line-height: normal;
@@ -421,17 +425,17 @@ const ExchangeRecordTitle = styled(FlexSBCBox)`
   > div {
     display: flex;
     align-items: center;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 18px;
     font-weight: bold;
     line-height: normal;
     letter-spacing: 0em;
     font-variation-settings: "opsz" auto;
-    color: #93e63f;
+    color: #FF8B36;
 
     > span {
       margin-left: 6px;
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 18px;
       font-weight: normal;
       line-height: normal;
@@ -439,6 +443,9 @@ const ExchangeRecordTitle = styled(FlexSBCBox)`
       font-variation-settings: "opsz" auto;
       color: #666666;
     }
+  }
+  > img {
+    cursor: pointer;
   }
 
   @media (max-width: 768px) {
@@ -463,6 +470,11 @@ const ExchangeRecordItems = styled.div`
       margin-top: 36px;
     }
   }
+  @media (max-width: 768px) {
+    > div {
+      margin-top: 24px;
+    }
+  }
 `;
 const ExchangeRecordItem = styled(FlexBox)`
   flex-wrap: wrap;
@@ -481,7 +493,7 @@ const ExchangeRecordItem = styled(FlexBox)`
     }
     .from_coin_info {
       width: 160px;
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 14px;
       font-weight: normal;
       line-height: normal;
@@ -490,7 +502,7 @@ const ExchangeRecordItem = styled(FlexBox)`
       color: #999999;
       > div {
         margin-top: 4px;
-        font-family: Space Grotesk;
+        font-family: "Space Grotesk";
         font-size: 16px;
         font-weight: bold;
         line-height: normal;
@@ -504,7 +516,7 @@ const ExchangeRecordItem = styled(FlexBox)`
       display: flex;
       flex-direction: column;
       align-items: center;
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 12px;
       font-weight: normal;
       line-height: normal;
@@ -516,7 +528,7 @@ const ExchangeRecordItem = styled(FlexBox)`
       }
     }
     .state {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 16px;
       font-weight: normal;
       line-height: normal;
@@ -526,7 +538,7 @@ const ExchangeRecordItem = styled(FlexBox)`
       color: #e6ae3f;
     }
     .price_info {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 14px;
       font-weight: normal;
       line-height: normal;
@@ -535,7 +547,7 @@ const ExchangeRecordItem = styled(FlexBox)`
       color: #666666;
       > div {
         margin-top: 4px;
-        font-family: Space Grotesk;
+        font-family: "Space Grotesk";
         font-size: 14px;
         font-weight: normal;
         line-height: normal;
@@ -545,11 +557,49 @@ const ExchangeRecordItem = styled(FlexBox)`
       }
     }
   }
+  @media (max-width: 768px) {
+    padding-bottom: 24px;
+    > div {
+      .from_coin_info {
+        width: fit-content;
+        font-size: 12px;
+        > div {
+          font-size: 14px;
+        }
+      }
+      .from_coin_to_line {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-left: 10px;
+      }
+      .state {
+        font-size: 14px;
+      }
+      .price_info {
+        font-size: 12px;
+        > div {
+          font-size: 12px;
+        }
+      }
+    }
+  }
 `;
 
 let timer: any = null;
+interface Token {
+  tokenName: string;
+  tokenAddress?: string; // 使用可选属性，假设 contractAddress 可能为 undefined
+  bridgeContract?: string; // 同样使用可选属性
+  balance?: any; // 同样使用可选属性
+}
 
-const ChainArr = [
+interface Chain {
+  ChainName: string;
+  tokens: Token[];
+}
+const ChainArr: Chain[] = [
   { ChainName: "TRON", tokens: [] },
   {
     ChainName: "BSC",
@@ -583,19 +633,14 @@ export default function Rank() {
     useAppKitNetwork();
 
   const [IsBindState, setIsBindState] = useState(false);
-  const { token } = useSelector<stateType, stateType>((state) => state);
+  const token = useSelector<stateType, stateType>((state: any) => state?.token);
+  console.log(token, "1212");
   const [NodeInfo, setNodeInfo] = useState<any>({});
   const [UserInfo, setUserInfo] = useState<any>({});
   const [NftBase, setNftBase] = useState<any>({});
   const [Tip, setTip] = useState("");
   const [ShowTipModal, setShowTipModal] = useState(false);
   const [ShowSuccessTipModal, setShowSuccessTipModal] = useState(false);
-  const [ReferListStateModal, setReferListStateModal] = useState(false);
-  const [NodeMintModalState, setNodeMintModalState] = useState(false);
-  const [LightUpNodeModalState, setLightUpNodeModalState] = useState(false);
-  const [RecommendedOuputModalState, setRecommendedOuputModalState] =
-    useState(false);
-  const [RevokeNodeModalState, setRevokeNodeModalState] = useState(false);
   const [FromStakingMiningModalState, setFromStakingMiningModalState] =
     useState(false);
   const [ToStakingMiningModalState, setToStakingMiningModalState] =
@@ -604,16 +649,16 @@ export default function Rank() {
 
   const [SuccessFulHash, setSuccessFulHash] = useState("");
   const [RecordList3, setRecordList3] = useState<any>({});
-  const [AllData, setAllData] = useState<any>({});
-  const [PersonData, setPersonData] = useState<any>({});
+  const [BridgeData, setBridgeData] = useState<any>({});
+  const [BridgeExchangeRecord, setBridgeExchangeRecord] = useState<any>([]);
   const [DrawData, setDrawData] = useState<any>(0);
   // 1=挖矿节点 2=未挖矿节点
   const [ModalType, setModalType] = useState<any>(1);
 
   const [Amount, setAmount] = useState(1);
   const { address: web3ModalAccount, isConnected } = useAppKitAccount();
-  const [LinkType1, setLinkType1] = useState("BSC");
-  const [LinkType2, setLinkType2] = useState("UniAgent");
+  const [LinkType1, setLinkType1] = useState("UniAgent");
+  const [LinkType2, setLinkType2] = useState("BSC");
   const {
     TOKENBalance,
     TOKENAllowance,
@@ -627,7 +672,8 @@ export default function Rank() {
       ?.tokens[0]?.tokenAddress as string
   );
   const [ReceiveAddress, setReceiveAddress] = useState("");
-  const [FromInputAmount, setFromInputAmount] = useState("");
+  const [FromInputAmount, setFromInputAmount] = useState("1");
+  // const [TokenArr, setTokenArr] = useState([]);
 
   const { isNoGasFun } = useNoGas();
   const [IsNode, setIsNode] = useState(false);
@@ -707,16 +753,20 @@ export default function Rank() {
         if (item?.code === 200) {
           try {
             if (!!(await isNoGasFun())) return;
-            setTip(
-              t("Stake 5 AI Nodes for Mining", {
-                amount: Number(NftBase?.currentPrice) * Amount ?? 0,
-                num: Amount,
-              })
-            );
+            // debugger;
+            setTip(t("Execute cross-chain exchange (close in 3 seconds)"));
             setShowTipModal(true);
-            res = await Contracts.example?.mint(
+            res = await Contracts.example?.deposite(
               web3ModalAccount as string,
-              item?.data
+              FromInputAmount,
+              ReceiveAddress,
+              item?.data,
+              loginNetworkId?.find(
+                (item: any) => String(item?.name) === String(LinkType2)
+              )?.bridgeChainId,
+              ChainArr?.find(
+                (item) => String(item?.ChainName) === String(LinkType1)
+              )?.tokens[0]?.bridgeContract as string
             );
           } catch (error: any) {
             if (error?.code === 4001) {
@@ -732,9 +782,7 @@ export default function Rank() {
             setSuccessFulHash(res?.transactionHash);
             setShowTipModal(false);
             setShowSuccessTipModal(true);
-            return setTip(
-              t("AI node staking mining successful", { num: Amount })
-            );
+            return setTip(t("Bridge successful", { num: Amount }));
             // setShowTipModal(true);
           } else if (res?.status === false) {
             setShowTipModal(false);
@@ -760,97 +808,72 @@ export default function Rank() {
     );
   };
 
-  const getWebsocketData = () => {
-    timer = setInterval(() => {
-      // getAllData().then((res: any) => {
-      //   setAllData(res?.data || {});
-      // });
-      // if (!!token) {
-      //   getInitData();
-      // }
-    }, 3000);
+  const getBridgeData = () => {
+    getExchangeFormDataList().then((res: any) => {
+      setBridgeData(
+        res?.data?.find(
+          (item: any) => String(item?.chainName) === String(LinkType1)
+        ) || {}
+      );
+    });
   };
 
   const getInitData = () => {
-    getDrawData().then((res: any) => {
+    getExchangeRecord().then((res: any) => {
       if (res.code === 200) {
-        setDrawData(res?.data || 0);
-      }
-    });
-    getPersonData().then((res: any) => {
-      if (res.code === 200) {
-        setPersonData(res?.data || {});
+        setBridgeExchangeRecord(res?.data || []);
       }
     });
   };
 
-  const allTipFun = async (type: any, tip: any = "", hash: any = "") => {
-    // 1:授权 2:loding 3:success 4:取消授权
-    if (Number(type) === 1 || Number(type) === 2) {
-      setTip(tip);
-      setShowTipModal(true);
-    } else if (Number(type) === 3) {
-      setTip(tip);
-      setSuccessFulHash(hash);
-      setShowSuccessTipModal(true);
-    } else if (Number(type) === 4) {
-      setShowTipModal(false);
-    }
+  const FromInputFun = (e: any) => {
+    setFromInputAmount(e.target.value.replace(/[^0-9.]/g, ""));
   };
+
+  // 添加余额字段的函数
+  async function addBalancesToTokens() {
+    for (const chain of ChainArr) {
+      if (chain.tokens && chain.tokens.length > 0) {
+        for (const token of chain.tokens) {
+          debugger;
+
+          if (token.tokenAddress) {
+            // 调用接口查询余额
+            let Tokenbalance: any = await Contracts.example?.balanceOf(
+              web3ModalAccount as string,
+              token.tokenAddress
+              // "0x27e199Afb97612542d8dcD88C8DCE83b4b516992"
+            );
+            debugger;
+            token.balance = EthertoWei(Tokenbalance ?? "0");
+          }
+        }
+      }
+    }
+  }
 
   useEffect(() => {
-    getAllData().then((res: any) => {
-      setAllData(res?.data || {});
-    });
-
-    if (!!token) {
+    if (token) {
       getInitData();
-    } else {
     }
-  }, [web3ModalAccount, token]);
-
-  // useEffect(() => {
-  //   if (!!web3ModalAccount) {
-  //     Contracts.example?.mint(web3ModalAccount).then((res: any) => {
-  //       console.log(res, "res");
-  //       debugger;
-  //       setIsNode(!!res);
-  //     });
-  //     handleUSDTRefresh();
-  //   } else {
-  //   }
-  // }, [token, web3ModalAccount]);
+  }, [web3ModalAccount, chainId, token, isConnected]);
+  useEffect(() => {
+    getBridgeData();
+  }, [web3ModalAccount, LinkType1, chainId]);
 
   useEffect(() => {
     setReceiveAddress(web3ModalAccount as string);
     handleUSDTRefresh();
-    isNewUser(web3ModalAccount as string).then((res: any) => {
-      if (res?.code === 200) {
-        setIsBindState(!res.data || false);
-      }
-    });
-  }, [web3ModalAccount, token, chainId]);
-  useEffect(() => {
-    if (!!token) {
-      // getMyNft({ pageNum: 1, pageSize: 10 }).then((res: any) => {
-      //   if (res.code !== 200) return;
-      //   setRecordList3(res?.data || {});
-      // });
-    } else {
-      setRecordList3({});
-    }
-  }, [token]);
+    // if (!!web3ModalAccount) {
+    //   addBalancesToTokens();
+    // }
+  }, [web3ModalAccount, chainId, token]);
 
-  useEffect(() => {
-    getWebsocketData();
-    return () => {
-      clearInterval(timer);
-    };
-  }, [token]);
   useEffect(() => {
     if (!token) {
       setUserInfo({});
       setNodeInfo({});
+      setBridgeExchangeRecord([]);
     }
   }, []);
 
@@ -894,7 +917,6 @@ export default function Rank() {
               </span>
             </div>
           </SwapItem_Title>
-
           <Item>
             <Item_Left
               onClick={() => {
@@ -913,9 +935,7 @@ export default function Rank() {
               <input
                 type="text"
                 value={!!FromInputAmount ? FromInputAmount : ""}
-                onChange={(e: any) => {
-                  setFromInputAmount(e.target.value);
-                }}
+                onChange={FromInputFun}
               />
             </Item_Right>
           </Item>
@@ -931,7 +951,6 @@ export default function Rank() {
               Balance: 100 <span>All</span>
             </div> */}
           </SwapItem_Title>
-
           <Item>
             <Item_Left
               onClick={() => {
@@ -947,7 +966,31 @@ export default function Rank() {
             </Item_Left>
             <Devider></Devider>
             <Item_Right>
-              <input type="text" value={0} />
+              <input
+                type="text"
+                value={
+                  NumSplic1(
+                    (1 /
+                      Number(
+                        BridgeData?.exchangeTargetVoList?.find(
+                          (item: any) =>
+                            String(item?.chainName) === String(LinkType2)
+                        )?.price
+                      )) *
+                      Number(FromInputAmount) *
+                      (1 - Number(BridgeData?.fee)) *
+                      Number(BridgeData?.price) *
+                      (1 -
+                        Number(
+                          BridgeData?.exchangeTargetVoList?.find(
+                            (item: any) =>
+                              String(item?.chainName) === String(LinkType2)
+                          )?.fee
+                        )),
+                    4
+                  ) ?? 0
+                }
+              />
             </Item_Right>
           </Item>
         </SwapItem>
@@ -969,16 +1012,75 @@ export default function Rank() {
         {BtnBox()}
         <SwapInfo>
           <div>
-            Exchange Path <span>uniAgent Bridge</span>
+            Exchange Path <span>{LinkType1} Bridge</span>
           </div>
           <div>
-            Reference Price <span>1 USDT(BSC) = 1.02814 USDT(uniAgent)</span>
+            Reference Price{" "}
+            <span>
+              {BridgeData?.price} USDT({LinkType1}) ={" "}
+              {
+                BridgeData?.exchangeTargetVoList?.find(
+                  (item: any) => String(item?.chainName) === String(LinkType2)
+                )?.price
+              }{" "}
+              USDT({LinkType2})
+            </span>
           </div>
           <div>
-            Fee <span>0.5 USDT(BEP20) + 08 USDT(ERC20)</span>
+            Fee{" "}
+            <span>
+              {Number(FromInputAmount) * Number(BridgeData?.fee)} USDT(
+              {BridgeData?.tokenType ?? "-"}) +{" "}
+              {NumSplic1(
+                (1 /
+                  Number(
+                    BridgeData?.exchangeTargetVoList?.find(
+                      (item: any) =>
+                        String(item?.chainName) === String(LinkType2)
+                    )?.price
+                  )) *
+                  Number(FromInputAmount) *
+                  (1 - Number(BridgeData?.fee)) *
+                  Number(BridgeData?.price) *
+                  Number(
+                    BridgeData?.exchangeTargetVoList?.find(
+                      (item: any) =>
+                        String(item?.chainName) === String(LinkType2)
+                    )?.fee
+                  ),
+                4
+              )}{" "}
+              USDT(
+              {BridgeData?.exchangeTargetVoList?.find(
+                (item: any) => String(item?.chainName) === String(LinkType2)
+              )?.tokenType ?? "-"}
+              )
+            </span>
           </div>
           <div>
-            Expected Receipt <span>98.299700</span>
+            Expected Receipt{" "}
+            <span>
+              {NumSplic1(
+                (1 /
+                  Number(
+                    BridgeData?.exchangeTargetVoList?.find(
+                      (item: any) =>
+                        String(item?.chainName) === String(LinkType2)
+                    )?.price
+                  )) *
+                  Number(FromInputAmount) *
+                  (1 - Number(BridgeData?.fee)) *
+                  Number(BridgeData?.price) *
+                  (1 -
+                    Number(
+                      BridgeData?.exchangeTargetVoList?.find(
+                        (item: any) =>
+                          String(item?.chainName) === String(LinkType2)
+                      )?.fee
+                    )),
+                4
+              )}
+            </span>
           </div>
         </SwapInfo>
       </SwapContainer>
@@ -988,71 +1090,73 @@ export default function Rank() {
           <div>
             Exchange Record <span>(Showing only the last 7 days)</span>
           </div>
-          <img src={refreshIcon} alt="" />
+          <img
+            src={refreshIcon}
+            alt=""
+            onClick={() => {
+              getInitData();
+            }}
+          />
         </ExchangeRecordTitle>
         <ExchangeRecordItems>
-          {/* <ExchangeRecordItem>
-            <div>
-              <div className="from_coin_info">
-                BSC Chain
-                <div>100.0000 USDT</div>
+          {BridgeExchangeRecord?.map((item: any, index: any) => (
+            <ExchangeRecordItem key={index}>
+              <div>
+                <div className="from_coin_info">
+                  {item?.fromChain}
+                  <div>
+                    {item?.fromNum} {item?.fromCoinName}
+                  </div>
+                </div>
+                <div className="from_coin_to_line">
+                  <img src={fromToLine} alt="" />
+                  Expected Receipt
+                </div>
               </div>
-              <div className="from_coin_to_line">
-                <img src={fromToLine} alt="" />
-                Expected Receipt
+              <div>
+                <div className="from_coin_info">
+                  {item?.toChain}
+                  <div>
+                    {item?.toNum} {item?.toCoinName}
+                  </div>
+                </div>
+                <div
+                  className="state"
+                  style={{
+                    color:
+                      Number(item?.status) === 0 || Number(item?.status) === 1
+                        ? "#e6ae3f"
+                        : "#999999",
+                  }}
+                >
+                  {Number(item?.status) === 0 || Number(item?.status) === 1
+                    ? "Exchanging"
+                    : Number(item?.status) === 3
+                    ? "Failed"
+                    : "Completed"}
+                </div>
               </div>
-            </div>
-            <div>
-              <div className="from_coin_info">
-                BSC Chain
-                <div>100.0000 USDT</div>
+              <div>
+                <div className="price_info">
+                  Reference Price
+                  <div>
+                    {item?.fromPrice ?? 0} {item?.fromCoinName}(
+                    {item?.fromChain}) = {item?.toPrice ?? 0} {item?.toCoinName}
+                    ({item?.toChain})
+                  </div>
+                </div>
               </div>
-              <div className="state">Exchanging</div>
-            </div>
-            <div>
-              <div className="price_info">
-                Reference Price
-                <div>1 USDT(BSC) = 1.02814 USDT(uniAgent)</div>
+              <div>
+                <div className="price_info">
+                  Fee
+                  <div>
+                    {item?.fromFee} {item?.fromCoinName}({item?.fromTokenType})
+                    + {item?.toFee} {item?.toCoinName}({item?.toTokenType})
+                  </div>
+                </div>
               </div>
-            </div>
-            <div>
-              <div className="price_info">
-                Reference Price
-                <div>0.5 USDT(BEP20) + 08 USDT(ERC20)</div>
-              </div>
-            </div>
-          </ExchangeRecordItem>
-          <ExchangeRecordItem>
-            <div>
-              <div className="from_coin_info">
-                BSC Chain
-                <div>100.0000 USDT</div>
-              </div>
-              <div className="from_coin_to_line">
-                <img src={fromToLine} alt="" />
-                Expected Receipt
-              </div>
-            </div>
-            <div>
-              <div className="from_coin_info">
-                BSC Chain
-                <div>100.0000 USDT</div>
-              </div>
-              <div className="state">Exchanging</div>
-            </div>
-            <div>
-              <div className="price_info">
-                Reference Price
-                <div>1 USDT(BSC) = 1.02814 USDT(uniAgent)</div>
-              </div>
-            </div>
-            <div>
-              <div className="price_info">
-                Reference Price
-                <div>0.5 USDT(BEP20) + 08 USDT(ERC20)</div>
-              </div>
-            </div>
-          </ExchangeRecordItem> */}
+            </ExchangeRecordItem>
+          ))}
         </ExchangeRecordItems>
       </ExchangeRecord>
 
@@ -1068,77 +1172,20 @@ export default function Rank() {
         Tip={Tip}
         hash={SuccessFulHash}
         fun={() => {
-          getNftBase().then((res: any) => {
-            setNftBase(res?.data || {});
-          });
           if (!!token) {
             getInitData();
-            getMyNft({ pageNum: 1, pageSize: 10 }).then((res: any) => {
-              if (res.code !== 200) return;
-              setRecordList3(res?.data || {});
-            });
           }
         }}
         close={() => {
           setShowSuccessTipModal(false);
         }}
       />
-      {/* Referral Revenue */}
-      <ReferListModal
-        ShowTipModal={ReferListStateModal}
-        Tip={Tip}
-        close={() => {
-          setReferListStateModal(false);
-        }}
-      />
-      {/* AI Node Mining Revenue */}
-      <RecommendedOuputModal
-        ShowTipModal={RecommendedOuputModalState}
-        Tip={Tip}
-        close={() => {
-          setRecommendedOuputModalState(false);
-        }}
-      />
-      {/* Edge Node Mining Revenue */}
-      <RecommendedMintedModal
-        ShowTipModal={EdgeNodeModalState}
-        Tip={Tip}
-        close={() => {
-          setEdgeNodeModalState(false);
-        }}
-      />
-      {/* AI Node Mining/AI Nodes De-mining/Undo the lighting of edge nodes */}
-      <MyNodeListModal
-        ModalType={ModalType}
-        ShowTipModal={NodeMintModalState}
-        Tip={Tip}
-        close={() => {
-          setNodeMintModalState(false);
-        }}
-        allTipFun={allTipFun}
-      />
-      {/* AI nodes light up edge nodes */}
-      <LightUpNode
-        ShowTipModal={LightUpNodeModalState}
-        Tip={Tip}
-        close={() => {
-          setLightUpNodeModalState(false);
-        }}
-        allTipFun={allTipFun}
-      />
-      {/* UAC Staking */}
-      <RevokeNode
-        ShowTipModal={RevokeNodeModalState}
-        Tip={Tip}
-        close={() => {
-          setRevokeNodeModalState(false);
-        }}
-        allTipFun={allTipFun}
-      />
+
       {/* Select From Send Tokens */}
       <FromStakingMiningModal
         ref={CurrentFromLinkRef}
         ChainArr={ChainArr}
+        Balance={TOKENBalance}
         ShowTipModal={FromStakingMiningModalState}
         LinkType1={LinkType1}
         close={() => {

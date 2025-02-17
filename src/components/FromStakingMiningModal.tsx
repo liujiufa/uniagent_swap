@@ -18,7 +18,11 @@ import { useNoGas } from "../hooks/useNoGas";
 import roundIcon from "../assets/image/Swap/roundIcon.svg";
 import React from "react";
 import { useAppKitAccount, useAppKitNetwork } from "@reown/appkit/react";
-import { customNetwork_BSC } from "../config";
+import {
+  customNetwork_UNI,
+  customNetwork_BSC,
+  customNetwork_BSC_TEST,
+} from "../config";
 import { bscTestnet, bsc, mainnet } from "@reown/appkit/networks";
 
 const AllModal = styled(Modal)`
@@ -29,7 +33,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #557930;
+    border: 1px solid #FF8B36;
     .ant-modal-body {
       position: relative;
       padding: 0px;
@@ -124,7 +128,7 @@ const ChainItem = styled(FlexCCBox)`
   opacity: 1;
   box-sizing: border-box;
   border: 1px solid #232323;
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 18px;
   font-weight: bold;
   line-height: normal;
@@ -149,7 +153,7 @@ const ChainItem = styled(FlexCCBox)`
 const ItemTitle = styled.div`
   margin-bottom: 10px;
   width: 100%;
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 18px;
   font-weight: bold;
   line-height: normal;
@@ -162,7 +166,7 @@ const ChainItemsBox = styled(FlexSBCBox)`
     border-radius: 8px;
     opacity: 1;
     box-sizing: border-box;
-    border: 1px solid #93e63f;
+    border: 1px solid #FF8B36;
   }
 `;
 const Tokens = styled.div`
@@ -176,7 +180,7 @@ const TokensItem = styled(FlexSBCBox)`
   > div {
     display: flex;
     align-items: center;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 24px;
     font-weight: bold;
     line-height: normal;
@@ -188,7 +192,7 @@ const TokensItem = styled(FlexSBCBox)`
       margin-right: 12px;
     }
     .coin_info {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 24px;
       font-weight: bold;
       line-height: normal;
@@ -199,7 +203,7 @@ const TokensItem = styled(FlexSBCBox)`
 
       > div {
         margin-top: 2px;
-        font-family: Space Grotesk;
+        font-family: "Space Grotesk";
         font-size: 14px;
         font-weight: normal;
         line-height: normal;
@@ -527,7 +531,7 @@ const Btn = styled(FlexCCBox)`
   padding: 12px;
   border-radius: 8px;
   opacity: 1;
-  background: #93e63f;
+  background: #FF8B36;
   font-family: "Space Grotesk";
   font-size: 20px;
   font-weight: bold;
@@ -687,18 +691,11 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
                   key={index}
                   onClick={() => {
                     props?.SelectTypeFun("from", item?.ChainName);
-                    switchNetwork(mainnet);
-                    // setLinkType2(
-                    //   props?.ChainArr?.filter(
-                    //     (item1: any) =>
-                    //       String(item1?.ChainName) !== String(item?.ChainName)
-                    //   )[
-                    //     props?.ChainArr?.filter(
-                    //       (item1: any) =>
-                    //         String(item1?.ChainName) !== String(item?.ChainName)
-                    //     )?.length - 1
-                    //   ]
-                    // );
+                    if (String(item?.ChainName) === "BSC") {
+                      switchNetwork(customNetwork_BSC_TEST);
+                    } else {
+                      switchNetwork(customNetwork_UNI);
+                    }
                   }}
                 >
                   <img src={roundIcon} alt="" />
@@ -730,7 +727,7 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
                       <div>{AddrHandle(item?.tokenAddress, 6, 4)}</div>
                     </div>
                   </div>
-                  <div>0</div>
+                  <div>{props?.Balance ?? 0}</div>
                 </TokensItem>
               ))}
             </TokensBox>

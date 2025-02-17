@@ -37,7 +37,12 @@ import useConnectWallet, {
   connector,
   // walletConnectConnector,
 } from "../hooks/useConnectWallet";
-import { contractAddress, LOCAL_KEY } from "../config";
+import {
+  contractAddress,
+  customNetwork_UNI,
+  LOCAL_KEY,
+  loginNetworkId,
+} from "../config";
 import { useViewport } from "../components/viewportContext";
 import Web3 from "web3";
 import styled from "styled-components";
@@ -54,6 +59,7 @@ import {
   useAppKitProvider,
   useDisconnect,
 } from "@reown/appkit/react";
+import newLogo from "../assets/image/layout/Logo.jpg";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -70,6 +76,10 @@ const LogoContainer = styled(FlexCCBox)`
   font-variation-settings: "opsz" auto;
   color: #ffffff;
   > svg {
+    margin-right: 8px;
+  }
+  > img {
+    height: 33px;
     margin-right: 8px;
   }
   @media (max-width: 1200px) {
@@ -184,7 +194,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #557930;
+    border: 1px solid #ff8b36;
     .ant-modal-body {
       position: relative;
       padding: 39px;
@@ -314,7 +324,7 @@ const Btn = styled(FlexCCBox)`
   padding: 12px 32px;
   border-radius: 8px;
   opacity: 1;
-  background: #93e63f;
+  background: #ff8b36;
   cursor: pointer;
   font-family: "Space Grotesk";
   font-size: 20px;
@@ -342,8 +352,8 @@ const MobileSlider = styled.div`
   border-top: 1px solid #232323;
   opacity: 1;
   background: #0a0a0a;
-  box-shadow: 0px 4px 10px 0px rgba(147, 230, 63, 0.5);
-  z-index: 10000000;
+  box-shadow: 0px 4px 10px 0px rgb(255, 139, 54, 0.5);
+  z-index: 999;
 `;
 const MobileSlider_Menu = styled.div`
   padding: 30px 16px;
@@ -363,7 +373,7 @@ const MobileSlider_Menu = styled.div`
     line-height: normal;
     letter-spacing: 0em;
     font-variation-settings: "opsz" auto;
-    color: #93e63f;
+    color: #ff8b36;
   }
   > div {
     margin-bottom: 20px;
@@ -424,7 +434,7 @@ const NavContainer = styled(FlexBox)`
   padding: 0px 35.5px;
   > div {
     cursor: pointer;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: bold;
     line-height: normal;
@@ -440,7 +450,7 @@ const NavContainer = styled(FlexBox)`
     margin-right: 35px;
   }
   .active {
-    color: #93e63f;
+    color: #ff8b36;
   }
 `;
 
@@ -558,12 +568,14 @@ const MainLayout: any = () => {
         Login({
           ...res,
           userAddress: web3ModalAccount as string,
-          chainName: "BSC",
-          // inviteCode: inviteCode,
+          chainName: loginNetworkId.find(
+            (item: any) => Number(item?.id) === Number(chainId)
+          )?.name,
         }).then((res: any) => {
           if (res.code === 200) {
             showLoding(false);
             // setBindModal(false);
+
             dispatch(
               createLoginSuccessAction(
                 web3ModalAccount as string,
@@ -584,7 +596,7 @@ const MainLayout: any = () => {
     //  else {
     //   addMessage("Please Connect wallet");
     // }
-  }, [web3ModalAccount]);
+  }, [web3ModalAccount, chainId]);
 
   const preLoginFun = async () => {
     // 先绑定再登录
@@ -592,33 +604,43 @@ const MainLayout: any = () => {
   };
 
   useEffect(() => {
+    if (String(pathname) !== "/Bridge") {
+      switchNetwork(customNetwork_UNI);
+    }
     if (!!pathname) {
       setItemActive(pathname ?? "/");
     }
-  }, [pathname]);
+  }, [pathname, token]);
 
   useEffect(() => {
     new Contracts(walletProvider);
-    if (!!initalToken) {
-      dispatch(
-        createLoginSuccessAction(web3ModalAccount as string, initalToken)
-      );
-    } else {
-      preLoginFun();
-    }
-  }, [web3ModalAccount, token, initalToken, chainId]);
+    // if (!!initalToken) {
+    //   dispatch(
+    //     createLoginSuccessAction(web3ModalAccount as string, initalToken)
+    //   );
+    // } else {
+    LoginFun();
+    // }
+  }, [web3ModalAccount, chainId]);
 
   return (
     <MyLayout>
       <HeaderContainer>
         <div className="HeaderNav">
           <LogoContainer>
-            <Logo
+            <img
               onClick={() => {
                 setShowMask(false);
                 Navigate("/View/");
               }}
-            ></Logo>
+              src={newLogo}
+            />
+            {/* <Logo
+              onClick={() => {
+                setShowMask(false);
+                Navigate("/View/");
+              }}
+            ></Logo> */}
           </LogoContainer>
 
           {width > 768 && (
@@ -634,6 +656,7 @@ const MainLayout: any = () => {
               <div
                 className={String(ItemActive) === "/" ? "active" : ""}
                 onClick={() => {
+                  switchNetwork(customNetwork_UNI);
                   Navigate("/View/");
                 }}
               >

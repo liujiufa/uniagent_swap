@@ -8,6 +8,9 @@ html body {
   -moz-osx-font-smoothing: grayscale;
   overflow: auto !important;
 }
+input {
+  outline: none;
+}
 
 #root {
   width: 100%;

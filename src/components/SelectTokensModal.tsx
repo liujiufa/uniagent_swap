@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { getMyNft } from "../API";
 import { useViewport } from "./viewportContext";
 import { Contracts } from "../web3";
-import { EthertoWei, addMessage } from "../utils/tool";
+import { EthertoWei, NumSplic1, addMessage } from "../utils/tool";
 import { useNoGas } from "../hooks/useNoGas";
 import roundIcon from "../assets/image/Swap/roundIcon.svg";
 import { useAppKitAccount } from "@reown/appkit/react";
@@ -26,7 +26,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #557930;
+    border: 1px solid #FF8B36;
     .ant-modal-body {
       position: relative;
       padding: 0px;
@@ -117,7 +117,7 @@ const ChainItem = styled(FlexCCBox)`
   opacity: 1;
   box-sizing: border-box;
   border: 1px solid #232323;
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 18px;
   font-weight: bold;
   line-height: normal;
@@ -133,7 +133,7 @@ const ChainItem = styled(FlexCCBox)`
 const ItemTitle = styled.div`
   margin-bottom: 10px;
   width: 100%;
-  font-family: Space Grotesk;
+  font-family: "Space Grotesk";
   font-size: 18px;
   font-weight: bold;
   line-height: normal;
@@ -147,12 +147,15 @@ const Tokens = styled.div`
 `;
 const TokensBox = styled.div`
   max-height: 380px;
+  > div {
+    margin-bottom: 41.5px;
+  }
 `;
 const TokensItem = styled(FlexSBCBox)`
   > div {
     display: flex;
     align-items: center;
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 24px;
     font-weight: bold;
     line-height: normal;
@@ -164,7 +167,7 @@ const TokensItem = styled(FlexSBCBox)`
       margin-right: 12px;
     }
     .coin_info {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 24px;
       font-weight: bold;
       line-height: normal;
@@ -175,7 +178,7 @@ const TokensItem = styled(FlexSBCBox)`
 
       > div {
         margin-top: 2px;
-        font-family: Space Grotesk;
+        font-family: "Space Grotesk";
         font-size: 14px;
         font-weight: normal;
         line-height: normal;
@@ -503,7 +506,7 @@ const Btn = styled(FlexCCBox)`
   padding: 12px;
   border-radius: 8px;
   opacity: 1;
-  background: #93e63f;
+  background: #FF8B36;
   font-family: "Space Grotesk";
   font-size: 20px;
   font-weight: bold;
@@ -527,10 +530,7 @@ export default function ModalContent(props: any) {
   const [SelectedList, setSelectedList] = useState<any>([]);
   const [ActiveSub, setActiveSub] = useState(1);
   const [Amount, setAmount] = useState(1);
-  const {
-    address: web3ModalAccount,
-    isConnected,
-  } = useAppKitAccount();
+  const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const token = useSelector((state: any) => state?.token);
   const onChange: PaginationProps["onChange"] = (page) => {
     console.log(page);
@@ -702,16 +702,24 @@ export default function ModalContent(props: any) {
               <ItemTitle>Tokens</ItemTitle>
             </ItemTitle> */}
             <TokensBox>
-              <TokensItem>
-                <div>
-                  <img src={roundIcon} alt="" />
-                  <div className="coin_info">
-                    USDT
-                    <div>Tether USD</div>
+              {props?.tokenList?.map((item: any, index: any) => (
+                <TokensItem
+                  key={index}
+                  onClick={() => {
+                    props?.SelectTokenFun(item?.name);
+                    props.close();
+                  }}
+                >
+                  <div>
+                    <img src={roundIcon} alt="" />
+                    <div className="coin_info">
+                      {item?.name}
+                      <div>{item?.symbol}</div>
+                    </div>
                   </div>
-                </div>
-                <div>0</div>
-              </TokensItem>
+                  <div>{NumSplic1(item?.balance, 4)}</div>
+                </TokensItem>
+              ))}
             </TokensBox>
           </Tokens>
         </ModalContainer_Content>

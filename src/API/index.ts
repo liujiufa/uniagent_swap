@@ -163,6 +163,18 @@ export function getEdgeNodeList(type: 1 | 2) {
     method: "get",
   });
 }
+export function getExchangeFormDataList() {
+  return axois.request({
+    url: `/user/getExchangeFormDataList`,
+    method: "get",
+  });
+}
+export function getExchangeRecord() {
+  return axois.request({
+    url: `/user/getExchangeRecord`,
+    method: "get",
+  });
+}
 export function quitEdgeNode(data: any) {
   return axois.request({
     url: `/mine/quitEdgeNode`,

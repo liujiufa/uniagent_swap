@@ -18,7 +18,12 @@ import { createAppKit } from "@reown/appkit/react";
 import { EthersAdapter } from "@reown/appkit-adapter-ethers";
 //@ts-ignore
 import { bscTestnet, bsc, mainnet } from "@reown/appkit/networks";
-import { customNetwork_BSC } from "./config";
+import {
+  customNetwork_BSC,
+  customNetwork_BSC_TEST,
+  customNetwork_UNI,
+  defaultNetwork,
+} from "./config";
 function getLibrary(provider: any): Web3 {
   const library = new Web3(provider);
   new Contracts(provider);
@@ -26,7 +31,7 @@ function getLibrary(provider: any): Web3 {
 }
 
 // 1. Get projectId
-const projectId = "be517f6598bdfa26bb37ad7258c5f4d3";
+const projectId = "fc4103ba4b36ce5b29b1355c0fadb477";
 // const projectId = 'YOUR_PROJECT_ID'
 
 // 2. Set chains
@@ -72,12 +77,22 @@ const metadata = {
 
 createAppKit({
   adapters: [new EthersAdapter()],
-  networks: [customNetwork_BSC, mainnet],
+  networks: [customNetwork_UNI, customNetwork_BSC_TEST],
   metadata,
   projectId,
+  themeMode: "dark",
+  enableCoinbase: false,
+  featuredWalletIds: [
+    "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96",
+    "971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709",
+    "38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662",
+    "20459438007b75f4f4acb98bf29aa3b800550309646d375da5fd4aac6c2a2c66",
+  ],
   features: {
     analytics: true, // Optional - defaults to your Cloud configuration
+    connectMethodsOrder: ["wallet"],
   },
+  defaultNetwork: defaultNetwork,
 });
 
 const root = ReactDOM.createRoot(

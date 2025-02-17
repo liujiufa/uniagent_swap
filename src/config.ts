@@ -3,6 +3,8 @@ import NFTManage from "./ABI/NFTManage.json";
 import Nstake from "./ABI/Nstake.json";
 import NFT from "./ABI/NFT.json";
 import Bridge from "./ABI/Bridge.json";
+import UniAgentRouter from "./ABI/UniAgentRouter.json";
+import UniAgentFactory from "./ABI/UniAgentFactory.json";
 import { defineChain } from "@reown/appkit/networks";
 // 正式
 export const isMain = false;
@@ -11,7 +13,7 @@ const url = window.location.hostname;
 const result = url.split(".").slice(1).join(".");
 export let baseUrl: string = isMain
   ? `https://api.uniagent.co/api/`
-  : "http://47.239.255.25" + "/api";
+  : "http://47.239.255.25/api/";
 //  "https://yhhyn.com/" + "api"
 // "https://kf-panda.com/" + "api";
 // "http://172.20.10.2:28889/";
@@ -79,6 +81,31 @@ export const customNetwork_BSC = defineChain({
     },
   },
 });
+
+export const customNetwork_BSC_TEST = defineChain({
+  id: 97,
+  caipNetworkId: "eip155:97",
+  chainNamespace: "eip155",
+  name: "BSC",
+  nativeCurrency: {
+    decimals: 18,
+    name: "BNB",
+    symbol: "BNB",
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://bsc-testnet-rpc.publicnode.com"],
+      webSocket: ["WS_RPC_URL"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Explorer",
+      url: "https://data-seed-prebsc-2-s1.bnbchain.org:8545",
+    },
+  },
+});
+
 export const customNetwork_UNI = defineChain({
   id: 656231,
   caipNetworkId: "eip155:656231",
@@ -91,17 +118,29 @@ export const customNetwork_UNI = defineChain({
   },
   rpcUrls: {
     default: {
-      http: ["http://192.252.179.83:8546"],
+      http: ["http://chain.51time.xyz/"],
       webSocket: ["WS_RPC_URL"],
     },
   },
   blockExplorers: {
     default: {
       name: "Explorer",
-      url: "https://data-seed-prebsc-2-s1.bnbchain.org:8545",
+      url: "https://etherscan.io",
     },
   },
 });
+
+export const defaultNetwork: any = {
+  chainId: 656231,
+  name: "UNI",
+  currency: "UAC",
+  explorerUrl: "http://chain.51time.xyz/",
+  rpcUrl: "https://etherscan.io",
+};
+export const loginNetworkId = [
+  { id: 97, name: "BSC", bridgeChainId: 1 },
+  { id: 656231, name: "UniAgent", bridgeChainId: 2 },
+];
 
 interface abiObjType {
   [propName: string]: any;
@@ -119,6 +158,8 @@ export const abiObj: abiObjType = {
   NFT: NFT,
   BridgeBSC: Bridge,
   BridgeUNI: Bridge,
+  Router: UniAgentRouter,
+  Factory: UniAgentFactory,
 };
 
 export const Main: contractAddressType = {
@@ -135,6 +176,9 @@ const Test = {
   NFT: "0x182cFca36E3678ae45e9cBc47880Ab034882F9A5",
   NFTManage: "0x0A8C16f9Ed042cf71BeB49e8d8854D189c704aDb",
   Stake: "0xe9865261f234323e8E77F35E8D111c65650120F7",
+  Factory: "0xDA1253700dF68930C81361D0769fBD27fB4fb253",
+  WUAC: "0x27e199Afb97612542d8dcD88C8DCE83b4b516992",
+  Router: "0x41f60550b884dAA6435C9435b9794F20cfD994D8",
 };
 
 export let SwapUrl: string = isMain

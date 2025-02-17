@@ -191,7 +191,16 @@
   "Approved 5 AI Nodes": "Approved {{num}} AI Nodes",
 
   "Approve 100.0000 USDT (BSC)": "Approve {{num}} USDT ({{chain}})",
+  "Approve 100.0000 USDT": "Approve {{num}} USDT",
+  "UAC exchanging for USDT": "{{FromToken}} exchanging for {{ToToken}}",
+  "Exchange successful, received 100.0000 USDT": "Exchange successful, received {{amount}} {{ToToken}}",
+  "Adding UAC-USDT LP": "Adding {{AddLiquidityToken1}}-{{AddLiquidityToken2}} LP",
+  "Received 12.0000 UAC-USDT LP": "Received {{amount}} {{AddLiquidityToken1}}-{{AddLiquidityToken2}} LP",
+
   "Not yet": "Not yet",
+  "Liquidity removed successfully": "Liquidity removed successfully",
+  "Approve 100.0000 UAC-USDT": "Approve {{num}} {{token1}}-{{token2}}",
+  "Removing UAC-USDT LP": "Removing {{AddLiquidityToken1}}-{{AddLiquidityToken2}} LP",
   "Open soon": "Opening soon~",
   "failed": "Failed",
   "Copied successfully": "Copied successfully",

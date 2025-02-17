@@ -19,7 +19,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #557930;
+    border: 1px solid #FF8B36;
     .ant-modal-body {
       position: relative;
       padding: 39px;

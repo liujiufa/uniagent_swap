@@ -107,7 +107,7 @@ const Title = styled(FlexBox)`
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #93e63f;
+  color: #FF8B36;
   margin-bottom: 16px;
   > div {
     flex: 1;
@@ -133,14 +133,14 @@ const Title = styled(FlexBox)`
       line-height: normal;
       letter-spacing: 0em;
       font-variation-settings: "opsz" auto;
-      color: #93e63f;
+      color: #FF8B36;
       > div {
         margin-left: 20px;
       }
     }
   }
   @media (max-width: 768px) {
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 18px;
     font-weight: bold;
     line-height: normal;
@@ -160,7 +160,7 @@ const Mobile_Box = styled.span`
   width: 100%;
   margin-top: 14px;
   .Mobile_Box_Left {
-    font-family: Space Grotesk;
+    font-family: "Space Grotesk";
     font-size: 12px;
     font-weight: normal;
     line-height: normal;
@@ -168,13 +168,13 @@ const Mobile_Box = styled.span`
     font-variation-settings: "opsz" auto;
     color: #999999;
     > div {
-      font-family: Space Grotesk;
+      font-family: "Space Grotesk";
       font-size: 18px;
       font-weight: bold;
       line-height: normal;
       letter-spacing: 0em;
       font-variation-settings: "opsz" auto;
-      color: #93e63f;
+      color: #FF8B36;
     }
   }
 `;
@@ -265,7 +265,7 @@ const Withdrawn_Btn = styled(FlexCCBox)`
   opacity: 1;
   background: rgba(147, 230, 63, 0.1);
   box-sizing: border-box;
-  border: 1px solid #557930;
+  border: 1px solid #FF8B36;
   padding: 12px 18px;
   font-family: "Space Grotesk";
   font-size: 16px;
@@ -273,7 +273,7 @@ const Withdrawn_Btn = styled(FlexCCBox)`
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #93e63f;
+  color: #FF8B36;
   @media (max-width: 768px) {
     font-size: 14px;
   }
@@ -377,7 +377,7 @@ const CheckBtn = styled.div`
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #93e63f;
+  color: #FF8B36;
   margin-top: 12px;
   @media (max-width: 1024px) {
     font-size: 12px;
@@ -397,7 +397,7 @@ const Btn = styled(FlexCCBox)`
   padding: 12px 18px;
   border-radius: 8px;
   opacity: 1;
-  background: #93e63f;
+  background: #FF8B36;
   margin-top: 12px;
   @media (max-width: 1024px) {
     font-size: 14px;

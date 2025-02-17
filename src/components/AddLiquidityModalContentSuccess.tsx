@@ -39,13 +39,6 @@ const AllModal = styled(Modal)`
       padding: 39px;
     }
   }
-  @media (max-width: 768px) {
-    .ant-modal-content {
-      .ant-modal-body {
-        padding: 24px 15px;
-      }
-    }
-  }
 `;
 
 const ModalContainer = styled(FlexBox)`
@@ -57,6 +50,18 @@ const ModalContainer = styled(FlexBox)`
   justify-content: center;
 `;
 
+const TitleText = styled(FlexCCBox)`
+  width: 100%;
+  font-family: "Space Grotesk";
+  font-size: 18px;
+  font-weight: bold;
+  line-height: normal;
+  text-align: center;
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" auto;
+  color: #ffffff;
+  margin-bottom: 10px;
+`;
 const TipText = styled(FlexCCBox)`
   width: 100%;
   font-family: "PingFang SC";
@@ -116,6 +121,7 @@ export default function ModalContent(props: any) {
       footer={null}
     >
       <ModalContainer>
+        <TitleText>{props?.Title}</TitleText>
         <TipText>{props?.Tip}</TipText>
 
         <SuccessfulBtn>
