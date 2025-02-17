@@ -25,7 +25,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #FF8B36;
+    border: 1px solid #F4C134;
     .ant-modal-body {
       position: relative;
       padding: 0px;
@@ -349,7 +349,7 @@ const Select_All_Box = styled(FlexCCBox)`
   .active {
     border-radius: 2px;
     opacity: 1;
-    background: #FF8B36;
+    background: #F4C134;
   }
 `;
 const Select_All_Box1 = styled(FlexCCBox)`
@@ -365,7 +365,7 @@ const Select_All_Box1 = styled(FlexCCBox)`
   .active {
     border-radius: 2px;
     opacity: 1;
-    background: #FF8B36;
+    background: #F4C134;
   }
 `;
 const Selected_Box = styled(FlexBox)`
@@ -429,7 +429,7 @@ const Staking_Btn = styled(FlexCCBox)`
   max-width: 232px;
   border-radius: 8px;
   opacity: 1;
-  background: #FF8B36;
+  background: #F4C134;
   font-family: "Space Grotesk";
   font-size: 16px;
   font-weight: bold;

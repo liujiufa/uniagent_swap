@@ -90,8 +90,6 @@ const LogoContainer = styled(FlexCCBox)`
 `;
 
 const HeaderContainer = styled(Header)`
-  opacity: 1;
-  background: #0a0a0a;
   margin: 0px auto;
   backdrop-filter: blur(10px);
   padding: 0;
@@ -99,12 +97,15 @@ const HeaderContainer = styled(Header)`
   top: 0;
   z-index: 99;
   width: 100%;
-  height: 56px;
+  height: 64px;
   display: flex;
   justify-content: center;
   align-items: center;
+  opacity: 1;
+  background: linear-gradient(90deg, #323436 3%, #181c21 97%);
   .HeaderNav {
-    max-width: 1200px;
+    max-width: 1920px;
+    padding: 0px 40px;
   }
 `;
 
@@ -194,7 +195,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #ff8b36;
+    border: 1px solid #f4c134;
     .ant-modal-body {
       position: relative;
       padding: 39px;
@@ -324,7 +325,7 @@ const Btn = styled(FlexCCBox)`
   padding: 12px 32px;
   border-radius: 8px;
   opacity: 1;
-  background: #ff8b36;
+  background: #f4c134;
   cursor: pointer;
   font-family: "Space Grotesk";
   font-size: 20px;
@@ -373,7 +374,7 @@ const MobileSlider_Menu = styled.div`
     line-height: normal;
     letter-spacing: 0em;
     font-variation-settings: "opsz" auto;
-    color: #ff8b36;
+    color: #f4c134;
   }
   > div {
     margin-bottom: 20px;
@@ -450,7 +451,7 @@ const NavContainer = styled(FlexBox)`
     margin-right: 35px;
   }
   .active {
-    color: #ff8b36;
+    color: #f4c134;
   }
 `;
 

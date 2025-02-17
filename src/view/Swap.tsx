@@ -92,7 +92,7 @@ const SwapContainer_Title = styled(FlexBox)`
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #FF8B36;
+  color: #f4c134;
   > img {
     margin-right: 14px;
   }
@@ -103,7 +103,7 @@ const SwapContainer_Title = styled(FlexBox)`
     line-height: 18px;
     letter-spacing: 0em;
     font-variation-settings: "opsz" auto;
-    color: #FF8B36;
+    color: #f4c134;
     > img {
       margin-right: 8px;
     }
@@ -144,7 +144,7 @@ const SwapItem_Title = styled(FlexSBCBox)`
       text-align: right;
       letter-spacing: 0em;
       font-variation-settings: "opsz" auto;
-      color: #FF8B36;
+      color: #f4c134;
       margin-left: 12px;
     }
   }
@@ -312,7 +312,7 @@ const Btn = styled(FlexCCBox)<{ isActive: boolean }>`
   color: #0a0a0a;
   border-radius: 6px;
   opacity: 1;
-  background: ${({ isActive }) => (isActive ? "#FF8B36" : "#ff8a36bf")};
+  background: ${({ isActive }) => (isActive ? "#F4C134" : "#876D28")};
   @media (max-width: 768px) {
     margin: 32px 0px 0px;
     font-family: "Space Grotesk";
@@ -390,7 +390,7 @@ const SwapContainer_Tabs = styled(FlexSBCBox)`
   opacity: 1;
   background: #0a0a0a;
   box-sizing: border-box;
-  border: 1px solid #FF8B36;
+  border: 1px solid #f4c134;
   padding: 7px;
 
   > div {
@@ -410,7 +410,7 @@ const SwapContainer_Tabs = styled(FlexSBCBox)`
     color: #000000;
     border-radius: 6px;
     opacity: 1;
-    background: #FF8B36;
+    background: #f4c134;
   }
   @media (max-width: 768px) {
     margin-top: 30px;
@@ -622,20 +622,20 @@ const Remove_Btn = styled(FlexCCBox)`
   opacity: 1;
   background: rgba(147, 230, 63, 0.1);
   box-sizing: border-box;
-  border: 1px solid #FF8B36;
+  border: 1px solid #f4c134;
   font-family: "Space Grotesk";
   font-size: 16px;
   font-weight: normal;
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #FF8B36;
+  color: #f4c134;
   @media (max-width: 768px) {
     border-radius: 8px;
     opacity: 1;
     background: rgba(147, 230, 63, 0.1);
     box-sizing: border-box;
-    border: 1px solid #FF8B36;
+    border: 1px solid #f4c134;
     padding: 9px;
   }
 `;
@@ -698,7 +698,7 @@ const PercentageBox = styled(FlexBox)`
     opacity: 1;
     background: rgba(147, 230, 63, 0.1);
     box-sizing: border-box;
-    border: 1px solid #FF8B36;
+    border: 1px solid #f4c134;
     font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: bold;
@@ -803,7 +803,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #FF8B36;
+    border: 1px solid #f4c134;
     .ant-modal-body {
       position: relative;
       padding: 0px;
@@ -925,7 +925,7 @@ const Confirm_Btn = styled(FlexCCBox)`
   padding: 14px;
   border-radius: 8px;
   opacity: 1;
-  background: #FF8B36;
+  background: #f4c134;
   @media (max-width: 768px) {
     font-family: Space Grotesk;
     font-size: 16px;

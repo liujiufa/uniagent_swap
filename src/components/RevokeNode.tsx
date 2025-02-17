@@ -24,7 +24,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #FF8B36;
+    border: 1px solid #F4C134;
     .ant-modal-body {
       position: relative;
       padding: 0px;
@@ -303,7 +303,7 @@ const Select_All_Box = styled(FlexCCBox)`
   .active {
     border-radius: 2px;
     opacity: 1;
-    background: #FF8B36;
+    background: #F4C134;
   }
 `;
 const Select_All_Box1 = styled(FlexCCBox)`
@@ -319,7 +319,7 @@ const Select_All_Box1 = styled(FlexCCBox)`
   .active {
     border-radius: 2px;
     opacity: 1;
-    background: #FF8B36;
+    background: #F4C134;
   }
 `;
 const Selected_Box = styled(FlexCCBox)`
@@ -362,7 +362,7 @@ const Modal_Footer_Right = styled(FlexSBCBox)`
 const Staking_Btn = styled(FlexCCBox)`
   border-radius: 8px;
   opacity: 1;
-  background: #FF8B36;
+  background: #F4C134;
   font-family: "Space Grotesk";
   font-size: 16px;
   font-weight: bold;
@@ -398,9 +398,9 @@ const ModalContainer_SubTitles = styled(FlexBox)`
     line-height: normal;
     letter-spacing: 0em;
     font-variation-settings: "opsz" auto;
-    color: #FF8B36;
+    color: #F4C134;
     opacity: 1;
-    border-bottom: 2px solid #FF8B36;
+    border-bottom: 2px solid #F4C134;
   }
   @media (max-width: 768px) {
     padding: 0px 16px;

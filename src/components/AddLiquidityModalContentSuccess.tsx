@@ -33,7 +33,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #FF8B36;
+    border: 1px solid #F4C134;
     .ant-modal-body {
       position: relative;
       padding: 39px;
@@ -85,7 +85,7 @@ const SuccessfulBtn1 = styled(FlexCCBox)`
   opacity: 1;
   background: rgba(147, 230, 63, 0.1);
   box-sizing: border-box;
-  border: 1px solid #FF8B36;
+  border: 1px solid #F4C134;
   font-family: "Space Grotesk";
   font-size: 20px;
   font-weight: 500;
@@ -98,7 +98,7 @@ const SuccessfulBtn2 = styled(FlexCCBox)`
   padding: 11px 44px;
   border-radius: 8px;
   opacity: 1;
-  background: #FF8B36;
+  background: #F4C134;
   font-family: "Space Grotesk";
   font-size: 20px;
   font-weight: 500;

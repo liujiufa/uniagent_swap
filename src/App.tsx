@@ -50,7 +50,7 @@ const MessageBox = styled.div`
   opacity: 1;
   background: #0f0f0f;
   box-sizing: border-box;
-  border: 1px solid #FF8B36;
+  border: 1px solid #F4C134;
 
   .messageItem {
     display: flex;

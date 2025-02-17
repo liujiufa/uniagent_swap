@@ -105,7 +105,7 @@ const SwapContainer_Title = styled.div`
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #FF8B36;
+  color: #f4c134;
   @media (max-width: 768px) {
     font-size: 18px;
   }
@@ -138,7 +138,7 @@ const SwapItem_Title = styled(FlexSBCBox)`
       text-align: right;
       letter-spacing: 0em;
       font-variation-settings: "opsz" auto;
-      color: #FF8B36;
+      color: #f4c134;
       margin-left: 12px;
     }
   }
@@ -358,7 +358,7 @@ const Btn = styled(FlexCCBox)<{ isActive: boolean }>`
   color: #0a0a0a;
   border-radius: 6px;
   opacity: 1;
-  background: ${({ isActive }) => (isActive ? "#FF8B36" : "#517130")};
+  background: ${({ isActive }) => (isActive ? "#F4C134" : "#876D28")};
   @media (max-width: 768px) {
     margin: 32px 0px 16px;
   }
@@ -431,7 +431,7 @@ const ExchangeRecordTitle = styled(FlexSBCBox)`
     line-height: normal;
     letter-spacing: 0em;
     font-variation-settings: "opsz" auto;
-    color: #FF8B36;
+    color: #f4c134;
 
     > span {
       margin-left: 6px;

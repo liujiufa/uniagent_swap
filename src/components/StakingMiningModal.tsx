@@ -21,7 +21,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #FF8B36;
+    border: 1px solid #F4C134;
     .ant-modal-body {
       position: relative;
       padding: 0px;
@@ -419,7 +419,7 @@ const Btn = styled(FlexCCBox)`
   padding: 12px;
   border-radius: 8px;
   opacity: 1;
-  background: #FF8B36;
+  background: #F4C134;
   font-family: "Space Grotesk";
   font-size: 20px;
   font-weight: bold;

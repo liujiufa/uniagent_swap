@@ -107,7 +107,7 @@ const Title = styled(FlexBox)`
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #FF8B36;
+  color: #F4C134;
   margin-bottom: 16px;
   > div {
     flex: 1;
@@ -133,7 +133,7 @@ const Title = styled(FlexBox)`
       line-height: normal;
       letter-spacing: 0em;
       font-variation-settings: "opsz" auto;
-      color: #FF8B36;
+      color: #F4C134;
       > div {
         margin-left: 20px;
       }
@@ -174,7 +174,7 @@ const Mobile_Box = styled.span`
       line-height: normal;
       letter-spacing: 0em;
       font-variation-settings: "opsz" auto;
-      color: #FF8B36;
+      color: #F4C134;
     }
   }
 `;
@@ -265,7 +265,7 @@ const Withdrawn_Btn = styled(FlexCCBox)`
   opacity: 1;
   background: rgba(147, 230, 63, 0.1);
   box-sizing: border-box;
-  border: 1px solid #FF8B36;
+  border: 1px solid #F4C134;
   padding: 12px 18px;
   font-family: "Space Grotesk";
   font-size: 16px;
@@ -273,7 +273,7 @@ const Withdrawn_Btn = styled(FlexCCBox)`
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #FF8B36;
+  color: #F4C134;
   @media (max-width: 768px) {
     font-size: 14px;
   }
@@ -377,7 +377,7 @@ const CheckBtn = styled.div`
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #FF8B36;
+  color: #F4C134;
   margin-top: 12px;
   @media (max-width: 1024px) {
     font-size: 12px;
@@ -397,7 +397,7 @@ const Btn = styled(FlexCCBox)`
   padding: 12px 18px;
   border-radius: 8px;
   opacity: 1;
-  background: #FF8B36;
+  background: #F4C134;
   margin-top: 12px;
   @media (max-width: 1024px) {
     font-size: 14px;
