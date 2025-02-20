@@ -26,7 +26,7 @@ export let BlockUrl: string = isMain
   : "https://testnet.bscscan.com/tx/";
 export let RewardType: any = { "1": "16", "2": "17" };
 export const BitNumber = 8;
-export const GoTo = "https://dev.penguincoop.xyz/";
+export const GoTo = "https://node.pijswap.xyz/";
 // Documentation
 export const Documentation = "https://pijswap.gitbook.io/pijswap";
 // InviteRebateKOLApplication

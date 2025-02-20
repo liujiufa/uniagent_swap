@@ -816,13 +816,14 @@ export default function Rank() {
               )?.tokens[0]?.bridgeContract as string
             );
           } catch (error: any) {
+            // debugger;
             if (error?.code === 4001) {
               setShowTipModal(false);
               return addMessage(t("11"));
             }
           }
           setShowTipModal(false);
-
+          // debugger;
           if (!!res?.status) {
             await call();
             await getInitData();

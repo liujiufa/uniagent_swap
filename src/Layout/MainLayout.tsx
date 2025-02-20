@@ -1026,7 +1026,7 @@ const MainLayout: any = () => {
                 res.data.token
               );
               getInitData();
-              if (!!NewUserState && !!inviteCode) {
+              if (!!res?.data?.isLoginReferee && !!inviteCode) {
                 return addMessage(t("推荐码已绑定"));
               }
             } else {
@@ -1041,7 +1041,7 @@ const MainLayout: any = () => {
     [web3ModalAccount, chainId]
   );
 
-  const SelectBindFun = async () => {
+  const SelectBindFun = async (InputValue = "") => {
     if (!web3ModalAccount) return;
     new Contracts(walletProvider);
     isNewUser(web3ModalAccount as string)
@@ -1124,14 +1124,15 @@ const MainLayout: any = () => {
 
   useEffect(() => {
     new Contracts(walletProvider);
-    SelectBindFun();
     console.log(chainId, web3ModalAccount, "chainId");
     if (!!invite && String(invite).length >= 6) {
       let str = String(invite).length > 6 ? String(invite).slice(0, 6) : invite;
       setInputValue(str);
+      SelectBindFun(str);
     } else {
+      SelectBindFun();
     }
-  }, [web3ModalAccount, chainId, invite, isConnected]);
+  }, [web3ModalAccount, chainId, isConnected, invite]);
 
   useEffect(() => {
     if (!!token) {

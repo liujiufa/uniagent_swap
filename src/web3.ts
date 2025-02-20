@@ -145,7 +145,7 @@ export class Contracts {
     this.verification("Nodes");
     return this.contract.Nodes?.methods.price().call();
   }
- 
+
   deposite(
     addr: string,
     usdtAmount: any,
@@ -158,6 +158,7 @@ export class Contracts {
 
     let obj = new this.web3.eth.Contract(abiObj?.BridgeBSC, contractAddress);
     var usdtAmounted = Web3.utils.toWei(usdtAmount + "", "ether");
+    console.log(usdtAmounted, reciever, order, chainId, "erer");
     return obj?.methods
       .deposite(usdtAmounted, reciever, order, chainId)
       .send({ from: addr, gasPrice: "2000000000" });
