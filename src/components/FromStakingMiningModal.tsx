@@ -16,12 +16,14 @@ import { Contracts } from "../web3";
 import { AddrHandle, EthertoWei, addMessage } from "../utils/tool";
 import { useNoGas } from "../hooks/useNoGas";
 import roundIcon from "../assets/image/Swap/roundIcon.svg";
+import usdtIcon from "../assets/image/Swap/usdtIcon.png";
 import React from "react";
 import { useAppKitAccount, useAppKitNetwork } from "@reown/appkit/react";
 import {
   customNetwork_UNI,
   customNetwork_BSC,
   customNetwork_BSC_TEST,
+  isMain,
 } from "../config";
 import { bscTestnet, bsc, mainnet } from "@reown/appkit/networks";
 
@@ -33,7 +35,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #F4C134;
+    border: 1px solid #685319;
     .ant-modal-body {
       position: relative;
       padding: 0px;
@@ -166,7 +168,7 @@ const ChainItemsBox = styled(FlexSBCBox)`
     border-radius: 8px;
     opacity: 1;
     box-sizing: border-box;
-    border: 1px solid #F4C134;
+    border: 1px solid #f4c134;
   }
 `;
 const Tokens = styled.div`
@@ -189,6 +191,8 @@ const TokensItem = styled(FlexSBCBox)`
     font-variation-settings: "opsz" auto;
     color: #ffffff;
     > img {
+      width: 48px;
+      height: 48px;
       margin-right: 12px;
     }
     .coin_info {
@@ -531,7 +535,7 @@ const Btn = styled(FlexCCBox)`
   padding: 12px;
   border-radius: 8px;
   opacity: 1;
-  background: #F4C134;
+  background: #f4c134;
   font-family: "Space Grotesk";
   font-size: 20px;
   font-weight: bold;
@@ -692,13 +696,15 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
                   onClick={() => {
                     props?.SelectTypeFun("from", item?.ChainName);
                     if (String(item?.ChainName) === "BSC") {
-                      switchNetwork(customNetwork_BSC_TEST);
+                      switchNetwork(
+                        isMain ? customNetwork_BSC : customNetwork_BSC_TEST
+                      );
                     } else {
                       switchNetwork(customNetwork_UNI);
                     }
                   }}
                 >
-                  <img src={roundIcon} alt="" />
+                  <img src={item?.icon} alt="" />
                   {item?.ChainName}
                 </ChainItem>
               ))}
@@ -721,7 +727,7 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
                   }}
                 >
                   <div>
-                    <img src={roundIcon} alt="" />
+                    <img src={usdtIcon} alt="" />
                     <div className="coin_info">
                       {item?.tokenName}
                       <div>{AddrHandle(item?.tokenAddress, 6, 4)}</div>

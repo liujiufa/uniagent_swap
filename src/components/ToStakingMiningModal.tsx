@@ -18,6 +18,7 @@ import { useNoGas } from "../hooks/useNoGas";
 import roundIcon from "../assets/image/Swap/roundIcon.svg";
 import React from "react";
 import { useAppKitAccount } from "@reown/appkit/react";
+import usdtIcon from "../assets/image/Swap/usdtIcon.png";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
@@ -27,7 +28,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #F4C134;
+    border: 1px solid #f4c134;
     .ant-modal-body {
       position: relative;
       padding: 0px;
@@ -167,7 +168,7 @@ const ChainItemsBox = styled(FlexSBCBox)`
       border-radius: 8px;
       opacity: 1;
       box-sizing: border-box;
-      border: 1px solid #F4C134;
+      border: 1px solid #f4c134;
     }
     @media (max-width: 375px) {
       min-width: 345px;
@@ -194,6 +195,8 @@ const TokensItem = styled(FlexSBCBox)`
     font-variation-settings: "opsz" auto;
     color: #ffffff;
     > img {
+      width: 48px;
+      height: 48px;
       margin-right: 12px;
     }
     .coin_info {
@@ -551,7 +554,7 @@ const Btn = styled(FlexCCBox)`
   padding: 12px;
   border-radius: 8px;
   opacity: 1;
-  background: #F4C134;
+  background: #f4c134;
   font-family: "Space Grotesk";
   font-size: 20px;
   font-weight: bold;
@@ -575,10 +578,7 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
   const [SelectedList, setSelectedList] = useState<any>([]);
   const [ActiveSub, setActiveSub] = useState(1);
   const [Amount, setAmount] = useState(1);
-  const {
-    address: web3ModalAccount,
-    isConnected,
-  } = useAppKitAccount();
+  const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const token = useSelector((state: any) => state?.token);
   const onChange: PaginationProps["onChange"] = (page) => {
     console.log(page);
@@ -725,7 +725,7 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
                       // );
                     }}
                   >
-                    <img src={roundIcon} alt="" />
+                    <img src={item?.icon} alt="" />
                     {item?.ChainName}
                   </ChainItem>
                 ))}
@@ -749,7 +749,7 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
                   }}
                 >
                   <div>
-                    <img src={roundIcon} alt="" />
+                    <img src={usdtIcon} alt="" />
                     <div className="coin_info">
                       {item?.tokenName}
                       <div>{AddrHandle(item?.tokenAddress, 6, 4)}</div>

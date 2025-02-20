@@ -46,13 +46,12 @@ const MessageBox = styled.div`
   left: 50%;
   transform: translateX(-50%);
 
-  border-radius: 8px;
-  opacity: 1;
-  background: #0f0f0f;
-  box-sizing: border-box;
-  border: 1px solid #F4C134;
-
   .messageItem {
+    border-radius: 8px;
+    opacity: 1;
+    background: #0f0f0f;
+    box-sizing: border-box;
+    border: 1px solid #f4c134;
     display: flex;
     align-items: center;
     width: fit-content;
@@ -70,19 +69,20 @@ const MessageBox = styled.div`
     > img {
       margin-right: 10px;
     }
-    /* margin-bottom: 8px; */
+    margin-bottom: 8px;
   }
   @media (max-width: 1200px) {
     .messageItem {
       font-size: 14px;
-      padding: 12px 14px;
+      padding: 6px 7px;
+      border-radius: 6px;
     }
   }
 `;
 
 function App() {
   const { t } = useTranslation();
-  useTitle(t("UniAgent"));
+  // useTitle(t("Uni"));
 
   const web3React = useWeb3React();
   const { connectWallet } = useConnectWallet();
@@ -95,13 +95,15 @@ function App() {
   return (
     <ViewportProvider>
       <div className="App">
-        <MessageBox>
-          {state?.message?.map((item, index) => (
-            <div className="messageItem" key={index}>
-              <img src={info} alt="" /> {item.message}
-            </div>
-          ))}
-        </MessageBox>
+        {state?.message?.length > 0 && (
+          <MessageBox>
+            {state?.message?.map((item, index) => (
+              <div className="messageItem" key={index}>
+                <img src={info} alt="" /> {item.message}
+              </div>
+            ))}
+          </MessageBox>
+        )}
         <Routers></Routers>
         {state.showLoding && <Loding></Loding>}
       </div>

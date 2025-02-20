@@ -23,6 +23,7 @@ import {
   customNetwork_BSC_TEST,
   customNetwork_UNI,
   defaultNetwork,
+  isMain,
 } from "./config";
 function getLibrary(provider: any): Web3 {
   const library = new Web3(provider);
@@ -77,7 +78,7 @@ const metadata = {
 
 createAppKit({
   adapters: [new EthersAdapter()],
-  networks: [customNetwork_UNI, customNetwork_BSC_TEST],
+  networks: [customNetwork_BSC, customNetwork_BSC_TEST, customNetwork_UNI],
   metadata,
   projectId,
   themeMode: "dark",
@@ -92,7 +93,7 @@ createAppKit({
     analytics: true, // Optional - defaults to your Cloud configuration
     connectMethodsOrder: ["wallet"],
   },
-  defaultNetwork: defaultNetwork,
+  defaultNetwork: isMain ? customNetwork_BSC : customNetwork_BSC_TEST,
 });
 
 const root = ReactDOM.createRoot(

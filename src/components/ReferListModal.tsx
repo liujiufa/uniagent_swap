@@ -1,5 +1,6 @@
 import styled, { keyframes } from "styled-components";
-import loadingIcon from "../assets/image/loadingIcon.svg";
+import copy from "../assets/image/layout/copy.svg";
+import goIcon from "../assets/image/layout/goIcon.svg";
 import { FlexBox, FlexCCBox, FlexSBCBox } from "./FlexBox";
 import { Modal, Pagination, PaginationProps } from "antd";
 import { useEffect, useState } from "react";
@@ -9,26 +10,29 @@ import leftIcon from "../assets/image/Home/leftIcon.svg";
 import rightIcon from "../assets/image/Home/rightIcon.svg";
 import { useSelector } from "react-redux";
 import { getMyNft, getRefereeData, getRefereeList } from "../API";
-import { AddrHandle, dateFormat } from "../utils/tool";
+import { AddrHandle, addMessage, dateFormat } from "../utils/tool";
+import { useAppKitAccount } from "@reown/appkit/react";
+import copyFun from "copy-to-clipboard";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
+  max-width: calc(100vw - 30px);
   .ant-modal-content {
     overflow: hidden;
     border-radius: 12px;
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #F4C134;
+    border: 1px solid #685319;
     .ant-modal-body {
       position: relative;
-      padding: 39px;
+      padding: 38px 32px 32px;
     }
   }
   @media (max-width: 1200px) {
     .ant-modal-content {
       .ant-modal-body {
-        padding: 30px 18px;
+        padding: 30px 14px;
       }
     }
   }
@@ -51,7 +55,7 @@ const ModalContainer_Close = styled(FlexCCBox)`
   z-index: 100;
 `;
 
-export const ModalContainer_Title_Container = styled(FlexCCBox)`
+export const ModalContainer_Title_Container = styled(FlexBox)`
   width: 100%;
   > img {
     width: 30px;
@@ -68,13 +72,12 @@ export const ModalContainer_Title_Container = styled(FlexCCBox)`
 export const ModalContainer_Title = styled(FlexBox)`
   width: 100%;
   align-items: center;
-  justify-content: center;
-  font-family: "Space Grotesk";
+  justify-content: left;
+  font-family: MiSans;
   font-size: 24px;
-  font-weight: bold;
+  font-weight: normal;
   line-height: normal;
   letter-spacing: 0em;
-  font-variation-settings: "opsz" auto;
   color: #ffffff;
   @media (max-width: 1200px) {
     font-size: 18px;
@@ -84,19 +87,33 @@ export const ModalContainer_Title = styled(FlexBox)`
 const ModalContainer_Content = styled.div`
   width: 100%;
   margin-top: 27px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  font-family: MiSans;
+  font-size: 18px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0em;
+  color: #ffffff;
   @media (max-width: 1200px) {
-    margin-top: 24px;
+    margin-top: 20px;
+    font-family: MiSans;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0em;
+    font-variation-settings: "opsz" auto;
+    color: #ffffff;
   }
 `;
 const Table = styled.div`
+  margin-top: 15px;
   width: 100%;
   border-radius: 4px;
   opacity: 1;
   box-sizing: border-box;
   border: 1px solid #c2c2c2;
+  @media (max-width: 1200px) {
+    margin-top: 12px;
+  }
 `;
 const Table_Title = styled.div`
   opacity: 1;
@@ -132,6 +149,13 @@ const Items = styled(FlexBox)`
     flex: 1;
     padding: 15px;
     border-right: 1px solid #c2c2c2;
+    font-family: MiSans;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 16px;
+    text-align: center;
+    letter-spacing: 0em;
+    color: #3d3d3d;
     &:first-child {
       flex: auto;
       max-width: 108px;
@@ -213,7 +237,7 @@ export const PaginationContainer = styled(FlexBox)`
     .ant-pagination-item-active {
       border-radius: 2px;
       opacity: 1;
-      background: #80c639;
+      background: #f4c134;
       a,
       span {
         font-family: "Space Grotesk";
@@ -282,6 +306,173 @@ export const PaginationContainer = styled(FlexBox)`
     }
   }
 `;
+const MyInvitedInfo = styled.div`
+  width: 100%;
+`;
+const MyInvitedInfo_Earns = styled(FlexSBCBox)`
+  width: 100%;
+  margin: 32px 0px 4px;
+  @media (max-width: 1200px) {
+    margin: 20px 0px 4px;
+  }
+`;
+const Earn = styled.div`
+  font-family: MiSans;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0em;
+  color: #abb1b9;
+`;
+const Code = styled.div`
+  .codes {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    > div {
+      font-family: MiSans;
+      font-size: 18px;
+      font-weight: normal;
+      line-height: normal;
+      text-align: center;
+      letter-spacing: 0em;
+      color: #ffffff;
+      padding: 4px 8.5px;
+      margin-left: 4px;
+      border-radius: 4px;
+      opacity: 1;
+      background: #181818;
+    }
+  }
+  @media (max-width: 1200px) {
+    .code {
+      > div {
+        font-family: MiSans;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: normal;
+        text-align: center;
+        letter-spacing: 0em;
+        color: #ffffff;
+        padding: 3px 7px;
+        margin-left: 3px;
+      }
+    }
+  }
+`;
+const Title = styled(FlexBox)`
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+
+  font-family: MiSans;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" auto;
+  color: #999999;
+  align-items: center;
+  margin-bottom: 10px;
+  > img {
+    cursor: pointer;
+    margin-left: 12px;
+  }
+  @media (max-width: 1200px) {
+    font-family: MiSans;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: normal;
+    letter-spacing: 0em;
+    color: #abb1b9;
+    > img {
+      margin-left: 8px;
+    }
+  }
+`;
+const EarnValue = styled(FlexBox)`
+  margin-top: 10px;
+  align-items: center;
+  font-family: Space Grotesk;
+  font-size: 30px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" auto;
+  color: #ffffff;
+  > div {
+    font-family: MiSans;
+    font-size: 20px;
+    font-weight: normal;
+    line-height: 20px;
+    letter-spacing: 0em;
+    color: #ffffff;
+    margin: 0px 2px 0px 8px;
+  }
+  @media (max-width: 1200px) {
+    font-family: MiSans;
+    font-size: 24px;
+    font-weight: normal;
+    line-height: normal;
+    letter-spacing: 0em;
+    color: #ffffff;
+    > div {
+      font-family: MiSans;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: normal;
+      letter-spacing: 0em;
+      color: #ffffff;
+      margin: 0px 4px;
+    }
+    > img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+`;
+
+const InvitedNum = styled.div`
+  font-family: MiSans;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0em;
+  color: #999999;
+`;
+const InvitedLink = styled(FlexBox)`
+  align-items: center;
+  font-family: MiSans;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0em;
+  color: #ffffff;
+  margin: 15px 0px;
+  > img {
+    cursor: pointer;
+    margin-left: 24px;
+  }
+`;
+const InvitedTip = styled.div`
+  font-family: Space Grotesk;
+  font-size: 12px;
+  font-weight: normal;
+  line-height: normal;
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" auto;
+  color: #999999;
+`;
+const WalletTip = styled.div`
+  margin: 20px 0px 16px;
+  font-family: MiSans;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" auto;
+  color: #abb1b9;
+`;
 
 export default function ModalContent(props: any) {
   const { t } = useTranslation();
@@ -292,6 +483,7 @@ export default function ModalContent(props: any) {
     console.log(page);
     setPageNum(page);
   };
+  const { address: web3ModalAccount, isConnected } = useAppKitAccount();
 
   const itemRender: PaginationProps["itemRender"] = (
     _,
@@ -315,9 +507,19 @@ export default function ModalContent(props: any) {
     return originalElement;
   };
 
+  const CopyCodeFun = (code: string) => {
+    // if (!props?.userInfo?.isBind) return addMessage(t("9"));
+    if (!web3ModalAccount) {
+      return addMessage(t("Please Connect wallet"));
+    } else {
+      copyFun(code);
+      addMessage(t("Copied successfully"));
+    }
+  };
+
   useEffect(() => {
     if (!!token) {
-      getRefereeData({ pageNum: PageNum, pageSize: 10 }).then((res: any) => {
+      getRefereeList({ pageNum: PageNum, pageSize: 10 }).then((res: any) => {
         if (res.code !== 200) return;
         setRecordList3(res?.data || {});
       });
@@ -337,7 +539,7 @@ export default function ModalContent(props: any) {
     >
       <ModalContainer>
         <ModalContainer_Title>
-          {t("Recommended list")}
+          {t("我的邀请码")}
           <ModalContainer_Close>
             {" "}
             <img
@@ -350,14 +552,75 @@ export default function ModalContent(props: any) {
             />
           </ModalContainer_Close>
         </ModalContainer_Title>
+        <MyInvitedInfo>
+          {!!token ? (
+            <>
+              <MyInvitedInfo_Earns>
+                <Earn>
+                  {t("推荐奖励")}
+                  <EarnValue>
+                    {RecordList3?.awardNum ?? 0} <div>PiJS</div>{" "}
+                    <img src={goIcon} alt="" />
+                  </EarnValue>
+                </Earn>
+                <Code>
+                  <Title>
+                    {t("我的推荐码")}{" "}
+                    <img
+                      src={copy}
+                      alt=""
+                      onClick={() => {
+                        CopyCodeFun(props?.userInfo?.inviteCode);
+                      }}
+                    />
+                  </Title>
+                  <div className="codes">
+                    {String(props?.userInfo?.inviteCode)
+                      ?.split("")
+                      ?.map((item: any, index: any) => (
+                        <div key={index}>{item}</div>
+                      ))}
+                  </div>
+                </Code>
+              </MyInvitedInfo_Earns>
+              <InvitedNum>
+                {t("Invited users")} {RecordList3?.refereeNum ?? 0}
+              </InvitedNum>
+              <InvitedLink>
+                {t("Referral Link")}：
+                {window.location.origin +
+                  `?inviteCode=${props?.userInfo?.inviteCode}`}{" "}
+                <img
+                  src={copy}
+                  alt=""
+                  onClick={() => {
+                    CopyCodeFun(
+                      window.location.origin +
+                        `?inviteCode=${props?.userInfo?.inviteCode}`
+                    );
+                  }}
+                />
+              </InvitedLink>
+            </>
+          ) : (
+            <WalletTip>{t("请连接您的钱包")}</WalletTip>
+          )}
+
+          <InvitedTip>
+            {t(
+              "分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5% 的节点返佣奖励！"
+            )}
+          </InvitedTip>
+        </MyInvitedInfo>
+
         <ModalContainer_Content>
+          {t("邀请列表")}
           <Table>
             <Table_Title>
               <Items>
-                <div>No</div>
-                <div>Address</div>
-                <div>Number of benefits</div>
-                <div>Time</div>
+                <div>{t("Number")}</div>
+                <div>{t("Address")}</div>
+                <div>{t("Contribution Rewards")}</div>
               </Items>
             </Table_Title>
             <Table_Content>
@@ -366,14 +629,10 @@ export default function ModalContent(props: any) {
                   <div>{Number(index) + (Number(PageNum) - 1) * 10 + 1}</div>
                   <div>{AddrHandle(item?.address, 6, 4)}</div>
                   <div>{item?.num}</div>
-                  <div>
-                    {dateFormat("YYYY-mm-dd HH:MM:SS", new Date(item?.time))}
-                  </div>
                 </Items>
               ))}
             </Table_Content>
           </Table>
-
           <PaginationContainer>
             <Pagination
               current={PageNum}

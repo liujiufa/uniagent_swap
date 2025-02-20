@@ -38,6 +38,12 @@ import dropdownIcon from "../assets/image/Swap/dropdownIcon.svg";
 import addIcon from "../assets/image/Swap/addIcon.png";
 import nodata from "../assets/image/Swap/nodata.png";
 import setIcon from "../assets/image/Swap/setIcon.svg";
+import piIcon from "../assets/image/Swap/piIcon.png";
+import usdtIcon from "../assets/image/Swap/usdtIcon.png";
+import pijsIcon from "../assets/image/Swap/pijsIcon.png";
+import uacIcon from "../assets/image/Swap/uacIcon.png";
+import MainBg from "../assets/image/layout/MainBg.png";
+import mainBgMobile from "../assets/image/layout/mainBgMobile.png";
 
 import copyFun from "copy-to-clipboard";
 import { Contracts } from "../web3";
@@ -59,13 +65,37 @@ import Web3 from "web3";
 import { isNumber } from "lodash";
 import AddLiquidityModalContentSuccess from "../components/AddLiquidityModalContentSuccess";
 import { Modal } from "antd";
-const HomeContainerBox = styled(ContainerBox)`
-  max-width: 748px;
-  padding: 56px 15px;
+import Footer from "../components/Footer";
+const HomeContainerBox = styled.div<{ src: string }>`
+  padding-top: 64px;
   width: 100%;
-  margin: auto;
-  @media (max-width: 1200px) {
-    padding: 56px 15px;
+  /* min-height: 100vh; */
+  background-image: ${({ src }) => `url(${src})`};
+  background-position: center;
+  background-size: cover; //根据你图片的大小自定义
+  background-repeat: no-repeat;
+  overflow: hidden;
+  > div {
+    &:first-child {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      min-height: calc(100vh - 320px);
+      height: 100%;
+      width: 100%;
+      max-width: 778px;
+      padding: 0px 15px;
+      padding: 0px 15px 226px;
+      width: 100%;
+      margin: auto;
+      @media (max-width: 1200px) {
+        padding: 0px 15px 226px;
+      }
+    }
+  }
+
+  @media (max-width: 1400px) {
+    background-size: 100% 100%;
   }
 `;
 export const GameTooltip = styled.div``;
@@ -416,7 +446,7 @@ const SwapContainer_Tabs = styled(FlexSBCBox)`
     margin-top: 30px;
     padding: 6px;
     > div {
-      padding: 11px;
+      padding: 6px;
 
       font-family: "Space Grotesk";
       font-size: 18px;
@@ -939,16 +969,28 @@ const Confirm_Btn = styled(FlexCCBox)`
 
 let tokenList: any = [
   {
-    icon: "",
+    icon: usdtIcon,
     name: "USDT",
     tokenAddress: contractAddress?.USDTUNI,
     symbol: "Tether USD",
   },
   {
-    icon: "",
+    icon: uacIcon,
     name: "UAC",
     tokenAddress: contractAddress?.WUAC,
     symbol: "UniAgent",
+  },
+  {
+    icon: piIcon,
+    name: "Pi",
+    tokenAddress: contractAddress?.WUAC,
+    symbol: "Pi Network",
+  },
+  {
+    icon: pijsIcon,
+    name: "PIJS",
+    tokenAddress: contractAddress?.WUAC,
+    symbol: "PIJS",
   },
 ];
 let timer: any = null;
@@ -957,6 +999,8 @@ export default function Rank() {
   const { t, i18n } = useTranslation();
   const Navigate = useNavigate();
   let dispatch = useDispatch();
+  const { open, close } = useAppKit();
+
   const { caipNetwork, caipNetworkId, chainId, switchNetwork } =
     useAppKitNetwork();
   const [IsBindState, setIsBindState] = useState(false);
@@ -981,9 +1025,9 @@ export default function Rank() {
   const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const { isNoGasFun } = useNoGas();
   const [CoinListObj, setCoinListObj] = useState<any>([]);
-  const [FromToken, setFromToken] = useState("UAC");
+  const [FromToken, setFromToken] = useState("Pi");
   const [ToToken, setToToken] = useState("USDT");
-  const [AddLiquidityToken1, setAddLiquidityToken1] = useState("UAC");
+  const [AddLiquidityToken1, setAddLiquidityToken1] = useState("Pi");
   const [AddLiquidityToken2, setAddLiquidityToken2] = useState("USDT");
   const [CurrentSelectedState, setCurrentSelectedState] = useState("from");
   const [AddLiquidityTokenType, setAddLiquidityTokenType] = useState(1);
@@ -1081,10 +1125,14 @@ export default function Rank() {
             ...item,
             balance: Web3.utils.fromWei(value + "", "ether") || 0,
           };
+        } else {
+          item = item;
         }
         Arr.push(item);
       }
       setCoinListObj(Arr || []);
+    } else {
+      setCoinListObj(tokenList);
     }
   };
   const SelectTokenFun = (tokenName: any) => {
@@ -1148,6 +1196,8 @@ export default function Rank() {
   }
 
   const SwapFun = async () => {
+    return addMessage("Coming soon");
+
     if (String(FromToken) === "USDT") {
       handleTransaction(
         InputAmount + "",
@@ -1264,6 +1314,8 @@ export default function Rank() {
   };
 
   const AddLiquidityFun = async () => {
+    return addMessage("Coming soon");
+
     let USDTAmount =
       String(AddLiquidityToken1) === "USDT"
         ? AddLiquidityTokenAmount1
@@ -1352,6 +1404,8 @@ export default function Rank() {
     );
   };
   const RemoveLiquidityFun = async () => {
+    return addMessage("Coming soon");
+
     LPhandleTransaction(
       (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
         Number(LPBalance ?? 0) +
@@ -1678,7 +1732,17 @@ export default function Rank() {
   }, [web3ModalAccount, token, PercentValue]);
 
   const BtnBox = () => {
-    if (!web3ModalAccount) return <Btn isActive={true}>Connect Wallet</Btn>;
+    if (!web3ModalAccount)
+      return (
+        <Btn
+          isActive={true}
+          onClick={() => {
+            open();
+          }}
+        >
+          {t("连接钱包")}
+        </Btn>
+      );
     if (!InputAmount || Number(InputAmount) <= 0)
       return <Btn isActive={false}>Please enter amount</Btn>;
 
@@ -1698,12 +1762,22 @@ export default function Rank() {
           SwapFun();
         }}
       >
-        {String(FromToken) === "UAC" ? "Exchange" : "Authorization"}
+        {String(FromToken) === "UAC" ? t("交易") : t("授权")}
       </Btn>
     );
   };
   const AddLiquidityBtnBox = () => {
-    if (!web3ModalAccount) return <Btn isActive={true}>Connect Wallet</Btn>;
+    if (!web3ModalAccount)
+      return (
+        <Btn
+          isActive={true}
+          onClick={() => {
+            open();
+          }}
+        >
+          {t("连接钱包")}
+        </Btn>
+      );
     if (
       !AddLiquidityTokenAmount1 ||
       !AddLiquidityTokenAmount2 ||
@@ -1741,12 +1815,22 @@ export default function Rank() {
           AddLiquidityFun();
         }}
       >
-        Authorization
+        {t("授权")}
       </Btn>
     );
   };
   const RemoveLiquidityBtn = () => {
-    if (!web3ModalAccount) return <Btn isActive={true}>Connect Wallet</Btn>;
+    if (!web3ModalAccount)
+      return (
+        <Btn
+          isActive={true}
+          onClick={() => {
+            open();
+          }}
+        >
+          {t("连接钱包")}
+        </Btn>
+      );
     if (String(PercentValue) === "0%")
       return <Btn isActive={false}>Enter withdrawal percentage</Btn>;
 
@@ -1757,322 +1841,375 @@ export default function Rank() {
           RemoveLiquidityFun();
         }}
       >
-        Authorize LP
+        {t("授权")} LP
       </Btn>
     );
   };
 
   return (
-    <HomeContainerBox>
-      <SwapContainer_Tabs>
-        <div
-          className={String(TabActive) === "Trade" ? "active" : ""}
-          onClick={() => {
-            setTabActive("Trade");
-          }}
-        >
-          Trade
-        </div>
-        <div
-          className={String(TabActive) === "TWAP" ? "active" : ""}
-          onClick={() => {
-            return addMessage("Coming soon");
-            setTabActive("TWAP");
-          }}
-        >
-          TWAP
-        </div>
-        <div
-          className={String(TabActive) === "Liquidity" ? "active" : ""}
-          onClick={() => {
-            setTabActive("Liquidity");
-          }}
-        >
-          Liquidity
-        </div>
-      </SwapContainer_Tabs>
-      {String(TabActive) === "Trade" && (
-        <SwapContainer>
-          <SwapContainer_Title>UniAgent Swap</SwapContainer_Title>
-          <SwapItem>
-            <SwapItem_Title>
-              Transfer out{" "}
-              <div>
-                Balance:{" "}
-                {NumSplic1(
-                  CoinListObj?.find(
-                    (item: any) => String(item?.name) === String(FromToken)
-                  )?.balance,
-                  4
-                ) || 0}
-              </div>
-            </SwapItem_Title>
-
-            <Item>
-              <Item_Left
-                onClick={() => {
-                  setCurrentSelectedState("from");
-                  setSelectTokensModalState(true);
-                }}
-              >
-                <img src={roundIcon} alt="" />
-                <div className="coin_info">
-                  {/* <div className="chain">BSC Chain</div> */}
-                  <div className="coin">{FromToken}</div>
-                </div>
-                <img src={dropIcon} alt="" />
-              </Item_Left>
-              <Devider></Devider>
-              <Item_Right>
-                <input type="text" value={InputAmount} onChange={InputFun} />
-              </Item_Right>
-            </Item>
-          </SwapItem>
-          <SwapToIcon>
-            <img src={toSwaps} alt="" />
-          </SwapToIcon>
-
-          <SwapItem>
-            <SwapItem_Title style={{ marginTop: "0px" }}>
-              Receive{" "}
-              {/* <div>
-              Balance: 100 <span>All</span>
-            </div> */}
-            </SwapItem_Title>
-
-            <Item>
-              <Item_Left
-                onClick={() => {
-                  setCurrentSelectedState("to");
-                  setSelectTokensModalState(true);
-                }}
-              >
-                <img src={roundIcon} alt="" />
-                <div className="coin_info">
-                  {/* <div className="chain">UniAgent Chain</div> */}
-                  <div className="coin">{ToToken}</div>
-                </div>
-                <img src={dropIcon} alt="" />
-              </Item_Left>
-              <Devider></Devider>
-              <Item_Right>
-                <input
-                  type="text"
-                  value={
-                    Number(ReceiveAmount) > 0
-                      ? NumSplic1(ReceiveAmount, 4)
-                      : "-"
-                  }
-                  readOnly={true}
-                />
-              </Item_Right>
-            </Item>
-          </SwapItem>
-
-          {/* <ReceiveItem>
-          Receiving Address
-          <ReceiveBox>
-            <input
-              type="text"
-              placeholder="Please enter the receiving address"
-            />{" "}
-            <img src={receiveIcon} alt="" />
-          </ReceiveBox>
-        </ReceiveItem> */}
-
-          {/* <Btn isActive={true}>Connect Wallet</Btn> */}
-          {BtnBox()}
-
-          <SwapInfo>
-            {/* <div>
-            Exchange Path <span>uniAgent Bridge</span>
-          </div> */}
-            <div>
-              Reference Price{" "}
-              <span>
-                1 {FromToken} = {NumSplic1(OneUACToUSDT, 4)} {ToToken}
-              </span>
-            </div>
-            <div>
-              Price Impact <span>{NumSplic1(PriceImpact, 4)}%</span>
-            </div>
-            <div>
-              Slippage Limit{" "}
-              <span>
-                {SlippageValue ?? "-"}%{" "}
-                <img
-                  src={setIcon}
-                  alt=""
-                  onClick={() => {
-                    setSettingSlippage(true);
-                  }}
-                />
-              </span>
-            </div>
-
-            <div>
-              Minimum Received{" "}
-              <span>
-                {NumSplic1(
-                  Number(ReceiveAmount) * (1 - Number(SlippageValue) / 100),
-                  4
-                )}{" "}
-                {ToToken}
-              </span>
-            </div>
-            <div>
-              Swap Path<span>UniAgent Swap</span>
-            </div>
-          </SwapInfo>
-        </SwapContainer>
-      )}
-      {String(TabActive) === "Liquidity" &&
-        (Number(LiquidityType) === 1 ? (
-          <SwapContainer>
-            <SwapContainer_Title
+    <>
+      <HomeContainerBox src={width >= 1400 ? MainBg : mainBgMobile}>
+        <div>
+          <SwapContainer_Tabs>
+            <div
+              className={String(TabActive) === "Trade" ? "active" : ""}
               onClick={() => {
-                setLiquidityType(2);
+                setTabActive("Trade");
               }}
             >
-              {" "}
-              <img src={toIcon} alt="" /> Remove UAC-USDT Liquidity
-            </SwapContainer_Title>
-
-            <SwapItem_Title>Enter Withdrawal Percentage</SwapItem_Title>
-            <SwapItem>
-              <LiquidityItem>
-                <input type="text" value={PercentValue} readOnly={true} />
-                <PercentageBox>
-                  <div
-                    onClick={() => {
-                      setPercentValue("25%");
-                    }}
-                  >
-                    25%
-                  </div>
-                  <div
-                    onClick={() => {
-                      setPercentValue("50%");
-                    }}
-                  >
-                    50%
-                  </div>
-                  <div
-                    onClick={() => {
-                      setPercentValue("75%");
-                    }}
-                  >
-                    75%
-                  </div>
-                  <div
-                    onClick={() => {
-                      setPercentValue("100%");
-                    }}
-                  >
-                    100%
-                  </div>
-                </PercentageBox>
-              </LiquidityItem>
-            </SwapItem>
-            <SwapItemBottom>
-              <SwapItem_Title_Item>
-                <div>Received Amount</div>
-              </SwapItem_Title_Item>
-              <ReceivedBox>
-                <ReceivedBox_Item>
+              {t("交易")}
+            </div>
+            <div
+              className={String(TabActive) === "TWAP" ? "active" : ""}
+              onClick={() => {
+                return addMessage("Coming soon");
+                setTabActive("TWAP");
+              }}
+            >
+              TWAP
+            </div>
+            <div
+              className={String(TabActive) === "Liquidity" ? "active" : ""}
+              onClick={() => {
+                setTabActive("Liquidity");
+              }}
+            >
+              {t("流动性")}
+            </div>
+          </SwapContainer_Tabs>
+          {String(TabActive) === "Trade" && (
+            <SwapContainer>
+              <SwapContainer_Title>PIJSwap</SwapContainer_Title>
+              <SwapItem>
+                <SwapItem_Title>
+                  {t("发送")}{" "}
                   <div>
-                    <img src={roundIcon} alt="" />
-                    {AddLiquidityToken1}
-                  </div>
-                  <div>
+                    {t("余额")}:{" "}
                     {NumSplic1(
-                      (Number(AddLiquidityTokenBalance1) *
-                        parseFloat(String(PercentValue)?.replace("%", ""))) /
-                        100,
+                      CoinListObj?.find(
+                        (item: any) => String(item?.name) === String(FromToken)
+                      )?.balance,
+                      4
+                    ) || 0}
+                  </div>
+                </SwapItem_Title>
+
+                <Item>
+                  <Item_Left
+                    onClick={() => {
+                      setCurrentSelectedState("from");
+                      setSelectTokensModalState(true);
+                    }}
+                  >
+                    <img
+                      src={
+                        tokenList?.find(
+                          (item: any) =>
+                            String(item?.name) === String(FromToken)
+                        )?.icon
+                      }
+                      alt=""
+                    />
+                    <div className="coin_info">
+                      {/* <div className="chain">BSC Chain</div> */}
+                      <div className="coin">{FromToken}</div>
+                    </div>
+                    <img src={dropIcon} alt="" />
+                  </Item_Left>
+                  <Devider></Devider>
+                  <Item_Right>
+                    <input
+                      type="text"
+                      value={InputAmount}
+                      onChange={InputFun}
+                    />
+                  </Item_Right>
+                </Item>
+              </SwapItem>
+              <SwapToIcon>
+                <img src={toSwaps} alt="" />
+              </SwapToIcon>
+
+              <SwapItem>
+                <SwapItem_Title style={{ marginTop: "0px" }}>
+                  {t("接收")}{" "}
+                  {/* <div>
+              Balance: 100 <span>All</span>
+            </div> */}
+                </SwapItem_Title>
+
+                <Item>
+                  <Item_Left
+                    onClick={() => {
+                      setCurrentSelectedState("to");
+                      setSelectTokensModalState(true);
+                    }}
+                  >
+                    <img
+                      src={
+                        tokenList?.find(
+                          (item: any) => String(item?.name) === String(ToToken)
+                        )?.icon
+                      }
+                      alt=""
+                    />
+                    <div className="coin_info">
+                      {/* <div className="chain">UniAgent Chain</div> */}
+                      <div className="coin">{ToToken}</div>
+                    </div>
+                    <img src={dropIcon} alt="" />
+                  </Item_Left>
+                  <Devider></Devider>
+                  <Item_Right>
+                    <input
+                      type="text"
+                      value={
+                        Number(ReceiveAmount) > 0
+                          ? NumSplic1(ReceiveAmount, 4)
+                          : "-"
+                      }
+                      readOnly={true}
+                    />
+                  </Item_Right>
+                </Item>
+              </SwapItem>
+
+              {BtnBox()}
+
+              <SwapInfo>
+                <div>
+                  {t("参考价格")}{" "}
+                  <span>
+                    1 {FromToken} = {NumSplic1(OneUACToUSDT, 4)} {ToToken}
+                  </span>
+                </div>
+                <div>
+                  {t("价格影响")} <span>{NumSplic1(PriceImpact, 4)}%</span>
+                </div>
+                <div>
+                  {t("滑点限制")}{" "}
+                  <span>
+                    {SlippageValue ?? "-"}%{" "}
+                    <img
+                      src={setIcon}
+                      alt=""
+                      onClick={() => {
+                        setSettingSlippage(true);
+                      }}
+                    />
+                  </span>
+                </div>
+
+                <div>
+                  {t("最低接收数量")}{" "}
+                  <span>
+                    {NumSplic1(
+                      Number(ReceiveAmount) * (1 - Number(SlippageValue) / 100),
                       4
                     )}{" "}
-                  </div>
-                </ReceivedBox_Item>
-                <ReceivedBox_Item>
-                  <div>
-                    <img src={roundIcon} alt="" />
-                    {AddLiquidityToken2}
-                  </div>
-                  <div>
-                    {NumSplic1(
-                      (Number(AddLiquidityTokenBalance2) *
-                        parseFloat(String(PercentValue)?.replace("%", ""))) /
-                        100,
-                      4
-                    )}
-                  </div>
-                </ReceivedBox_Item>
-              </ReceivedBox>
-            </SwapItemBottom>
-            <LiquidityPrice>
-              Reference Price 1 {FromToken} = {NumSplic1(OneUACToUSDT, 4)}{" "}
-              {ToToken}
-            </LiquidityPrice>
-
-            {RemoveLiquidityBtn()}
-          </SwapContainer>
-        ) : (
-          <SwapContainer>
-            <SwapContainer_Title>
-              {" "}
-              <img src={toIcon} alt="" /> Add V2 Liquidity
-            </SwapContainer_Title>
-
-            <SelectTokenPair>
-              <SwapItem_Title>Select Token Pair</SwapItem_Title>
-              <Tokens>
-                <Token
-                  onClick={() => {
-                    setAddLiquidityTokenType(1);
-                    setSelectTokensAddLiquidityModalState(true);
-                  }}
-                >
-                  <img src={roundIcon} alt="" />
-                  <div>{AddLiquidityToken1}</div>
-                  <img src={dropdownIcon} alt="" />
-                </Token>
-                <img src={addIcon} alt="" />
-                <Token
-                  onClick={() => {
-                    setAddLiquidityTokenType(2);
-                    setSelectTokensAddLiquidityModalState(true);
-                  }}
-                >
-                  <img src={roundIcon} alt="" />
-                  <div>{AddLiquidityToken2}</div>
-                  <img src={dropdownIcon} alt="" />
-                </Token>
-              </Tokens>
-            </SelectTokenPair>
-            <SwapItem_Title>Enter Amount</SwapItem_Title>
-
-            <SwapItem>
-              <SwapItem_Title_Item>
-                <div>
-                  <img src={roundIcon} alt="" />
-                  <div>{AddLiquidityToken1}</div>
-
-                  <img src={copyIcon} alt="" />
+                    {ToToken}
+                  </span>
                 </div>
                 <div>
-                  Balance:{" "}
-                  {NumSplic1(
-                    CoinListObj?.find(
-                      (item: any) =>
-                        String(item?.name) === String(AddLiquidityToken1)
-                    )?.balance,
-                    4
-                  ) || 0}
+                  {t("交换路径")}
+                  <span>PIJSwap</span>
                 </div>
-              </SwapItem_Title_Item>
+              </SwapInfo>
+            </SwapContainer>
+          )}
+          {String(TabActive) === "Liquidity" &&
+            (Number(LiquidityType) === 1 ? (
+              <SwapContainer>
+                <SwapContainer_Title
+                  onClick={() => {
+                    setLiquidityType(2);
+                  }}
+                >
+                  {" "}
+                  <img src={toIcon} alt="" /> Remove UAC-USDT Liquidity
+                </SwapContainer_Title>
 
-              <Item>
-                {/* <Item_Left>
+                <SwapItem_Title>Enter Withdrawal Percentage</SwapItem_Title>
+                <SwapItem>
+                  <LiquidityItem>
+                    <input type="text" value={PercentValue} readOnly={true} />
+                    <PercentageBox>
+                      <div
+                        onClick={() => {
+                          setPercentValue("25%");
+                        }}
+                      >
+                        25%
+                      </div>
+                      <div
+                        onClick={() => {
+                          setPercentValue("50%");
+                        }}
+                      >
+                        50%
+                      </div>
+                      <div
+                        onClick={() => {
+                          setPercentValue("75%");
+                        }}
+                      >
+                        75%
+                      </div>
+                      <div
+                        onClick={() => {
+                          setPercentValue("100%");
+                        }}
+                      >
+                        100%
+                      </div>
+                    </PercentageBox>
+                  </LiquidityItem>
+                </SwapItem>
+                <SwapItemBottom>
+                  <SwapItem_Title_Item>
+                    <div>Received Amount</div>
+                  </SwapItem_Title_Item>
+                  <ReceivedBox>
+                    <ReceivedBox_Item>
+                      <div>
+                        <img
+                          src={
+                            tokenList?.find(
+                              (item: any) =>
+                                String(item?.name) ===
+                                String(AddLiquidityToken1)
+                            )?.icon
+                          }
+                          alt=""
+                        />
+                        {AddLiquidityToken1}
+                      </div>
+                      <div>
+                        {NumSplic1(
+                          (Number(AddLiquidityTokenBalance1) *
+                            parseFloat(
+                              String(PercentValue)?.replace("%", "")
+                            )) /
+                            100,
+                          4
+                        )}{" "}
+                      </div>
+                    </ReceivedBox_Item>
+                    <ReceivedBox_Item>
+                      <div>
+                        <img
+                          src={
+                            tokenList?.find(
+                              (item: any) =>
+                                String(item?.name) ===
+                                String(AddLiquidityToken2)
+                            )?.icon
+                          }
+                          alt=""
+                        />
+                        {AddLiquidityToken2}
+                      </div>
+                      <div>
+                        {NumSplic1(
+                          (Number(AddLiquidityTokenBalance2) *
+                            parseFloat(
+                              String(PercentValue)?.replace("%", "")
+                            )) /
+                            100,
+                          4
+                        )}
+                      </div>
+                    </ReceivedBox_Item>
+                  </ReceivedBox>
+                </SwapItemBottom>
+                <LiquidityPrice>
+                  Reference Price 1 {FromToken} = {NumSplic1(OneUACToUSDT, 4)}{" "}
+                  {ToToken}
+                </LiquidityPrice>
+
+                {RemoveLiquidityBtn()}
+              </SwapContainer>
+            ) : (
+              <SwapContainer>
+                <SwapContainer_Title>
+                  {" "}
+                  <img src={toIcon} alt="" /> Add V2 Liquidity
+                </SwapContainer_Title>
+
+                <SelectTokenPair>
+                  <SwapItem_Title>Select Token Pair</SwapItem_Title>
+                  <Tokens>
+                    <Token
+                      onClick={() => {
+                        setAddLiquidityTokenType(1);
+                        setSelectTokensAddLiquidityModalState(true);
+                      }}
+                    >
+                      <img
+                        src={
+                          tokenList?.find(
+                            (item: any) =>
+                              String(item?.name) === String(AddLiquidityToken1)
+                          )?.icon
+                        }
+                        alt=""
+                      />
+                      <div>{AddLiquidityToken1}</div>
+                      <img src={dropdownIcon} alt="" />
+                    </Token>
+                    <img src={addIcon} alt="" />
+                    <Token
+                      onClick={() => {
+                        setAddLiquidityTokenType(2);
+                        setSelectTokensAddLiquidityModalState(true);
+                      }}
+                    >
+                      <img
+                        src={
+                          tokenList?.find(
+                            (item: any) =>
+                              String(item?.name) === String(AddLiquidityToken2)
+                          )?.icon
+                        }
+                        alt=""
+                      />
+                      <div>{AddLiquidityToken2}</div>
+                      <img src={dropdownIcon} alt="" />
+                    </Token>
+                  </Tokens>
+                </SelectTokenPair>
+                <SwapItem_Title>Enter Amount</SwapItem_Title>
+
+                <SwapItem>
+                  <SwapItem_Title_Item>
+                    <div>
+                      <img
+                        src={
+                          tokenList?.find(
+                            (item: any) =>
+                              String(item?.name) === String(AddLiquidityToken1)
+                          )?.icon
+                        }
+                        alt=""
+                      />
+                      <div>{AddLiquidityToken1}</div>
+
+                      <img src={copyIcon} alt="" />
+                    </div>
+                    <div>
+                      Balance:{" "}
+                      {NumSplic1(
+                        CoinListObj?.find(
+                          (item: any) =>
+                            String(item?.name) === String(AddLiquidityToken1)
+                        )?.balance,
+                        4
+                      ) || 0}
+                    </div>
+                  </SwapItem_Title_Item>
+
+                  <Item>
+                    {/* <Item_Left>
                 <img src={roundIcon} alt="" />
                 <div className="coin_info">
                   <div className="coin">UAC</div>
@@ -2080,43 +2217,51 @@ export default function Rank() {
                 <img src={dropIcon} alt="" />
               </Item_Left>
               <Devider></Devider> */}
-                <Item_Right>
-                  <input
-                    type="text"
-                    value={AddLiquidityTokenAmount1}
-                    onChange={(e: any) => {
-                      InputAddLiquidityFun(e, 1);
-                    }}
-                  />
-                </Item_Right>
-              </Item>
-            </SwapItem>
-            {/* <SwapToIcon>
+                    <Item_Right>
+                      <input
+                        type="text"
+                        value={AddLiquidityTokenAmount1}
+                        onChange={(e: any) => {
+                          InputAddLiquidityFun(e, 1);
+                        }}
+                      />
+                    </Item_Right>
+                  </Item>
+                </SwapItem>
+                {/* <SwapToIcon>
             <img src={toSwaps} alt="" />
           </SwapToIcon> */}
 
-            <SwapItemBottom>
-              <SwapItem_Title_Item>
-                <div>
-                  <img src={roundIcon} alt="" />
-                  <div>{AddLiquidityToken2}</div>
+                <SwapItemBottom>
+                  <SwapItem_Title_Item>
+                    <div>
+                      <img
+                        src={
+                          tokenList?.find(
+                            (item: any) =>
+                              String(item?.name) === String(AddLiquidityToken2)
+                          )?.icon
+                        }
+                        alt=""
+                      />
+                      <div>{AddLiquidityToken2}</div>
 
-                  <img src={copyIcon} alt="" />
-                </div>
-                <div>
-                  Balance:{" "}
-                  {NumSplic1(
-                    CoinListObj?.find(
-                      (item: any) =>
-                        String(item?.name) === String(AddLiquidityToken2)
-                    )?.balance,
-                    4
-                  ) || 0}
-                </div>
-              </SwapItem_Title_Item>
+                      <img src={copyIcon} alt="" />
+                    </div>
+                    <div>
+                      Balance:{" "}
+                      {NumSplic1(
+                        CoinListObj?.find(
+                          (item: any) =>
+                            String(item?.name) === String(AddLiquidityToken2)
+                        )?.balance,
+                        4
+                      ) || 0}
+                    </div>
+                  </SwapItem_Title_Item>
 
-              <Item>
-                {/* <Item_Left>
+                  <Item>
+                    {/* <Item_Left>
                 <img src={roundIcon} alt="" />
                 <div className="coin_info">
                   <div className="coin">UAC</div>
@@ -2124,19 +2269,19 @@ export default function Rank() {
                 <img src={dropIcon} alt="" />
               </Item_Left>
               <Devider></Devider> */}
-                <Item_Right>
-                  <input
-                    type="text"
-                    value={NumSplic1(AddLiquidityTokenAmount2, 4)}
-                    onChange={(e: any) => {
-                      InputAddLiquidityFun(e, 2);
-                    }}
-                  />
-                </Item_Right>
-              </Item>
-            </SwapItemBottom>
+                    <Item_Right>
+                      <input
+                        type="text"
+                        value={NumSplic1(AddLiquidityTokenAmount2, 4)}
+                        onChange={(e: any) => {
+                          InputAddLiquidityFun(e, 2);
+                        }}
+                      />
+                    </Item_Right>
+                  </Item>
+                </SwapItemBottom>
 
-            {/* <ReceiveItem>
+                {/* <ReceiveItem>
           Receiving Address
           <ReceiveBox>
             <input
@@ -2147,152 +2292,157 @@ export default function Rank() {
           </ReceiveBox>
         </ReceiveItem> */}
 
-            {AddLiquidityBtnBox()}
+                {AddLiquidityBtnBox()}
 
-            <SwapInfo>
-              <SwapInfo_Title>Your Position</SwapInfo_Title>
-              {Number(LPBalance) > 0 ? (
-                <SwapInfo_Content>
-                  <SwapInfo_Item>
-                    <SwapInfo_Item_Left>
-                      <div>
-                        <img src={roundIcon} alt="" />
-                        <img src={roundIcon} alt="" />
-                        {AddLiquidityToken1}-{AddLiquidityToken2} V2 LP
-                      </div>
-                      {NumSplic1(LPBalance, 4)}LP
-                    </SwapInfo_Item_Left>
-                    <SwapInfo_Item_Right>
-                      <Remove_Btn
-                        onClick={() => {
-                          setLiquidityType(true);
-                        }}
-                      >
-                        Remove
-                      </Remove_Btn>
-                    </SwapInfo_Item_Right>
-                  </SwapInfo_Item>
-                </SwapInfo_Content>
-              ) : (
-                <SwapInfo_Content>
-                  <NoData>
-                    <img src={nodata} alt="" />
-                    No current positions
-                  </NoData>
-                </SwapInfo_Content>
-              )}
-            </SwapInfo>
-          </SwapContainer>
-        ))}
+                <SwapInfo>
+                  <SwapInfo_Title>Your Position</SwapInfo_Title>
+                  {Number(LPBalance) > 0 ? (
+                    <SwapInfo_Content>
+                      <SwapInfo_Item>
+                        <SwapInfo_Item_Left>
+                          <div>
+                            <img src={roundIcon} alt="" />
+                            <img src={roundIcon} alt="" />
+                            {AddLiquidityToken1}-{AddLiquidityToken2} V2 LP
+                          </div>
+                          {NumSplic1(LPBalance, 4)}LP
+                        </SwapInfo_Item_Left>
+                        <SwapInfo_Item_Right>
+                          <Remove_Btn
+                            onClick={() => {
+                              setLiquidityType(true);
+                            }}
+                          >
+                            Remove
+                          </Remove_Btn>
+                        </SwapInfo_Item_Right>
+                      </SwapInfo_Item>
+                    </SwapInfo_Content>
+                  ) : (
+                    <SwapInfo_Content>
+                      <NoData>
+                        <img src={nodata} alt="" />
+                        No current positions
+                      </NoData>
+                    </SwapInfo_Content>
+                  )}
+                </SwapInfo>
+              </SwapContainer>
+            ))}
 
-      <AllModal
-        visible={SettingSlippage}
-        className="Modal"
-        centered
-        width={"483px"}
-        closable={false}
-        footer={null}
-      >
-        <ModalContainer>
-          <ModalContainer_Title>
-            {t("Setting Slippage")}
-            <ModalContainer_Close>
-              {" "}
-              <img
-                src={closeIcon}
-                alt=""
-                onClick={() => {
-                  setSettingSlippage(false);
-                }}
-              />
-            </ModalContainer_Close>
-          </ModalContainer_Title>
-          <ModalContainer_Content>
-            <ModalContainer_Content_Tip>
-              Set max slippage (default 5%)
-            </ModalContainer_Content_Tip>
-            <ModalContainer_Content_Input>
-              <input
-                type="text"
-                value={SlippageValue}
-                onChange={(e: any) => {
-                  setSlippageValue(e.target.value.replace(/[^0-9.]/g, ""));
-                }}
-              />
-              %
-            </ModalContainer_Content_Input>
-            <Confirm_Btn
-              onClick={() => {
-                if (Number(SlippageValue) > 0) {
-                  setSettingSlippage(false);
-                } else {
-                  return addMessage("Please set the slippage correctly");
-                }
-              }}
-            >
-              Confirm
-            </Confirm_Btn>
-          </ModalContainer_Content>
-        </ModalContainer>
-      </AllModal>
+          <AllModal
+            visible={SettingSlippage}
+            className="Modal"
+            centered
+            width={"483px"}
+            closable={false}
+            footer={null}
+          >
+            <ModalContainer>
+              <ModalContainer_Title>
+                {t("Setting Slippage")}
+                <ModalContainer_Close>
+                  {" "}
+                  <img
+                    src={closeIcon}
+                    alt=""
+                    onClick={() => {
+                      setSettingSlippage(false);
+                    }}
+                  />
+                </ModalContainer_Close>
+              </ModalContainer_Title>
+              <ModalContainer_Content>
+                <ModalContainer_Content_Tip>
+                  Set max slippage (default 5%)
+                </ModalContainer_Content_Tip>
+                <ModalContainer_Content_Input>
+                  <input
+                    type="text"
+                    value={SlippageValue}
+                    onChange={(e: any) => {
+                      setSlippageValue(e.target.value.replace(/[^0-9.]/g, ""));
+                    }}
+                  />
+                  %
+                </ModalContainer_Content_Input>
+                <Confirm_Btn
+                  onClick={() => {
+                    if (Number(SlippageValue) > 0) {
+                      setSettingSlippage(false);
+                    } else {
+                      return addMessage("Please set the slippage correctly");
+                    }
+                  }}
+                >
+                  Confirm
+                </Confirm_Btn>
+              </ModalContainer_Content>
+            </ModalContainer>
+          </AllModal>
 
-      <ModalContent
-        ShowTipModal={ShowTipModal}
-        Tip={Tip}
-        close={() => {
-          setShowTipModal(false);
-        }}
-      />
-      <ModalContentSuccess
-        ShowTipModal={ShowSuccessTipModal}
-        Tip={Tip}
-        hash={SuccessFulHash}
-        fun={() => {
-          if (!!token) {
-            getCoinList();
-          }
-        }}
-        close={() => {
-          setShowSuccessTipModal(false);
-        }}
-      />
-      <AddLiquidityModalContentSuccess
-        ShowTipModal={ShowAddLiquiditySuccessTipModal}
-        Tip={Tip}
-        Title={Title}
-        hash={SuccessFulHash}
-        fun={() => {
-          if (!!token) {
-            getCoinList();
-          }
-        }}
-        close={() => {
-          setShowAddLiquiditySuccessTipModal(false);
-        }}
-      />
+          <ModalContent
+            ShowTipModal={ShowTipModal}
+            Tip={Tip}
+            close={() => {
+              setShowTipModal(false);
+            }}
+          />
+          <ModalContentSuccess
+            ShowTipModal={ShowSuccessTipModal}
+            Tip={Tip}
+            hash={SuccessFulHash}
+            fun={() => {
+              if (!!token) {
+                getCoinList();
+              }
+            }}
+            close={() => {
+              setShowSuccessTipModal(false);
+            }}
+          />
+          <AddLiquidityModalContentSuccess
+            ShowTipModal={ShowAddLiquiditySuccessTipModal}
+            Tip={Tip}
+            Title={Title}
+            hash={SuccessFulHash}
+            fun={() => {
+              if (!!token) {
+                getCoinList();
+              }
+            }}
+            close={() => {
+              setShowAddLiquiditySuccessTipModal(false);
+            }}
+          />
 
-      {/* Select Send Tokens */}
-      <SelectTokensModal
-        ShowTipModal={SelectTokensModalState}
-        Tip={Tip}
-        tokenList={CoinListObj}
-        close={() => {
-          setSelectTokensModalState(false);
-        }}
-        allTipFun={allTipFun}
-        SelectTokenFun={SelectTokenFun}
-      />
-      {/* Add Liquidity */}
-      <SelectTokensModal
-        ShowTipModal={SelectTokensAddLiquidityModalState}
-        Tip={Tip}
-        tokenList={CoinListObj}
-        close={() => {
-          setSelectTokensAddLiquidityModalState(false);
-        }}
-        allTipFun={allTipFun}
-        SelectTokenFun={SelectAddLiquidityTokenFun}
-      />
-    </HomeContainerBox>
+          {/* Select Send Tokens */}
+          <SelectTokensModal
+            ShowTipModal={SelectTokensModalState}
+            Tip={Tip}
+            tokenList={CoinListObj}
+            close={() => {
+              setSelectTokensModalState(false);
+            }}
+            allTipFun={allTipFun}
+            SelectTokenFun={SelectTokenFun}
+          />
+          {/* Add Liquidity */}
+          <SelectTokensModal
+            ShowTipModal={SelectTokensAddLiquidityModalState}
+            Tip={Tip}
+            tokenList={CoinListObj}
+            close={() => {
+              setSelectTokensAddLiquidityModalState(false);
+            }}
+            allTipFun={allTipFun}
+            SelectTokenFun={SelectAddLiquidityTokenFun}
+          />
+        </div>
+
+        {width >= 1400 && <Footer></Footer>}
+      </HomeContainerBox>
+      {!(width >= 1400) && <Footer></Footer>}
+    </>
   );
 }

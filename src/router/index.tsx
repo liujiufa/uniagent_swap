@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom";
 import DataPageLoding from "../components/DataPageLoding";
 import MainLayout from "../Layout/MainLayout";
 import DeputyLayout from "../Layout/DeputyLayout";
-const Home = React.lazy(() => import("../view/Home"));
 const Swap = React.lazy(() => import("../view/Swap"));
 const Bridge = React.lazy(() => import("../view/Bridge"));
 export default function Router() {

@@ -44,6 +44,7 @@ import {
   FlexSCBox,
 } from "../components/FlexBox";
 import roundIcon from "../assets/image/Swap/roundIcon.svg";
+import usdtIcon from "../assets/image/Swap/usdtIcon.png";
 import dropIcon from "../assets/image/Swap/dropIcon.svg";
 import toSwap from "../assets/image/Swap/toSwap.svg";
 import receiveIcon from "../assets/image/Swap/receiveIcon.svg";
@@ -67,20 +68,49 @@ import RecommendedMintedModal from "../components/RecommendedMintedModal";
 import { useGetReward } from "../hooks/useGetReward";
 import FromStakingMiningModal from "../components/FromStakingMiningModal";
 import ToStakingMiningModal from "../components/ToStakingMiningModal";
+import MainBg from "../assets/image/layout/MainBg.png";
+import mainBgMobile from "../assets/image/layout/mainBgMobile.png";
 import {
   useAppKit,
   useAppKitAccount,
   useAppKitNetwork,
   useDisconnect,
 } from "@reown/appkit/react";
-const HomeContainerBox = styled(ContainerBox)`
-  max-width: 748px;
-  padding: 56px 15px;
+import Footer from "../components/Footer";
+import chain_img1 from "../assets/image/layout/chain_img1.png";
+import chain_img2 from "../assets/image/layout/chain_img2.png";
+import chain_img3 from "../assets/image/layout/chain_img3.png";
+import piIcon from "../assets/image/Swap/piIcon.png";
+const HomeContainerBox = styled.div<{ src: string }>`
+  padding-top: 64px;
   width: 100%;
-  margin: auto;
-  @media (max-width: 1200px) {
-    padding: 56px 15px;
+  /* min-height: 100vh; */
+  background-image: ${({ src }) => `url(${src})`};
+  background-position: center;
+  background-size: cover; //根据你图片的大小自定义
+  background-repeat: no-repeat;
+  overflow: hidden;
+  > div {
+    &:first-child {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      min-height: calc(100vh - 320px);
+      height: 100%;
+      width: 100%;
+      max-width: 778px;
+      padding: 0px 15px;
+      padding: 0px 15px 226px;
+      width: 100%;
+      margin: auto;
+      @media (max-width: 1200px) {
+        padding: 0px 15px 226px;
+      }
+    }
   }
+  /* @media (max-width: 1400px) {
+    background-size: 100% 100%;
+  } */
 `;
 export const GameTooltip = styled.div``;
 const SwapContainer = styled.div`
@@ -597,12 +627,24 @@ interface Token {
 
 interface Chain {
   ChainName: string;
+  icon: any;
   tokens: Token[];
 }
 const ChainArr: Chain[] = [
-  { ChainName: "TRON", tokens: [] },
+  {
+    ChainName: "Pi",
+    icon: piIcon,
+    tokens: [
+      {
+        tokenName: "USDT",
+        tokenAddress: contractAddress?.USDTBSC,
+        bridgeContract: contractAddress?.BridgeBSC,
+      },
+    ],
+  },
   {
     ChainName: "BSC",
+    icon: chain_img1,
     tokens: [
       {
         tokenName: "USDT",
@@ -613,6 +655,8 @@ const ChainArr: Chain[] = [
   },
   {
     ChainName: "UniAgent",
+    icon: chain_img3,
+
     tokens: [
       {
         tokenName: "USDT",
@@ -623,6 +667,8 @@ const ChainArr: Chain[] = [
   },
 ];
 export default function Rank() {
+  const { open, close } = useAppKit();
+
   const CurrentFromLinkRef: any = useRef<any>(null);
   const CurrentToLinkRef: any = useRef<any>(null);
   const { width } = useViewport();
@@ -657,8 +703,8 @@ export default function Rank() {
 
   const [Amount, setAmount] = useState(1);
   const { address: web3ModalAccount, isConnected } = useAppKitAccount();
-  const [LinkType1, setLinkType1] = useState("UniAgent");
-  const [LinkType2, setLinkType2] = useState("BSC");
+  const [LinkType1, setLinkType1] = useState("BSC");
+  const [LinkType2, setLinkType2] = useState("UniAgent");
   const {
     TOKENBalance,
     TOKENAllowance,
@@ -677,7 +723,6 @@ export default function Rank() {
 
   const { isNoGasFun } = useNoGas();
   const [IsNode, setIsNode] = useState(false);
-  const { open } = useAppKit();
   const { disconnect } = useDisconnect();
   const { getReward } = useGetReward();
   const inputFun = (amount: any, num = 0) => {
@@ -730,6 +775,8 @@ export default function Rank() {
   };
 
   const BridgeFun = (FromInputAmount: any) => {
+    return addMessage("Coming soon");
+
     // if (!IsBindState) return addMessage(t("9"));
     if (Number(FromInputAmount) <= 0) return;
     handleTransaction(
@@ -878,7 +925,17 @@ export default function Rank() {
   }, []);
 
   const BtnBox = () => {
-    if (!web3ModalAccount) return <Btn isActive={true}>Connect Wallet</Btn>;
+    if (!web3ModalAccount)
+      return (
+        <Btn
+          isActive={true}
+          onClick={() => {
+            open();
+          }}
+        >
+          {t("连接钱包")}
+        </Btn>
+      );
     if (!FromInputAmount || Number(FromInputAmount) <= 0)
       return <Btn isActive={false}>Please Enter The Exchange Quantity</Btn>;
     if (!ReceiveAddress)
@@ -894,82 +951,177 @@ export default function Rank() {
           BridgeFun(FromInputAmount);
         }}
       >
-        Exchange
+        {t("交易")}
       </Btn>
     );
   };
 
   return (
-    <HomeContainerBox>
-      <SwapContainer>
-        <SwapContainer_Title>UniAgent Bridge</SwapContainer_Title>
-        <SwapItem>
-          <SwapItem_Title>
-            Transfer out{" "}
-            <div>
-              Balance: {TOKENBalance ?? "0"}{" "}
-              <span
-                onClick={() => {
-                  setFromInputAmount(TOKENBalance);
-                }}
-              >
-                All
-              </span>
-            </div>
-          </SwapItem_Title>
-          <Item>
-            <Item_Left
-              onClick={() => {
-                setFromStakingMiningModalState(true);
-              }}
-            >
-              <img src={roundIcon} alt="" />
-              <div className="coin_info">
-                <div className="chain">{LinkType1} Chain</div>
-                <div className="coin">USDT</div>
-              </div>
-              <img src={dropIcon} alt="" />
-            </Item_Left>
-            <Devider></Devider>
-            <Item_Right>
-              <input
-                type="text"
-                value={!!FromInputAmount ? FromInputAmount : ""}
-                onChange={FromInputFun}
-              />
-            </Item_Right>
-          </Item>
-        </SwapItem>
-        <SwapToIcon>
-          <img src={toSwap} alt="" />
-        </SwapToIcon>
+    <>
+      <HomeContainerBox src={width >= 1400 ? MainBg : mainBgMobile}>
+        <div>
+          {" "}
+          <SwapContainer>
+            <SwapContainer_Title>Bridge</SwapContainer_Title>
+            <SwapItem>
+              <SwapItem_Title>
+                {t("发送")}{" "}
+                <div>
+                  {t("余额")}: {TOKENBalance ?? "0"}{" "}
+                  <span
+                    onClick={() => {
+                      setFromInputAmount(TOKENBalance);
+                    }}
+                  >
+                    All
+                  </span>
+                </div>
+              </SwapItem_Title>
+              <Item>
+                <Item_Left
+                  onClick={() => {
+                    setFromStakingMiningModalState(true);
+                  }}
+                >
+                  <img src={usdtIcon} alt="" />
+                  <div className="coin_info">
+                    <div className="chain">{LinkType1} Chain</div>
+                    <div className="coin">USDT</div>
+                  </div>
+                  <img src={dropIcon} alt="" />
+                </Item_Left>
+                <Devider></Devider>
+                <Item_Right>
+                  <input
+                    type="text"
+                    value={!!FromInputAmount ? FromInputAmount : ""}
+                    onChange={FromInputFun}
+                  />
+                </Item_Right>
+              </Item>
+            </SwapItem>
+            <SwapToIcon>
+              <img src={toSwap} alt="" />
+            </SwapToIcon>
 
-        <SwapItem>
-          <SwapItem_Title style={{ marginTop: "0px" }}>
-            Receive{" "}
-            {/* <div>
+            <SwapItem>
+              <SwapItem_Title style={{ marginTop: "0px" }}>
+                {t("接收")}{" "}
+                {/* <div>
               Balance: 100 <span>All</span>
             </div> */}
-          </SwapItem_Title>
-          <Item>
-            <Item_Left
-              onClick={() => {
-                setToStakingMiningModalState(true);
-              }}
-            >
-              <img src={roundIcon} alt="" />
-              <div className="coin_info">
-                <div className="chain">{LinkType2} Chain</div>
-                <div className="coin">USDT</div>
+              </SwapItem_Title>
+              <Item>
+                <Item_Left
+                  onClick={() => {
+                    setToStakingMiningModalState(true);
+                  }}
+                >
+                  <img src={usdtIcon} alt="" />
+                  <div className="coin_info">
+                    <div className="chain">{LinkType2} Chain</div>
+                    <div className="coin">USDT</div>
+                  </div>
+                  <img src={dropIcon} alt="" />
+                </Item_Left>
+                <Devider></Devider>
+                <Item_Right>
+                  <input
+                    type="text"
+                    value={
+                      NumSplic1(
+                        (1 /
+                          Number(
+                            BridgeData?.exchangeTargetVoList?.find(
+                              (item: any) =>
+                                String(item?.chainName) === String(LinkType2)
+                            )?.price
+                          )) *
+                          Number(FromInputAmount) *
+                          (1 - Number(BridgeData?.fee)) *
+                          Number(BridgeData?.price) *
+                          (1 -
+                            Number(
+                              BridgeData?.exchangeTargetVoList?.find(
+                                (item: any) =>
+                                  String(item?.chainName) === String(LinkType2)
+                              )?.fee
+                            )),
+                        4
+                      ) ?? 0
+                    }
+                  />
+                </Item_Right>
+              </Item>
+            </SwapItem>
+
+            <ReceiveItem>
+              {t("接收地址")}
+              <ReceiveBox>
+                <input
+                  type="text"
+                  placeholder={t("请输入接收地址")}
+                  value={!!ReceiveAddress ? ReceiveAddress : ""}
+                  onChange={(e: any) => {
+                    setReceiveAddress(e.target.value);
+                  }}
+                />{" "}
+                <img src={receiveIcon} alt="" />
+              </ReceiveBox>
+            </ReceiveItem>
+            {BtnBox()}
+            <SwapInfo>
+              <div>
+                {t("交换路径")} <span>{LinkType1} Bridge</span>
               </div>
-              <img src={dropIcon} alt="" />
-            </Item_Left>
-            <Devider></Devider>
-            <Item_Right>
-              <input
-                type="text"
-                value={
-                  NumSplic1(
+              <div>
+                {t("参考价格")}{" "}
+                <span>
+                  {BridgeData?.price} USDT({LinkType1}) ={" "}
+                  {
+                    BridgeData?.exchangeTargetVoList?.find(
+                      (item: any) =>
+                        String(item?.chainName) === String(LinkType2)
+                    )?.price
+                  }{" "}
+                  USDT({LinkType2})
+                </span>
+              </div>
+              <div>
+                {t("Fee")}{" "}
+                <span>
+                  {Number(FromInputAmount) * Number(BridgeData?.fee)} USDT(
+                  {BridgeData?.tokenType ?? "-"}) +{" "}
+                  {NumSplic1(
+                    (1 /
+                      Number(
+                        BridgeData?.exchangeTargetVoList?.find(
+                          (item: any) =>
+                            String(item?.chainName) === String(LinkType2)
+                        )?.price
+                      )) *
+                      Number(FromInputAmount) *
+                      (1 - Number(BridgeData?.fee)) *
+                      Number(BridgeData?.price) *
+                      Number(
+                        BridgeData?.exchangeTargetVoList?.find(
+                          (item: any) =>
+                            String(item?.chainName) === String(LinkType2)
+                        )?.fee
+                      ),
+                    4
+                  )}{" "}
+                  USDT(
+                  {BridgeData?.exchangeTargetVoList?.find(
+                    (item: any) => String(item?.chainName) === String(LinkType2)
+                  )?.tokenType ?? "-"}
+                  )
+                </span>
+              </div>
+              <div>
+                {t("Expected Receipt")}{" "}
+                <span>
+                  {NumSplic1(
                     (1 /
                       Number(
                         BridgeData?.exchangeTargetVoList?.find(
@@ -988,222 +1140,134 @@ export default function Rank() {
                           )?.fee
                         )),
                     4
-                  ) ?? 0
-                }
+                  )}
+                </span>
+              </div>
+            </SwapInfo>
+          </SwapContainer>
+          <ExchangeRecord>
+            <ExchangeRecordTitle>
+              <div>
+                {t("交易记录")} <span>({t("仅展示最近7天")})</span>
+              </div>
+              <img
+                src={refreshIcon}
+                alt=""
+                onClick={() => {
+                  getInitData();
+                }}
               />
-            </Item_Right>
-          </Item>
-        </SwapItem>
-
-        <ReceiveItem>
-          Receiving Address
-          <ReceiveBox>
-            <input
-              type="text"
-              placeholder="Please enter the receiving address"
-              value={!!ReceiveAddress ? ReceiveAddress : ""}
-              onChange={(e: any) => {
-                setReceiveAddress(e.target.value);
-              }}
-            />{" "}
-            <img src={receiveIcon} alt="" />
-          </ReceiveBox>
-        </ReceiveItem>
-        {BtnBox()}
-        <SwapInfo>
-          <div>
-            Exchange Path <span>{LinkType1} Bridge</span>
-          </div>
-          <div>
-            Reference Price{" "}
-            <span>
-              {BridgeData?.price} USDT({LinkType1}) ={" "}
-              {
-                BridgeData?.exchangeTargetVoList?.find(
-                  (item: any) => String(item?.chainName) === String(LinkType2)
-                )?.price
-              }{" "}
-              USDT({LinkType2})
-            </span>
-          </div>
-          <div>
-            Fee{" "}
-            <span>
-              {Number(FromInputAmount) * Number(BridgeData?.fee)} USDT(
-              {BridgeData?.tokenType ?? "-"}) +{" "}
-              {NumSplic1(
-                (1 /
-                  Number(
-                    BridgeData?.exchangeTargetVoList?.find(
-                      (item: any) =>
-                        String(item?.chainName) === String(LinkType2)
-                    )?.price
-                  )) *
-                  Number(FromInputAmount) *
-                  (1 - Number(BridgeData?.fee)) *
-                  Number(BridgeData?.price) *
-                  Number(
-                    BridgeData?.exchangeTargetVoList?.find(
-                      (item: any) =>
-                        String(item?.chainName) === String(LinkType2)
-                    )?.fee
-                  ),
-                4
-              )}{" "}
-              USDT(
-              {BridgeData?.exchangeTargetVoList?.find(
-                (item: any) => String(item?.chainName) === String(LinkType2)
-              )?.tokenType ?? "-"}
-              )
-            </span>
-          </div>
-          <div>
-            Expected Receipt{" "}
-            <span>
-              {NumSplic1(
-                (1 /
-                  Number(
-                    BridgeData?.exchangeTargetVoList?.find(
-                      (item: any) =>
-                        String(item?.chainName) === String(LinkType2)
-                    )?.price
-                  )) *
-                  Number(FromInputAmount) *
-                  (1 - Number(BridgeData?.fee)) *
-                  Number(BridgeData?.price) *
-                  (1 -
-                    Number(
-                      BridgeData?.exchangeTargetVoList?.find(
-                        (item: any) =>
-                          String(item?.chainName) === String(LinkType2)
-                      )?.fee
-                    )),
-                4
-              )}
-            </span>
-          </div>
-        </SwapInfo>
-      </SwapContainer>
-
-      <ExchangeRecord>
-        <ExchangeRecordTitle>
-          <div>
-            Exchange Record <span>(Showing only the last 7 days)</span>
-          </div>
-          <img
-            src={refreshIcon}
-            alt=""
-            onClick={() => {
-              getInitData();
+            </ExchangeRecordTitle>
+            <ExchangeRecordItems>
+              {BridgeExchangeRecord?.map((item: any, index: any) => (
+                <ExchangeRecordItem key={index}>
+                  <div>
+                    <div className="from_coin_info">
+                      {item?.fromChain}
+                      <div>
+                        {item?.fromNum} {item?.fromCoinName}
+                      </div>
+                    </div>
+                    <div className="from_coin_to_line">
+                      <img src={fromToLine} alt="" />
+                      Expected Receipt
+                    </div>
+                  </div>
+                  <div>
+                    <div className="from_coin_info">
+                      {item?.toChain}
+                      <div>
+                        {item?.toNum} {item?.toCoinName}
+                      </div>
+                    </div>
+                    <div
+                      className="state"
+                      style={{
+                        color:
+                          Number(item?.status) === 0 ||
+                          Number(item?.status) === 1
+                            ? "#e6ae3f"
+                            : "#999999",
+                      }}
+                    >
+                      {Number(item?.status) === 0 || Number(item?.status) === 1
+                        ? "Exchanging"
+                        : Number(item?.status) === 3
+                        ? "Failed"
+                        : "Completed"}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="price_info">
+                      Reference Price
+                      <div>
+                        {item?.fromPrice ?? 0} {item?.fromCoinName}(
+                        {item?.fromChain}) = {item?.toPrice ?? 0}{" "}
+                        {item?.toCoinName}({item?.toChain})
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="price_info">
+                      Fee
+                      <div>
+                        {item?.fromFee} {item?.fromCoinName}(
+                        {item?.fromTokenType}) + {item?.toFee}{" "}
+                        {item?.toCoinName}({item?.toTokenType})
+                      </div>
+                    </div>
+                  </div>
+                </ExchangeRecordItem>
+              ))}
+            </ExchangeRecordItems>
+          </ExchangeRecord>
+          <ModalContent
+            ShowTipModal={ShowTipModal}
+            Tip={Tip}
+            close={() => {
+              setShowTipModal(false);
             }}
           />
-        </ExchangeRecordTitle>
-        <ExchangeRecordItems>
-          {BridgeExchangeRecord?.map((item: any, index: any) => (
-            <ExchangeRecordItem key={index}>
-              <div>
-                <div className="from_coin_info">
-                  {item?.fromChain}
-                  <div>
-                    {item?.fromNum} {item?.fromCoinName}
-                  </div>
-                </div>
-                <div className="from_coin_to_line">
-                  <img src={fromToLine} alt="" />
-                  Expected Receipt
-                </div>
-              </div>
-              <div>
-                <div className="from_coin_info">
-                  {item?.toChain}
-                  <div>
-                    {item?.toNum} {item?.toCoinName}
-                  </div>
-                </div>
-                <div
-                  className="state"
-                  style={{
-                    color:
-                      Number(item?.status) === 0 || Number(item?.status) === 1
-                        ? "#e6ae3f"
-                        : "#999999",
-                  }}
-                >
-                  {Number(item?.status) === 0 || Number(item?.status) === 1
-                    ? "Exchanging"
-                    : Number(item?.status) === 3
-                    ? "Failed"
-                    : "Completed"}
-                </div>
-              </div>
-              <div>
-                <div className="price_info">
-                  Reference Price
-                  <div>
-                    {item?.fromPrice ?? 0} {item?.fromCoinName}(
-                    {item?.fromChain}) = {item?.toPrice ?? 0} {item?.toCoinName}
-                    ({item?.toChain})
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div className="price_info">
-                  Fee
-                  <div>
-                    {item?.fromFee} {item?.fromCoinName}({item?.fromTokenType})
-                    + {item?.toFee} {item?.toCoinName}({item?.toTokenType})
-                  </div>
-                </div>
-              </div>
-            </ExchangeRecordItem>
-          ))}
-        </ExchangeRecordItems>
-      </ExchangeRecord>
-
-      <ModalContent
-        ShowTipModal={ShowTipModal}
-        Tip={Tip}
-        close={() => {
-          setShowTipModal(false);
-        }}
-      />
-      <ModalContentSuccess
-        ShowTipModal={ShowSuccessTipModal}
-        Tip={Tip}
-        hash={SuccessFulHash}
-        fun={() => {
-          if (!!token) {
-            getInitData();
-          }
-        }}
-        close={() => {
-          setShowSuccessTipModal(false);
-        }}
-      />
-
-      {/* Select From Send Tokens */}
-      <FromStakingMiningModal
-        ref={CurrentFromLinkRef}
-        ChainArr={ChainArr}
-        Balance={TOKENBalance}
-        ShowTipModal={FromStakingMiningModalState}
-        LinkType1={LinkType1}
-        close={() => {
-          setFromStakingMiningModalState(false);
-        }}
-        SelectTypeFun={SelectTypeFun}
-      />
-      {/* Select To Send Tokens */}
-      <ToStakingMiningModal
-        ref={CurrentToLinkRef}
-        ChainArr={ChainArr}
-        ShowTipModal={ToStakingMiningModalState}
-        LinkType2={LinkType2}
-        close={() => {
-          setToStakingMiningModalState(false);
-        }}
-        SelectTypeFun={SelectTypeFun}
-      />
-    </HomeContainerBox>
+          <ModalContentSuccess
+            ShowTipModal={ShowSuccessTipModal}
+            Tip={Tip}
+            hash={SuccessFulHash}
+            fun={() => {
+              if (!!token) {
+                getInitData();
+              }
+            }}
+            close={() => {
+              setShowSuccessTipModal(false);
+            }}
+          />
+          {/* Select From Send Tokens */}
+          <FromStakingMiningModal
+            ref={CurrentFromLinkRef}
+            ChainArr={ChainArr}
+            Balance={TOKENBalance}
+            ShowTipModal={FromStakingMiningModalState}
+            LinkType1={LinkType1}
+            close={() => {
+              setFromStakingMiningModalState(false);
+            }}
+            SelectTypeFun={SelectTypeFun}
+          />
+          {/* Select To Send Tokens */}
+          <ToStakingMiningModal
+            ref={CurrentToLinkRef}
+            ChainArr={ChainArr}
+            ShowTipModal={ToStakingMiningModalState}
+            LinkType2={LinkType2}
+            close={() => {
+              setToStakingMiningModalState(false);
+            }}
+            SelectTypeFun={SelectTypeFun}
+          />
+        </div>
+        {width >= 1400 && <Footer></Footer>}
+      </HomeContainerBox>
+      {!(width >= 1400) && <Footer></Footer>}
+    </>
   );
 }

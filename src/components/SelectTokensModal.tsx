@@ -26,7 +26,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #F4C134;
+    border: 1px solid #f4c134;
     .ant-modal-body {
       position: relative;
       padding: 0px;
@@ -164,6 +164,8 @@ const TokensItem = styled(FlexSBCBox)`
     font-variation-settings: "opsz" auto;
     color: #ffffff;
     > img {
+      width: 48px;
+      height: 48px;
       margin-right: 12px;
     }
     .coin_info {
@@ -506,7 +508,7 @@ const Btn = styled(FlexCCBox)`
   padding: 12px;
   border-radius: 8px;
   opacity: 1;
-  background: #F4C134;
+  background: #f4c134;
   font-family: "Space Grotesk";
   font-size: 20px;
   font-weight: bold;
@@ -711,13 +713,13 @@ export default function ModalContent(props: any) {
                   }}
                 >
                   <div>
-                    <img src={roundIcon} alt="" />
+                    <img src={item?.icon} alt="" />
                     <div className="coin_info">
                       {item?.name}
                       <div>{item?.symbol}</div>
                     </div>
                   </div>
-                  <div>{NumSplic1(item?.balance, 4)}</div>
+                  <div>{NumSplic1(item?.balance ?? 0, 4)}</div>
                 </TokensItem>
               ))}
             </TokensBox>

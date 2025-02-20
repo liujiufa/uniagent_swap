@@ -7,13 +7,14 @@ import UniAgentRouter from "./ABI/UniAgentRouter.json";
 import UniAgentFactory from "./ABI/UniAgentFactory.json";
 import { defineChain } from "@reown/appkit/networks";
 // 正式
-export const isMain = false;
-export const LOCAL_KEY = "UniAgent_LANG";
+export const isMain = true;
+export const curentBSCChainId = isMain ? 56 : 97;
+export const LOCAL_KEY = "PIJS_LANG";
 const url = window.location.hostname;
 const result = url.split(".").slice(1).join(".");
 export let baseUrl: string = isMain
-  ? `https://api.uniagent.co/api/`
-  : "http://47.239.255.25/api/";
+  ? `https://pijswap.xyz/pjisswap-api`
+  : "http://82.156.97.39:8880/";
 //  "https://yhhyn.com/" + "api"
 // "https://kf-panda.com/" + "api";
 // "http://172.20.10.2:28889/";
@@ -23,10 +24,19 @@ export let ContractUrl: string = isMain
 export let BlockUrl: string = isMain
   ? "https://bscscan.com/tx/"
   : "https://testnet.bscscan.com/tx/";
-export let SuShiSwapUrl: string = "https://www.sushi.com/swap";
 export let RewardType: any = { "1": "16", "2": "17" };
 export const BitNumber = 8;
-
+export const GoTo = "https://dev.penguincoop.xyz/";
+// Documentation
+export const Documentation = "https://pijswap.gitbook.io/pijswap";
+// InviteRebateKOLApplication
+export const InviteRebateKOLApplication = "https://pijswap.gitbook.io/pijswap";
+// TermsofService
+export const TermsofService =
+  "https://pijswap.gitbook.io/pijswap/terms-of-service";
+// TokenEconomicModel
+export const TokenEconomicModel =
+  "https://pijswap.gitbook.io/pijswap/token-economic-model";
 export const mainnet = {
   "0x1": {
     chainId: 1,
@@ -164,24 +174,23 @@ export const abiObj: abiObjType = {
 
 export const Main: contractAddressType = {
   USDT: "0x55d398326f99059fF775485246999027B3197955",
-  nft: "0xa21c8a2FD49Eb7e008B452F1b2573Bbff0ea97FD",
-  NFTManage: "0x312004832F8A8a35587a297Ee19DB90aA7D291e5",
-};
-
-const Test = {
-  USDTBSC: "0x2b11640f31b84dc727841FE6B5a905D366A00e78",
   BridgeBSC: "0x152Be12C4205095467a5F6fFe73c6f315f33455f",
   USDTUNI: "0x11Cb2DD8a83d9A231Bf79E7A3ad3f8d39FD02c31",
   BridgeUNI: "0x07fff13bFdF7D411D887eF14AB5A092254F0ec7B",
-  NFT: "0x182cFca36E3678ae45e9cBc47880Ab034882F9A5",
-  NFTManage: "0x0A8C16f9Ed042cf71BeB49e8d8854D189c704aDb",
   Stake: "0xe9865261f234323e8E77F35E8D111c65650120F7",
   Factory: "0xDA1253700dF68930C81361D0769fBD27fB4fb253",
   WUAC: "0x27e199Afb97612542d8dcD88C8DCE83b4b516992",
   Router: "0x41f60550b884dAA6435C9435b9794F20cfD994D8",
 };
 
-export let SwapUrl: string = isMain
-  ? `https://pancakeswap.finance/swap?chain=bsc&inputCurrency=0x55d398326f99059fF775485246999027B3197955&outputCurrency=${Main?.MBK}`
-  : "https://pancakeswap.finance/swap?chain=bscTestnet&inputCurrency=0x2b11640f31b84dc727841FE6B5a905D366A00e78&outputCurrency=0xdA99fA57019FB1DFC1AAea892e5190a91236A840";
+const Test = {
+  USDTBSC: "0x2b11640f31b84dc727841FE6B5a905D366A00e78",
+  BridgeBSC: "0x152Be12C4205095467a5F6fFe73c6f315f33455f",
+  USDTUNI: "0x88ad17e26f012ADC36D4BDd287f382BE7C7D61Ac",
+  BridgeUNI: "0xC2Cb2362241a0c973C3d83477f6105E082b8a96B",
+
+  Factory: "0x82d3B7112eFD2127cD1eE771286D1cA1Ee3EfC2a",
+  WUAC: "0xFB572Ae3f87E322f65D2869e08a8b283501614aF",
+  Router: "0xf9D1e5Ce5b2851625A9E73859b15A14bbad39dC8",
+};
 export const contractAddress: contractAddressType = isMain ? Main : Test;

@@ -145,13 +145,7 @@ export class Contracts {
     this.verification("Nodes");
     return this.contract.Nodes?.methods.price().call();
   }
-  mint(addr: string, data: string) {
-    this.verification("NFTManage");
-    // debugger;
-    return this.contract.NFTManage?.methods
-      .mint(data)
-      .send({ from: addr, gasPrice: "2000000000" });
-  }
+ 
   deposite(
     addr: string,
     usdtAmount: any,
