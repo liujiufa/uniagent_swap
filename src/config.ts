@@ -9,6 +9,7 @@ import { defineChain } from "@reown/appkit/networks";
 // 正式
 export const isMain = true;
 export const curentBSCChainId = isMain ? 56 : 97;
+export const curentUNIChainId = isMain ? 656898 : 656231;
 export const LOCAL_KEY = "PIJS_LANG";
 const url = window.location.hostname;
 const result = url.split(".").slice(1).join(".");
@@ -24,9 +25,8 @@ export let ContractUrl: string = isMain
 export let BlockUrl: string = isMain
   ? "https://bscscan.com/tx/"
   : "https://testnet.bscscan.com/tx/";
-export let RewardType: any = { "1": "16", "2": "17" };
 export const BitNumber = 8;
-export const GoTo = "https://node.pijswap.xyz/";
+export const GoTo = "https://node.pijswap.com/";
 // Documentation
 export const Documentation = "https://pijswap.gitbook.io/pijswap";
 // InviteRebateKOLApplication
@@ -37,36 +37,6 @@ export const TermsofService =
 // TokenEconomicModel
 export const TokenEconomicModel =
   "https://pijswap.gitbook.io/pijswap/token-economic-model";
-export const mainnet = {
-  "0x1": {
-    chainId: 1,
-    name: "Ethereum",
-    currency: "ETH",
-    explorerUrl: "https://etherscan.io",
-    rpcUrl: "https://cloudflare-eth.com",
-  },
-  "0x38": {
-    chainId: 56,
-    name: "BSC",
-    currency: "BNB",
-    explorerUrl: "https://bscscan.com",
-    rpcUrl: "https://bsc-dataseed.binance.org",
-  },
-  "0x61": {
-    chainId: 97,
-    name: "BSC",
-    currency: "BNB",
-    explorerUrl: "https://data-seed-prebsc-2-s1.bnbchain.org:8545",
-    rpcUrl: "https://bsc-testnet-rpc.publicnode.com",
-  },
-  "0xa0367": {
-    chainId: 656231,
-    name: "BSC",
-    currency: "BNB",
-    explorerUrl: "https://data-seed-prebsc-2-s1.bnbchain.org:8545",
-    rpcUrl: "http://192.252.179.83:8546/",
-  },
-};
 //@ts-ignore
 export const customNetwork_BSC = defineChain({
   id: 56,
@@ -117,6 +87,23 @@ export const customNetwork_BSC_TEST = defineChain({
 });
 
 export const customNetwork_UNI = defineChain({
+  id: 656898,
+  caipNetworkId: "eip155:656898",
+  chainNamespace: "eip155",
+  name: "UNI",
+  nativeCurrency: {
+    decimals: 18,
+    name: "UAC",
+    symbol: "UAC",
+  },
+  rpcUrls: {
+    default: {
+      http: ["http://chain.uniagent.co/"],
+    },
+  },
+});
+
+export const customNetwork_UNI_TEST = defineChain({
   id: 656231,
   caipNetworkId: "eip155:656231",
   chainNamespace: "eip155",
@@ -141,16 +128,28 @@ export const customNetwork_UNI = defineChain({
 });
 
 export const defaultNetwork: any = {
-  chainId: 656231,
+  chainId: 656898,
   name: "UNI",
   currency: "UAC",
-  explorerUrl: "http://chain.51time.xyz/",
-  rpcUrl: "https://etherscan.io",
+  explorerUrl: "https://etherscan.io",
+  rpcUrl: "http://chain.uniagent.co/",
 };
 export const loginNetworkId = [
-  { id: 97, name: "BSC", bridgeChainId: 1 },
-  { id: 656231, name: "UniAgent", bridgeChainId: 2 },
+  { id: isMain ? 56 : 97, name: "BSC", bridgeChainId: 1 },
+  { id: isMain ? 656898 : 656231, name: "UniAgent", bridgeChainId: 2 },
 ];
+
+export const NETWORK_PARAMS = {
+  chainId: "0xA0062", // 以太坊主网的 Chain ID
+  chainName: "UNI",
+  nativeCurrency: {
+    name: "UAC",
+    symbol: "UAC",
+    decimals: 18,
+  },
+  rpcUrls: ["http://chain.uniagent.co/"], // 替换为你的 Infura 项目 ID
+  blockExplorerUrls: ["https://etherscan.io"],
+};
 
 interface abiObjType {
   [propName: string]: any;
@@ -173,22 +172,24 @@ export const abiObj: abiObjType = {
 };
 
 export const Main: contractAddressType = {
-  USDT: "0x55d398326f99059fF775485246999027B3197955",
-  BridgeBSC: "0x152Be12C4205095467a5F6fFe73c6f315f33455f",
-  USDTUNI: "0x11Cb2DD8a83d9A231Bf79E7A3ad3f8d39FD02c31",
-  BridgeUNI: "0x07fff13bFdF7D411D887eF14AB5A092254F0ec7B",
-  Stake: "0xe9865261f234323e8E77F35E8D111c65650120F7",
-  Factory: "0xDA1253700dF68930C81361D0769fBD27fB4fb253",
-  WUAC: "0x27e199Afb97612542d8dcD88C8DCE83b4b516992",
-  Router: "0x41f60550b884dAA6435C9435b9794F20cfD994D8",
+  USDTBSC: "0x55d398326f99059fF775485246999027B3197955",
+  BridgeBSC: "0x6f7cDbB867088D5945b465726834a782a2c0D7D0",
+  USDTUNI: "0x74cA830003Bc76693830d37DCcE9C56be78Ae66C",
+  BridgeUNI: "0x68d1CbEF2D485052385dD2a209F6F105528838B5",
+  PIJSBSC: "0x74cA830003Bc76693830d37DCcE9C56be78Ae66C",
+  PiBSC: "0x74cA830003Bc76693830d37DCcE9C56be78Ae66C",
+  Factory: "0x55D3a5458be5AFc639858825FaBc34CD3D5a6117",
+  WUAC: "0x001C41f7b0cB226a19dfBEc7a18C8a8DA249eC46",
+  Router: "0x51d5273F6Eb69e37C86De5bDCF6efb0424255A5a",
 };
 
 const Test = {
   USDTBSC: "0x2b11640f31b84dc727841FE6B5a905D366A00e78",
-  BridgeBSC: "0x152Be12C4205095467a5F6fFe73c6f315f33455f",
-  USDTUNI: "0x88ad17e26f012ADC36D4BDd287f382BE7C7D61Ac",
-  BridgeUNI: "0xC2Cb2362241a0c973C3d83477f6105E082b8a96B",
-
+  BridgeBSC: "0x31221fBcCa8d331E867dd44B9a01086aF35ad851",
+  USDTUNI: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
+  BridgeUNI: "0x69B92335D53C6fe719169BD4BDeffd6ED2833a4a",
+  PIJSBSC: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
+  PiBSC: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
   Factory: "0x82d3B7112eFD2127cD1eE771286D1cA1Ee3EfC2a",
   WUAC: "0xFB572Ae3f87E322f65D2869e08a8b283501614aF",
   Router: "0xf9D1e5Ce5b2851625A9E73859b15A14bbad39dC8",

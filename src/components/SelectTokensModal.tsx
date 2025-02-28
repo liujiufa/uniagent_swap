@@ -16,7 +16,8 @@ import { Contracts } from "../web3";
 import { EthertoWei, NumSplic1, addMessage } from "../utils/tool";
 import { useNoGas } from "../hooks/useNoGas";
 import roundIcon from "../assets/image/Swap/roundIcon.svg";
-import { useAppKitAccount } from "@reown/appkit/react";
+import { useAppKitAccount, useAppKitNetwork } from "@reown/appkit/react";
+import { curentBSCChainId, isMain } from "../config";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
@@ -26,7 +27,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #f4c134;
+    border: 1px solid #685319;
     .ant-modal-body {
       position: relative;
       padding: 0px;
@@ -533,6 +534,8 @@ export default function ModalContent(props: any) {
   const [ActiveSub, setActiveSub] = useState(1);
   const [Amount, setAmount] = useState(1);
   const { address: web3ModalAccount, isConnected } = useAppKitAccount();
+  const { caipNetwork, caipNetworkId, chainId, switchNetwork } =
+    useAppKitNetwork();
   const token = useSelector((state: any) => state?.token);
   const onChange: PaginationProps["onChange"] = (page) => {
     console.log(page);
@@ -704,24 +707,49 @@ export default function ModalContent(props: any) {
               <ItemTitle>Tokens</ItemTitle>
             </ItemTitle> */}
             <TokensBox>
-              {props?.tokenList?.map((item: any, index: any) => (
-                <TokensItem
-                  key={index}
-                  onClick={() => {
-                    props?.SelectTokenFun(item?.name);
-                    props.close();
-                  }}
-                >
-                  <div>
-                    <img src={item?.icon} alt="" />
-                    <div className="coin_info">
-                      {item?.name}
-                      <div>{item?.symbol}</div>
-                    </div>
-                  </div>
-                  <div>{NumSplic1(item?.balance ?? 0, 4)}</div>
-                </TokensItem>
-              ))}
+              {props?.tokenList?.filter(
+                (item: any) => item?.chainId === chainId
+              )?.length > 0
+                ? props?.tokenList
+                    ?.filter((item: any) => item?.chainId === chainId)
+                    .map((item: any, index: any) => (
+                      <TokensItem
+                        key={index}
+                        onClick={() => {
+                          props?.SelectTokenFun(item?.name);
+                          props.close();
+                        }}
+                      >
+                        <div>
+                          <img src={item?.icon} alt="" />
+                          <div className="coin_info">
+                            {item?.name}
+                            <div>{item?.symbol}</div>
+                          </div>
+                        </div>
+                        <div>{NumSplic1(item?.balance ?? 0, 4)}</div>
+                      </TokensItem>
+                    ))
+                : props?.tokenList
+                    ?.filter((item: any) => item?.chainId === curentBSCChainId)
+                    .map((item: any, index: any) => (
+                      <TokensItem
+                        key={index}
+                        onClick={() => {
+                          props?.SelectTokenFun(item?.name);
+                          props.close();
+                        }}
+                      >
+                        <div>
+                          <img src={item?.icon} alt="" />
+                          <div className="coin_info">
+                            {item?.name}
+                            <div>{item?.symbol}</div>
+                          </div>
+                        </div>
+                        <div>{NumSplic1(item?.balance ?? 0, 4)}</div>
+                      </TokensItem>
+                    ))}
             </TokensBox>
           </Tokens>
         </ModalContainer_Content>

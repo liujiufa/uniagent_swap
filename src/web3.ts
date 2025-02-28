@@ -84,7 +84,7 @@ export class Contracts {
   //授权1
   approve(addr: string, toaddr: string, tokenAddress: string, value: string) {
     let obj = new this.web3.eth.Contract(abiObj["USDTBSC"], tokenAddress);
-    var amount = Web3.utils.toWei(String(Number(value) + 100));
+    var amount = Web3.utils.toWei(String(Number(value) + 1));
     console.log(toaddr, amount, "########", obj, "*******");
     return obj?.methods
       .approve(toaddr, amount)
@@ -146,23 +146,33 @@ export class Contracts {
     return this.contract.Nodes?.methods.price().call();
   }
 
-  deposite(
-    addr: string,
-    usdtAmount: any,
-    reciever: string,
-    order: any,
-    chainId: any,
-    contractAddress: any
-  ) {
+  deposite(addr: string, data: any, contractAddress: any) {
     // debugger;
 
     let obj = new this.web3.eth.Contract(abiObj?.BridgeBSC, contractAddress);
-    var usdtAmounted = Web3.utils.toWei(usdtAmount + "", "ether");
-    console.log(usdtAmounted, reciever, order, chainId, "erer");
+    // var usdtAmounted = Web3.utils.toWei(usdtAmount + "", "ether");
+    // console.log(usdtAmounted, reciever, order, chainId, "erer");
     return obj?.methods
-      .deposite(usdtAmounted, reciever, order, chainId)
+      .deposite(data)
       .send({ from: addr, gasPrice: "2000000000" });
   }
+  // deposite(
+  //   addr: string,
+  //   usdtAmount: any,
+  //   reciever: string,
+  //   order: any,
+  //   chainId: any,
+  //   contractAddress: any
+  // ) {
+  //   // debugger;
+
+  //   let obj = new this.web3.eth.Contract(abiObj?.BridgeBSC, contractAddress);
+  //   var usdtAmounted = Web3.utils.toWei(usdtAmount + "", "ether");
+  //   console.log(usdtAmounted, reciever, order, chainId, "erer");
+  //   return obj?.methods
+  //     .deposite(usdtAmounted, reciever, order, chainId)
+  //     .send({ from: addr, gasPrice: "2000000000" });
+  // }
 
   stakeAiNodes(addr: string, arr: any) {
     this.verification("Stake");

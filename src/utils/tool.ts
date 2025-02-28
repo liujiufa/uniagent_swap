@@ -78,7 +78,7 @@ export function NumSplic(val: any, len: number = 6) {
 export function NumSplic1(val: any, len: number = 6) {
   var f = parseFloat(val);
   if (isNaN(f)) {
-    return false;
+    return "-";
   }
   var s = val.toString();
   if (s.indexOf(".") > 0) {

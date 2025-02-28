@@ -22,6 +22,7 @@ import {
   customNetwork_BSC,
   customNetwork_BSC_TEST,
   customNetwork_UNI,
+  customNetwork_UNI_TEST,
   defaultNetwork,
   isMain,
 } from "./config";
@@ -78,7 +79,12 @@ const metadata = {
 
 createAppKit({
   adapters: [new EthersAdapter()],
-  networks: [customNetwork_BSC, customNetwork_BSC_TEST, customNetwork_UNI],
+  networks: [
+    customNetwork_BSC,
+    customNetwork_BSC_TEST,
+    customNetwork_UNI,
+    customNetwork_UNI_TEST,
+  ],
   metadata,
   projectId,
   themeMode: "dark",

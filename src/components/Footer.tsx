@@ -11,6 +11,7 @@ import {
   TermsofService,
   TokenEconomicModel,
 } from "../config";
+import { communityObj } from "../Layout/MainLayout";
 const FooterContainer = styled.div`
   width: 100%;
   opacity: 1;
@@ -160,9 +161,27 @@ const Footer = () => {
       <Devider></Devider>
       <FooterContainer_Bottom>
         <div>
-          <img src={communityItem1} alt="" />
-          <img src={communityItem2} alt="" />
-          <img src={communityItem3} alt="" />
+          <img
+            src={communityItem1}
+            alt=""
+            onClick={() => {
+              window.open(communityObj[0]?.link);
+            }}
+          />
+          <img
+            src={communityItem2}
+            alt=""
+            onClick={() => {
+              window.open(communityObj[1]?.link);
+            }}
+          />
+          <img
+            src={communityItem3}
+            alt=""
+            onClick={() => {
+              window.open(communityObj[2]?.link);
+            }}
+          />
         </div>
       </FooterContainer_Bottom>
     </FooterContainer>

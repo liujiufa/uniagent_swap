@@ -42,13 +42,14 @@ import piIcon from "../assets/image/Swap/piIcon.png";
 import usdtIcon from "../assets/image/Swap/usdtIcon.png";
 import pijsIcon from "../assets/image/Swap/pijsIcon.png";
 import uacIcon from "../assets/image/Swap/uacIcon.png";
+import swapBanner from "../assets/image/Swap/swapBanner.png";
 import MainBg from "../assets/image/layout/MainBg.png";
 import mainBgMobile from "../assets/image/layout/mainBgMobile.png";
 
 import copyFun from "copy-to-clipboard";
 import { Contracts } from "../web3";
 import useUSDTGroup from "../hooks/useUSDTGroup";
-import { contractAddress } from "../config";
+import { contractAddress, curentBSCChainId, curentUNIChainId } from "../config";
 import { createLoginSuccessAction } from "../store/actions";
 import { useNoGas } from "../hooks/useNoGas";
 import ModalContent from "../components/ModalContent";
@@ -59,6 +60,7 @@ import {
   useAppKit,
   useAppKitAccount,
   useAppKitNetwork,
+  useAppKitState,
   useDisconnect,
 } from "@reown/appkit/react";
 import Web3 from "web3";
@@ -414,13 +416,12 @@ const SwapInfo = styled.div`
   }
 `;
 const SwapContainer_Tabs = styled(FlexSBCBox)`
-  margin-top: 82px;
   width: 100%;
   border-radius: 6px;
   opacity: 1;
   background: #0a0a0a;
   box-sizing: border-box;
-  border: 1px solid #f4c134;
+  border: 1px solid #685319;
   padding: 7px;
 
   > div {
@@ -443,7 +444,6 @@ const SwapContainer_Tabs = styled(FlexSBCBox)`
     background: #f4c134;
   }
   @media (max-width: 768px) {
-    margin-top: 30px;
     padding: 6px;
     > div {
       padding: 6px;
@@ -652,7 +652,7 @@ const Remove_Btn = styled(FlexCCBox)`
   opacity: 1;
   background: rgba(147, 230, 63, 0.1);
   box-sizing: border-box;
-  border: 1px solid #f4c134;
+  border: 1px solid #685319;
   font-family: "Space Grotesk";
   font-size: 16px;
   font-weight: normal;
@@ -665,7 +665,7 @@ const Remove_Btn = styled(FlexCCBox)`
     opacity: 1;
     background: rgba(147, 230, 63, 0.1);
     box-sizing: border-box;
-    border: 1px solid #f4c134;
+    border: 1px solid #685319;
     padding: 9px;
   }
 `;
@@ -728,7 +728,7 @@ const PercentageBox = styled(FlexBox)`
     opacity: 1;
     background: rgba(147, 230, 63, 0.1);
     box-sizing: border-box;
-    border: 1px solid #f4c134;
+    border: 1px solid #685319;
     font-family: "Space Grotesk";
     font-size: 16px;
     font-weight: bold;
@@ -833,7 +833,7 @@ const AllModal = styled(Modal)`
     opacity: 1;
     background: #0a0a0a;
     box-sizing: border-box;
-    border: 1px solid #f4c134;
+    border: 1px solid #685319;
     .ant-modal-body {
       position: relative;
       padding: 0px;
@@ -966,6 +966,17 @@ const Confirm_Btn = styled(FlexCCBox)`
     color: #0a0a0a;
   }
 `;
+const SwapBanner = styled.div`
+  width: 100%;
+  margin: 82px 0px 20px;
+
+  img {
+    width: 100%;
+  }
+  @media (max-width: 768px) {
+    margin: 15px 0px 15px;
+  }
+`;
 
 let tokenList: any = [
   {
@@ -973,24 +984,35 @@ let tokenList: any = [
     name: "USDT",
     tokenAddress: contractAddress?.USDTUNI,
     symbol: "Tether USD",
+    chainId: curentUNIChainId,
   },
   {
     icon: uacIcon,
     name: "UAC",
     tokenAddress: contractAddress?.WUAC,
     symbol: "UniAgent",
-  },
-  {
-    icon: piIcon,
-    name: "Pi",
-    tokenAddress: contractAddress?.WUAC,
-    symbol: "Pi Network",
+    chainId: curentUNIChainId,
   },
   {
     icon: pijsIcon,
     name: "PIJS",
-    tokenAddress: contractAddress?.WUAC,
+    tokenAddress: contractAddress?.PIJSBSC,
     symbol: "PIJS",
+    chainId: curentBSCChainId,
+  },
+  {
+    icon: usdtIcon,
+    name: "USDT",
+    tokenAddress: contractAddress?.USDTBSC,
+    symbol: "Tether USD",
+    chainId: curentBSCChainId,
+  },
+  {
+    icon: piIcon,
+    name: "Pi",
+    tokenAddress: contractAddress?.PiBSC,
+    symbol: "Pi Network",
+    chainId: curentBSCChainId,
   },
 ];
 let timer: any = null;
@@ -1025,10 +1047,19 @@ export default function Rank() {
   const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const { isNoGasFun } = useNoGas();
   const [CoinListObj, setCoinListObj] = useState<any>([]);
-  const [FromToken, setFromToken] = useState("Pi");
-  const [ToToken, setToToken] = useState("USDT");
-  const [AddLiquidityToken1, setAddLiquidityToken1] = useState("Pi");
-  const [AddLiquidityToken2, setAddLiquidityToken2] = useState("USDT");
+
+  const [FromToken, setFromToken] = useState(
+    tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name
+  );
+  const [ToToken, setToToken] = useState(
+    tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name
+  );
+  const [AddLiquidityToken1, setAddLiquidityToken1] = useState(
+    tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name
+  );
+  const [AddLiquidityToken2, setAddLiquidityToken2] = useState(
+    tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name
+  );
   const [CurrentSelectedState, setCurrentSelectedState] = useState("from");
   const [AddLiquidityTokenType, setAddLiquidityTokenType] = useState(1);
   const [InputAmount, setInputAmount] = useState(1);
@@ -1060,7 +1091,7 @@ export default function Rank() {
     handleTransaction: LPhandleTransaction,
     handleUSDTRefresh: LPhandleUSDTRefresh,
   } = useUSDTGroup(contractAddress?.Router, LpAddress);
-
+  const { selectedNetworkId } = useAppKitState();
   const CopyCodeFun = (code: string) => {
     if (!IsBindState) return addMessage(t("9"));
     if (!web3ModalAccount) {
@@ -1196,7 +1227,7 @@ export default function Rank() {
   }
 
   const SwapFun = async () => {
-    return addMessage("Coming soon");
+    // return addMessage(t("Coming soon"));
 
     if (String(FromToken) === "USDT") {
       handleTransaction(
@@ -1314,7 +1345,7 @@ export default function Rank() {
   };
 
   const AddLiquidityFun = async () => {
-    return addMessage("Coming soon");
+    // return addMessage(t("Coming soon"));
 
     let USDTAmount =
       String(AddLiquidityToken1) === "USDT"
@@ -1368,7 +1399,7 @@ export default function Rank() {
               }
             }
           } catch (error: any) {}
-          debugger;
+          // debugger;
           await call();
           await getCoinList();
           await getLpBalance();
@@ -1404,7 +1435,7 @@ export default function Rank() {
     );
   };
   const RemoveLiquidityFun = async () => {
-    return addMessage("Coming soon");
+    // return addMessage(t("Coming soon"));
 
     LPhandleTransaction(
       (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
@@ -1547,17 +1578,18 @@ export default function Rank() {
     }
   };
   const getLpBalance = async () => {
-    let lpAddress: any = await Contracts.example?.getPair(
-      web3ModalAccount as string,
-      tokenList?.find(
-        (item: any) => String(item?.name) === String(AddLiquidityToken1)
-      )?.tokenAddress,
-      tokenList?.find(
-        (item: any) => String(item?.name) === String(AddLiquidityToken2)
-      )?.tokenAddress
-    );
-    setLpAddress(lpAddress ?? "");
     try {
+      let lpAddress: any = await Contracts.example?.getPair(
+        web3ModalAccount as string,
+        tokenList?.find(
+          (item: any) => String(item?.name) === String(AddLiquidityToken1)
+        )?.tokenAddress,
+        tokenList?.find(
+          (item: any) => String(item?.name) === String(AddLiquidityToken2)
+        )?.tokenAddress
+      );
+      setLpAddress(lpAddress ?? "");
+
       let LPbalance = await Contracts.example.balanceOf(
         web3ModalAccount as string,
         lpAddress
@@ -1565,73 +1597,86 @@ export default function Rank() {
       );
       // debugger;
       setLPBalance(EthertoWei(LPbalance ?? "0"));
-    } catch (error: any) {}
+    } catch (error: any) {
+      // debugger;
+      setLPBalance("0");
+    }
   };
   const getPriceImpact = async () => {
-    let lpAddress: any = await Contracts.example?.getPair(
-      web3ModalAccount as string,
-      tokenList?.find(
-        (item: any) => String(item?.name) === String(AddLiquidityToken1)
-      )?.tokenAddress,
-      tokenList?.find(
-        (item: any) => String(item?.name) === String(AddLiquidityToken2)
-      )?.tokenAddress
-    );
+    try {
+      let lpAddress: any = await Contracts.example?.getPair(
+        web3ModalAccount as string,
+        tokenList?.find(
+          (item: any) => String(item?.name) === String(AddLiquidityToken1)
+        )?.tokenAddress,
+        tokenList?.find(
+          (item: any) => String(item?.name) === String(AddLiquidityToken2)
+        )?.tokenAddress
+      );
 
-    let LPTokenBalance1: any = await Contracts.example.balanceOf(
-      lpAddress as string,
-      tokenList?.find((item: any) => String(item?.name) === String(FromToken))
-        ?.tokenAddress
-    );
-    let LPTokenBalance2: any = await Contracts.example.balanceOf(
-      lpAddress as string,
-      tokenList?.find((item: any) => String(item?.name) === String(ToToken))
-        ?.tokenAddress
-    );
-    let SwapOutAmount: any = await Contracts.example?.getAmountsOut(
-      web3ModalAccount as string,
-      InputAmount,
-      [
+      let LPTokenBalance1: any = await Contracts.example.balanceOf(
+        lpAddress as string,
         tokenList?.find((item: any) => String(item?.name) === String(FromToken))
-          ?.tokenAddress,
+          ?.tokenAddress
+      );
+      let LPTokenBalance2: any = await Contracts.example.balanceOf(
+        lpAddress as string,
         tokenList?.find((item: any) => String(item?.name) === String(ToToken))
-          ?.tokenAddress,
-      ]
-    );
-    // debugger;
+          ?.tokenAddress
+      );
+      let SwapOutAmount: any = await Contracts.example?.getAmountsOut(
+        web3ModalAccount as string,
+        InputAmount,
+        [
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(FromToken)
+          )?.tokenAddress,
+          tokenList?.find((item: any) => String(item?.name) === String(ToToken))
+            ?.tokenAddress,
+        ]
+      );
+      // debugger;
 
-    // 价格影响= |兑换之后的价格 - 兑换之前的价格| / 兑换之前的价格  * 100%
-    let SwapPriceLate: any =
-      (Number(EthertoWei(LPTokenBalance1 ?? "0")) + Number(InputAmount)) /
-      (Number(EthertoWei(LPTokenBalance2 ?? "0")) -
-        Number(EthertoWei(SwapOutAmount[1] ?? "0")));
-    let SwapPriceBefore: any =
-      Number(EthertoWei(LPTokenBalance1 ?? "0")) /
-      Number(EthertoWei(LPTokenBalance2 ?? "0"));
-    let priceImpact: any =
-      (Math.abs(
-        Number(getFullNum(SwapPriceLate ?? 0)) -
-          Number(getFullNum(SwapPriceBefore ?? 0))
-      ) /
-        Number(getFullNum(SwapPriceBefore ?? 0))) *
-      100;
-    // debugger;
-    console.log();
-    setPriceImpact(priceImpact ?? "0");
+      // 价格影响= |兑换之后的价格 - 兑换之前的价格| / 兑换之前的价格  * 100%
+      let SwapPriceLate: any =
+        (Number(EthertoWei(LPTokenBalance1 ?? "0")) + Number(InputAmount)) /
+        (Number(EthertoWei(LPTokenBalance2 ?? "0")) -
+          Number(EthertoWei(SwapOutAmount[1] ?? "0")));
+      let SwapPriceBefore: any =
+        Number(EthertoWei(LPTokenBalance1 ?? "0")) /
+        Number(EthertoWei(LPTokenBalance2 ?? "0"));
+      let priceImpact: any =
+        (Math.abs(
+          Number(getFullNum(SwapPriceLate ?? 0)) -
+            Number(getFullNum(SwapPriceBefore ?? 0))
+        ) /
+          Number(getFullNum(SwapPriceBefore ?? 0))) *
+        100;
+      // debugger;
+      console.log();
+      setPriceImpact(priceImpact ?? "0");
+    } catch (e: any) {
+      setPriceImpact("0");
+    }
   };
 
   const getPrice = async () => {
-    Contracts.example
-      ?.getAmountsOut(web3ModalAccount as string, 1, [
-        tokenList?.find((item: any) => String(item?.name) === String(FromToken))
-          ?.tokenAddress,
-        tokenList?.find((item: any) => String(item?.name) === String(ToToken))
-          ?.tokenAddress,
-      ])
-      .then((res: any) => {
-        // debugger;
-        setOneUACToUSDT(EthertoWei(res[1] ?? "0"));
-      });
+    try {
+      Contracts.example
+        ?.getAmountsOut(web3ModalAccount as string, 1, [
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(FromToken)
+          )?.tokenAddress,
+          tokenList?.find((item: any) => String(item?.name) === String(ToToken))
+            ?.tokenAddress,
+        ])
+        .then((res: any) => {
+          // debugger;
+          setOneUACToUSDT(EthertoWei(res[1] ?? "0"));
+        });
+    } catch (e: any) {
+      setOneUACToUSDT("0");
+    }
   };
   const getRemoveLiquidityInfo = async () => {
     let lpAddress: any = await Contracts.example?.getPair(
@@ -1659,6 +1704,56 @@ export default function Rank() {
     setAddLiquidityTokenBalance2(EthertoWei(LiquidityTokenBalance2 ?? "0"));
   };
 
+  const getContractData = async () => {
+    let res1: any;
+    let res2: any;
+    try {
+      res1 = await Contracts.example?.getAmountsOut(
+        web3ModalAccount as string,
+        InputAmount,
+        [
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(FromToken)
+          )?.tokenAddress,
+          tokenList?.find((item: any) => String(item?.name) === String(ToToken))
+            ?.tokenAddress,
+        ]
+      );
+      setReceiveAmount(EthertoWei(res1[1] ?? "0"));
+    } catch (e: any) {
+      setReceiveAmount("0");
+    }
+
+    // .then((res: any) => {
+    //   setReceiveAmount(EthertoWei(res[1] ?? "0"));
+    // });
+
+    try {
+      res2 = await Contracts.example?.getAmountsOut(
+        web3ModalAccount as string,
+        AddLiquidityTokenAmount1,
+        [
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(AddLiquidityToken1)
+          )?.tokenAddress,
+          tokenList?.find(
+            (item: any) => String(item?.name) === String(AddLiquidityToken2)
+          )?.tokenAddress,
+        ]
+      );
+      setAddLiquidityTokenAmount2(EthertoWei(res2[1] ?? "0"));
+    } catch (e: any) {
+      setAddLiquidityTokenAmount2("0");
+    }
+    // .then((res: any) => {
+    //   setAddLiquidityTokenAmount2(EthertoWei(res[1] ?? "0"));
+    // });
+
+    getLpBalance();
+    // 计算价格影响
+    getPriceImpact();
+  };
+
   useEffect(() => {
     if (!!token) {
       getInitData();
@@ -1668,37 +1763,32 @@ export default function Rank() {
 
   useEffect(() => {
     if (!!web3ModalAccount && Number(InputAmount) > 0) {
-      Contracts.example
-        ?.getAmountsOut(web3ModalAccount as string, InputAmount, [
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(FromToken)
-          )?.tokenAddress,
-          tokenList?.find((item: any) => String(item?.name) === String(ToToken))
-            ?.tokenAddress,
-        ])
-        .then((res: any) => {
-          // debugger;
-          setReceiveAmount(EthertoWei(res[1] ?? "0"));
-        });
-
-      Contracts.example
-        ?.getAmountsOut(web3ModalAccount as string, AddLiquidityTokenAmount1, [
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(AddLiquidityToken1)
-          )?.tokenAddress,
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(AddLiquidityToken2)
-          )?.tokenAddress,
-        ])
-        .then((res: any) => {
-          setAddLiquidityTokenAmount2(EthertoWei(res[1] ?? "0"));
-        });
-      getLpBalance();
-      // 计算价格影响
-      getPriceImpact();
+      getContractData();
     } else {
     }
-  }, [web3ModalAccount, token, InputAmount, FromToken, ToToken]);
+  }, [
+    web3ModalAccount,
+    token,
+    InputAmount,
+    FromToken,
+    ToToken,
+    AddLiquidityToken1,
+    AddLiquidityToken2,
+    chainId,
+    selectedNetworkId,
+  ]);
+
+  useEffect(() => {
+    if (!!web3ModalAccount) {
+      getLpBalance();
+    }
+  }, [
+    web3ModalAccount,
+    AddLiquidityToken1,
+    AddLiquidityToken2,
+    chainId,
+    selectedNetworkId,
+  ]);
 
   useEffect(() => {
     if (!!web3ModalAccount) {
@@ -1730,6 +1820,28 @@ export default function Rank() {
     } else {
     }
   }, [web3ModalAccount, token, PercentValue]);
+  useEffect(() => {
+    if (chainId) {
+      // debugger;
+      // console.log(chainId, "chainId");
+      setFromToken(
+        tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name ??
+          "PIJS"
+      );
+      setToToken(
+        tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name ??
+          "USDT"
+      );
+      setAddLiquidityToken1(
+        tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name ??
+          "PIJS"
+      );
+      setAddLiquidityToken2(
+        tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name ??
+          "USDT"
+      );
+    }
+  }, [chainId]);
 
   const BtnBox = () => {
     if (!web3ModalAccount)
@@ -1744,7 +1856,7 @@ export default function Rank() {
         </Btn>
       );
     if (!InputAmount || Number(InputAmount) <= 0)
-      return <Btn isActive={false}>Please enter amount</Btn>;
+      return <Btn isActive={false}>{t("Please enter amount")}</Btn>;
 
     if (
       Number(InputAmount) >
@@ -1754,7 +1866,11 @@ export default function Rank() {
         )?.balance
       )
     )
-      return <Btn isActive={false}>Insufficient {FromToken} balance</Btn>;
+      return (
+        <Btn isActive={false}>
+          {t("Insufficient {{name}} balance", { name: FromToken })}
+        </Btn>
+      );
     return (
       <Btn
         isActive={true}
@@ -1762,7 +1878,11 @@ export default function Rank() {
           SwapFun();
         }}
       >
-        {String(FromToken) === "UAC" ? t("交易") : t("授权")}
+        {String(FromToken) === "UAC"
+          ? t("交易")
+          : Number(TOKENAllowance) >= Number(InputAmount)
+          ? t("交易")
+          : t("授权")}
       </Btn>
     );
   };
@@ -1784,7 +1904,7 @@ export default function Rank() {
       Number(AddLiquidityTokenAmount1) <= 0 ||
       Number(AddLiquidityTokenAmount2) <= 0
     )
-      return <Btn isActive={false}>Please enter amount</Btn>;
+      return <Btn isActive={false}>{t("Please enter amount")}</Btn>;
 
     if (
       Number(AddLiquidityTokenAmount1) >
@@ -1795,7 +1915,9 @@ export default function Rank() {
       )
     )
       return (
-        <Btn isActive={false}>Insufficient {AddLiquidityToken1} balance</Btn>
+        <Btn isActive={false}>
+          {t("Insufficient {{name}} balance", { name: AddLiquidityToken1 })}
+        </Btn>
       );
     if (
       Number(AddLiquidityTokenAmount2) >
@@ -1806,7 +1928,9 @@ export default function Rank() {
       )
     )
       return (
-        <Btn isActive={false}>Insufficient {AddLiquidityToken2} balance</Btn>
+        <Btn isActive={false}>
+          {t("Insufficient {{name}} balance", { name: AddLiquidityToken2 })}
+        </Btn>
       );
     return (
       <Btn
@@ -1815,7 +1939,7 @@ export default function Rank() {
           AddLiquidityFun();
         }}
       >
-        {t("授权")}
+        {Number(TOKENAllowance) >= Number(InputAmount) ? t("添加") : t("授权")}
       </Btn>
     );
   };
@@ -1832,7 +1956,7 @@ export default function Rank() {
         </Btn>
       );
     if (String(PercentValue) === "0%")
-      return <Btn isActive={false}>Enter withdrawal percentage</Btn>;
+      return <Btn isActive={false}>{t("Enter withdrawal percentage")}</Btn>;
 
     return (
       <Btn
@@ -1841,7 +1965,8 @@ export default function Rank() {
           RemoveLiquidityFun();
         }}
       >
-        {t("授权")} LP
+        {Number(TOKENAllowance) >= Number(InputAmount) ? t("移除") : t("授权")}{" "}
+        LP
       </Btn>
     );
   };
@@ -1850,6 +1975,9 @@ export default function Rank() {
     <>
       <HomeContainerBox src={width >= 1400 ? MainBg : mainBgMobile}>
         <div>
+          <SwapBanner>
+            <img src={swapBanner} alt="" />
+          </SwapBanner>
           <SwapContainer_Tabs>
             <div
               className={String(TabActive) === "Trade" ? "active" : ""}
@@ -1862,7 +1990,7 @@ export default function Rank() {
             <div
               className={String(TabActive) === "TWAP" ? "active" : ""}
               onClick={() => {
-                return addMessage("Coming soon");
+                return addMessage(t("Coming soon"));
                 setTabActive("TWAP");
               }}
             >
@@ -2026,10 +2154,12 @@ export default function Rank() {
                   }}
                 >
                   {" "}
-                  <img src={toIcon} alt="" /> Remove UAC-USDT Liquidity
+                  <img src={toIcon} alt="" /> {t("Remove UAC-USDT Liquidity")}
                 </SwapContainer_Title>
 
-                <SwapItem_Title>Enter Withdrawal Percentage</SwapItem_Title>
+                <SwapItem_Title>
+                  {t("Enter Withdrawal Percentage")}
+                </SwapItem_Title>
                 <SwapItem>
                   <LiquidityItem>
                     <input type="text" value={PercentValue} readOnly={true} />
@@ -2067,7 +2197,7 @@ export default function Rank() {
                 </SwapItem>
                 <SwapItemBottom>
                   <SwapItem_Title_Item>
-                    <div>Received Amount</div>
+                    <div>{t("Received Amount")}</div>
                   </SwapItem_Title_Item>
                   <ReceivedBox>
                     <ReceivedBox_Item>
@@ -2123,8 +2253,8 @@ export default function Rank() {
                   </ReceivedBox>
                 </SwapItemBottom>
                 <LiquidityPrice>
-                  Reference Price 1 {FromToken} = {NumSplic1(OneUACToUSDT, 4)}{" "}
-                  {ToToken}
+                  {t("Reference Price")} 1 {FromToken} ={" "}
+                  {NumSplic1(OneUACToUSDT, 4)} {ToToken}
                 </LiquidityPrice>
 
                 {RemoveLiquidityBtn()}
@@ -2133,11 +2263,11 @@ export default function Rank() {
               <SwapContainer>
                 <SwapContainer_Title>
                   {" "}
-                  <img src={toIcon} alt="" /> Add V2 Liquidity
+                  <img src={toIcon} alt="" /> {t("Add V2 Liquidity")}
                 </SwapContainer_Title>
 
                 <SelectTokenPair>
-                  <SwapItem_Title>Select Token Pair</SwapItem_Title>
+                  <SwapItem_Title>{t("Select Token Pair")}</SwapItem_Title>
                   <Tokens>
                     <Token
                       onClick={() => {
@@ -2178,7 +2308,7 @@ export default function Rank() {
                     </Token>
                   </Tokens>
                 </SelectTokenPair>
-                <SwapItem_Title>Enter Amount</SwapItem_Title>
+                <SwapItem_Title>{t("Enter Amount")}</SwapItem_Title>
 
                 <SwapItem>
                   <SwapItem_Title_Item>
@@ -2197,7 +2327,7 @@ export default function Rank() {
                       <img src={copyIcon} alt="" />
                     </div>
                     <div>
-                      Balance:{" "}
+                      {t("Balance")}:{" "}
                       {NumSplic1(
                         CoinListObj?.find(
                           (item: any) =>
@@ -2249,7 +2379,7 @@ export default function Rank() {
                       <img src={copyIcon} alt="" />
                     </div>
                     <div>
-                      Balance:{" "}
+                      {t("Balance")}:{" "}
                       {NumSplic1(
                         CoinListObj?.find(
                           (item: any) =>
@@ -2272,7 +2402,11 @@ export default function Rank() {
                     <Item_Right>
                       <input
                         type="text"
-                        value={NumSplic1(AddLiquidityTokenAmount2, 4)}
+                        value={
+                          !!AddLiquidityTokenAmount2
+                            ? NumSplic1(AddLiquidityTokenAmount2, 4)
+                            : 0
+                        }
                         onChange={(e: any) => {
                           InputAddLiquidityFun(e, 2);
                         }}
@@ -2295,7 +2429,7 @@ export default function Rank() {
                 {AddLiquidityBtnBox()}
 
                 <SwapInfo>
-                  <SwapInfo_Title>Your Position</SwapInfo_Title>
+                  <SwapInfo_Title>{t("Your Position")}</SwapInfo_Title>
                   {Number(LPBalance) > 0 ? (
                     <SwapInfo_Content>
                       <SwapInfo_Item>
@@ -2313,7 +2447,7 @@ export default function Rank() {
                               setLiquidityType(true);
                             }}
                           >
-                            Remove
+                            {t("Remove")}
                           </Remove_Btn>
                         </SwapInfo_Item_Right>
                       </SwapInfo_Item>
@@ -2322,7 +2456,7 @@ export default function Rank() {
                     <SwapInfo_Content>
                       <NoData>
                         <img src={nodata} alt="" />
-                        No current positions
+                        {t("No current positions")}
                       </NoData>
                     </SwapInfo_Content>
                   )}
@@ -2347,6 +2481,7 @@ export default function Rank() {
                     src={closeIcon}
                     alt=""
                     onClick={() => {
+                      setSlippageValue("5");
                       setSettingSlippage(false);
                     }}
                   />
@@ -2354,7 +2489,7 @@ export default function Rank() {
               </ModalContainer_Title>
               <ModalContainer_Content>
                 <ModalContainer_Content_Tip>
-                  Set max slippage (default 5%)
+                  {t("Set max slippage (default 5%)")}
                 </ModalContainer_Content_Tip>
                 <ModalContainer_Content_Input>
                   <input
@@ -2371,11 +2506,11 @@ export default function Rank() {
                     if (Number(SlippageValue) > 0) {
                       setSettingSlippage(false);
                     } else {
-                      return addMessage("Please set the slippage correctly");
+                      return addMessage(t("Please set the slippage correctly"));
                     }
                   }}
                 >
-                  Confirm
+                  {t("Confirm")}
                 </Confirm_Btn>
               </ModalContainer_Content>
             </ModalContainer>

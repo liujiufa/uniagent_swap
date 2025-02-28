@@ -51,7 +51,7 @@ const MessageBox = styled.div`
     opacity: 1;
     background: #0f0f0f;
     box-sizing: border-box;
-    border: 1px solid #f4c134;
+    border: 1px solid #685319;
     display: flex;
     align-items: center;
     width: fit-content;

@@ -39,13 +39,16 @@ import { Menu, Dropdown, Modal } from "antd";
 import {
   contractAddress,
   curentBSCChainId,
+  curentUNIChainId,
   customNetwork_BSC,
   customNetwork_BSC_TEST,
   customNetwork_UNI,
+  customNetwork_UNI_TEST,
   GoTo,
   isMain,
   LOCAL_KEY,
   loginNetworkId,
+  NETWORK_PARAMS,
 } from "../config";
 import { useViewport } from "../components/viewportContext";
 import Web3 from "web3";
@@ -109,8 +112,8 @@ const LogoContainer = styled(FlexCCBox)`
   @media (max-width: 1400px) {
     > img {
       width: 100%;
-      max-width: 99px;
-      height: 28px;
+      width: 99px;
+      height: 26px;
       margin-right: 0px;
       /* margin-top: 1px; */
     }
@@ -545,7 +548,7 @@ const NodePartner = styled(FlexCCBox)<{ src: string }>`
     margin-right: 4px;
   }
   @media (max-width: 1400px) {
-    background-size: contain;
+    /* background-size: contain; */
     height: fit-content;
     width: fit-content;
   }
@@ -701,7 +704,27 @@ const MobileSlider_Title = styled.div`
     margin-bottom: 2px;
   }
 `;
-
+export let communityObj = [
+  {
+    value: "Telegram",
+    key: "c_item1",
+    img: c_img1,
+    link: "https://t.me/pijswap",
+  },
+  {
+    value: "Twitter",
+    key: "c_item2",
+    img: c_img2,
+    link: "https://x.com/PIJSwap_Labs",
+  },
+  {
+    value: "Medium",
+    key: "c_item3",
+    img: c_img3,
+    link: "https://medium.com/@PIJSwap",
+  },
+];
+declare let window: any;
 const MainLayout: any = () => {
   const web3 = new Web3();
   const codeInputRef = useRef<any>(null);
@@ -760,26 +783,7 @@ const MainLayout: any = () => {
     (web3ModalAccount as string)?.toLowerCase()
   );
 
-  let communityObj = [
-    {
-      value: "Telegram",
-      key: "c_item1",
-      img: c_img1,
-      link: "https://t.me/pijswap",
-    },
-    {
-      value: "Twitter",
-      key: "c_item2",
-      img: c_img2,
-      link: "https://x.com/pijswap",
-    },
-    {
-      value: "Medium",
-      key: "c_item3",
-      img: c_img3,
-      link: "https://medium.com/@PIJSwap",
-    },
-  ];
+ 
   let connectedObj = [
     {
       value: "绑定推荐码",
@@ -800,7 +804,7 @@ const MainLayout: any = () => {
   let ChainObj = [
     {
       value: "BNB Chain",
-      chainId: isMain ? 56 : 97,
+      chainId: curentBSCChainId,
       key: "chain_item1",
       img: chain_img1,
       link: "https://www.uniagent.co/pdf/Whitepaper.pdf",
@@ -814,7 +818,7 @@ const MainLayout: any = () => {
     },
     {
       value: "UniAgent",
-      chainId: 656231,
+      chainId: curentUNIChainId,
       key: "chain_item3",
       img: chain_img3,
       link: "https://www.uniagent.co/pdf/ProjectIntroduction.pdf",
@@ -932,9 +936,25 @@ const MainLayout: any = () => {
                     switchNetwork(
                       isMain ? customNetwork_BSC : customNetwork_BSC_TEST
                     );
-                  } else if (item?.chainId === 656231) {
+                  } else if (item?.chainId === curentUNIChainId) {
                     // debugger;
-                    switchNetwork(customNetwork_UNI);
+                    // window?.ethereum?.request({
+                    //   method: "wallet_addEthereumChain",
+                    //   params: [NETWORK_PARAMS],
+                    // });
+
+                    try {
+                      // 请求添加网络
+                      window.ethereum.request({
+                        method: "wallet_addEthereumChain",
+                        params: [NETWORK_PARAMS],
+                      });
+                    } catch (error) {
+                      console.error("Error adding network:", error);
+                    }
+                    switchNetwork(
+                      isMain ? customNetwork_UNI : customNetwork_UNI_TEST
+                    );
                   } else {
                     return addMessage(t("Coming soon"));
                   }
@@ -1142,6 +1162,7 @@ const MainLayout: any = () => {
 
   useEffect(() => {
     if (chainId) {
+      // debugger;
       console.log(
         chainId,
         ChainObj?.find(
@@ -1194,6 +1215,7 @@ const MainLayout: any = () => {
               <NodePartner
                 src={NodeMenuBg}
                 onClick={() => {
+                  return addMessage("Coming soon");
                   window.open(GoTo);
                 }}
               >
@@ -1436,6 +1458,7 @@ const MainLayout: any = () => {
               <NodePartner
                 src={NodeMenuBg}
                 onClick={() => {
+                  return addMessage("Coming soon");
                   window.open(GoTo);
                 }}
               >

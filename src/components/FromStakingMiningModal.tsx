@@ -24,6 +24,7 @@ import {
   customNetwork_BSC,
   customNetwork_BSC_TEST,
   isMain,
+  customNetwork_UNI_TEST,
 } from "../config";
 import { bscTestnet, bsc, mainnet } from "@reown/appkit/networks";
 
@@ -168,7 +169,7 @@ const ChainItemsBox = styled(FlexSBCBox)`
     border-radius: 8px;
     opacity: 1;
     box-sizing: border-box;
-    border: 1px solid #f4c134;
+    border: 1px solid #685319;
   }
 `;
 const Tokens = styled.div`
@@ -700,7 +701,9 @@ const ModalContent = React.forwardRef((props: any, ref: any) => {
                         isMain ? customNetwork_BSC : customNetwork_BSC_TEST
                       );
                     } else {
-                      switchNetwork(customNetwork_UNI);
+                      switchNetwork(
+                        isMain ? customNetwork_UNI : customNetwork_UNI_TEST
+                      );
                     }
                   }}
                 >

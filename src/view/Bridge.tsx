@@ -53,7 +53,7 @@ import fromToLine from "../assets/image/Swap/fromToLine.png";
 import copyFun from "copy-to-clipboard";
 import { Contracts } from "../web3";
 import useUSDTGroup from "../hooks/useUSDTGroup";
-import { contractAddress, loginNetworkId } from "../config";
+import { contractAddress, curentBSCChainId, curentUNIChainId, isMain, loginNetworkId } from "../config";
 import { createLoginSuccessAction } from "../store/actions";
 import { useNoGas } from "../hooks/useNoGas";
 import ModalContent from "../components/ModalContent";
@@ -81,6 +81,7 @@ import chain_img1 from "../assets/image/layout/chain_img1.png";
 import chain_img2 from "../assets/image/layout/chain_img2.png";
 import chain_img3 from "../assets/image/layout/chain_img3.png";
 import piIcon from "../assets/image/Swap/piIcon.png";
+import { turn } from "../components/loding";
 const HomeContainerBox = styled.div<{ src: string }>`
   padding-top: 64px;
   width: 100%;
@@ -474,7 +475,9 @@ const ExchangeRecordTitle = styled(FlexSBCBox)`
       color: #666666;
     }
   }
-  > img {
+  img {
+    width: 24px;
+    height: 24px;
     cursor: pointer;
   }
 
@@ -617,6 +620,21 @@ const ExchangeRecordItem = styled(FlexBox)`
   }
 `;
 
+const LodingMode = styled.div`
+  width: 24px;
+  height: 24px;
+  /* background: rgba(0, 0, 0, 0.3); */
+  /* background: #ccc; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & img {
+    width: 100%;
+    height: 100%;
+    animation: ${turn} 3s linear infinite;
+  }
+`;
+
 let timer: any = null;
 interface Token {
   tokenName: string;
@@ -628,12 +646,14 @@ interface Token {
 interface Chain {
   ChainName: string;
   icon: any;
+  chainId: number;
   tokens: Token[];
 }
 const ChainArr: Chain[] = [
   {
     ChainName: "Pi",
     icon: piIcon,
+    chainId: 19898,
     tokens: [
       {
         tokenName: "USDT",
@@ -644,6 +664,7 @@ const ChainArr: Chain[] = [
   },
   {
     ChainName: "BSC",
+    chainId: curentBSCChainId,
     icon: chain_img1,
     tokens: [
       {
@@ -656,7 +677,7 @@ const ChainArr: Chain[] = [
   {
     ChainName: "UniAgent",
     icon: chain_img3,
-
+    chainId: curentUNIChainId,
     tokens: [
       {
         tokenName: "USDT",
@@ -691,10 +712,9 @@ export default function Rank() {
     useState(false);
   const [ToStakingMiningModalState, setToStakingMiningModalState] =
     useState(false);
-  const [EdgeNodeModalState, setEdgeNodeModalState] = useState(false);
+  const [LoadingExchangeRecord, setLoadingExchangeRecord] = useState(false);
 
   const [SuccessFulHash, setSuccessFulHash] = useState("");
-  const [RecordList3, setRecordList3] = useState<any>({});
   const [BridgeData, setBridgeData] = useState<any>({});
   const [BridgeExchangeRecord, setBridgeExchangeRecord] = useState<any>([]);
   const [DrawData, setDrawData] = useState<any>(0);
@@ -718,7 +738,7 @@ export default function Rank() {
       ?.tokens[0]?.tokenAddress as string
   );
   const [ReceiveAddress, setReceiveAddress] = useState("");
-  const [FromInputAmount, setFromInputAmount] = useState("1");
+  const [FromInputAmount, setFromInputAmount] = useState("10");
   // const [TokenArr, setTokenArr] = useState([]);
 
   const { isNoGasFun } = useNoGas();
@@ -775,9 +795,11 @@ export default function Rank() {
   };
 
   const BridgeFun = (FromInputAmount: any) => {
-    return addMessage("Coming soon");
+    // return addMessage("Coming soon");
 
     // if (!IsBindState) return addMessage(t("9"));
+    if (Number(FromInputAmount) < 10 || Number(FromInputAmount) > 10000)
+      return addMessage(t("单次最小跨链10U"));
     if (Number(FromInputAmount) <= 0) return;
     handleTransaction(
       FromInputAmount + "",
@@ -805,12 +827,12 @@ export default function Rank() {
             setShowTipModal(true);
             res = await Contracts.example?.deposite(
               web3ModalAccount as string,
-              FromInputAmount,
-              ReceiveAddress,
+              // FromInputAmount,
+              // ReceiveAddress,
               item?.data,
-              loginNetworkId?.find(
-                (item: any) => String(item?.name) === String(LinkType2)
-              )?.bridgeChainId,
+              // loginNetworkId?.find(
+              //   (item: any) => String(item?.name) === String(LinkType2)
+              // )?.bridgeChainId,
               ChainArr?.find(
                 (item) => String(item?.ChainName) === String(LinkType1)
               )?.tokens[0]?.bridgeContract as string
@@ -858,11 +880,13 @@ export default function Rank() {
 
   const getBridgeData = () => {
     getExchangeFormDataList().then((res: any) => {
-      setBridgeData(
-        res?.data?.find(
-          (item: any) => String(item?.chainName) === String(LinkType1)
-        ) || {}
-      );
+      if (!!LinkType1) {
+        setBridgeData(
+          res?.data?.find(
+            (item: any) => String(item?.chainName) === String(LinkType1)
+          ) || {}
+        );
+      }
     });
   };
 
@@ -925,6 +949,15 @@ export default function Rank() {
     }
   }, []);
 
+  useEffect(() => {
+    if (chainId) {
+      SelectTypeFun(
+        "from",
+        ChainArr?.find((item: any) => item?.chainId === chainId)?.ChainName
+      );
+    }
+  }, [web3ModalAccount, chainId]);
+
   const BtnBox = () => {
     if (!web3ModalAccount)
       return (
@@ -938,13 +971,17 @@ export default function Rank() {
         </Btn>
       );
     if (!FromInputAmount || Number(FromInputAmount) <= 0)
-      return <Btn isActive={false}>Please Enter The Exchange Quantity</Btn>;
+      return (
+        <Btn isActive={false}>{t("Please Enter The Exchange Quantity")}</Btn>
+      );
     if (!ReceiveAddress)
       return (
-        <Btn isActive={false}>Please fill in the correct receiving address</Btn>
+        <Btn isActive={false}>
+          {t("Please fill in the correct receiving address")}
+        </Btn>
       );
     if (Number(FromInputAmount) > Number(TOKENBalance))
-      return <Btn isActive={false}>Insufficient balance</Btn>;
+      return <Btn isActive={false}>{t("Insufficient balance")}</Btn>;
     return (
       <Btn
         isActive={true}
@@ -1030,26 +1067,33 @@ export default function Rank() {
                   <input
                     type="text"
                     value={
-                      NumSplic1(
-                        (1 /
-                          Number(
-                            BridgeData?.exchangeTargetVoList?.find(
-                              (item: any) =>
-                                String(item?.chainName) === String(LinkType2)
-                            )?.price
-                          )) *
-                          Number(FromInputAmount) *
-                          (1 - Number(BridgeData?.fee)) *
-                          Number(BridgeData?.price) *
-                          (1 -
-                            Number(
-                              BridgeData?.exchangeTargetVoList?.find(
-                                (item: any) =>
-                                  String(item?.chainName) === String(LinkType2)
-                              )?.fee
-                            )),
-                        4
-                      ) ?? 0
+                      Object?.keys(BridgeData ?? {}).length !== 0 &&
+                      Object?.keys(BridgeData?.exchangeTargetVoList ?? {})
+                        .length !== 0 &&
+                      !!LinkType2
+                        ? NumSplic1(
+                            (1 /
+                              Number(
+                                BridgeData?.exchangeTargetVoList?.find(
+                                  (item: any) =>
+                                    String(item?.chainName) ===
+                                    String(LinkType2)
+                                )?.price
+                              )) *
+                              Number(FromInputAmount) *
+                              (1 - Number(BridgeData?.fee)) *
+                              Number(BridgeData?.price) *
+                              (1 -
+                                Number(
+                                  BridgeData?.exchangeTargetVoList?.find(
+                                    (item: any) =>
+                                      String(item?.chainName) ===
+                                      String(LinkType2)
+                                  )?.fee
+                                )),
+                            4
+                          )
+                        : 0
                     }
                   />
                 </Item_Right>
@@ -1151,13 +1195,27 @@ export default function Rank() {
               <div>
                 {t("交易记录")} <span>({t("仅展示最近7天")})</span>
               </div>
-              <img
-                src={refreshIcon}
-                alt=""
-                onClick={() => {
-                  getInitData();
-                }}
-              />
+              {!!LoadingExchangeRecord ? (
+                <LodingMode>
+                  <img src={refreshIcon} alt="" />
+                </LodingMode>
+              ) : (
+                <img
+                  src={refreshIcon}
+                  alt=""
+                  onClick={() => {
+                    setLoadingExchangeRecord(true);
+                    setTimeout(() => {
+                      getExchangeRecord().then((res: any) => {
+                        if (res.code === 200) {
+                          setBridgeExchangeRecord(res?.data || []);
+                          setLoadingExchangeRecord(false);
+                        }
+                      });
+                    }, 2000);
+                  }}
+                />
+              )}
             </ExchangeRecordTitle>
             <ExchangeRecordItems>
               {BridgeExchangeRecord?.map((item: any, index: any) => (
@@ -1171,7 +1229,7 @@ export default function Rank() {
                     </div>
                     <div className="from_coin_to_line">
                       <img src={fromToLine} alt="" />
-                      Expected Receipt
+                      {t("Expected Receipt")}
                     </div>
                   </div>
                   <div>
@@ -1200,7 +1258,7 @@ export default function Rank() {
                   </div>
                   <div>
                     <div className="price_info">
-                      Reference Price
+                      {t("Reference Price")}
                       <div>
                         {item?.fromPrice ?? 0} {item?.fromCoinName}(
                         {item?.fromChain}) = {item?.toPrice ?? 0}{" "}
@@ -1210,7 +1268,7 @@ export default function Rank() {
                   </div>
                   <div>
                     <div className="price_info">
-                      Fee
+                      {t("Fee")}
                       <div>
                         {item?.fromFee} {item?.fromCoinName}(
                         {item?.fromTokenType}) + {item?.toFee}{" "}
