@@ -213,3 +213,9 @@ export function getRefereeList(data: any) {
     },
   });
 }
+export function getKineData(token: any, time: any) {
+  return axois.request({
+    url: `/user/getKineData/${token}/${time}`,
+    method: "get",
+  });
+}

@@ -207,22 +207,35 @@ export class Contracts {
       .stakeEdgeNode(num)
       .send({ from: addr, gasPrice: "2000000000", value: amounted });
   }
-  swapExactTokensForETH(addr: string, amount: any, amountMin: any, Arr: any) {
-    this.verification("Router");
-    // debugger;
+  swapExactTokensForETH(
+    addr: string,
+    amount: any,
+    amountMin: any,
+    Arr: any,
+    contractAddress: any
+  ) {
+    // this.verification("Router");
+
+    let obj = new this.web3.eth.Contract(abiObj?.Router, contractAddress);
     var amounted = Web3.utils.toWei(amount + "", "ether");
     var amountOutMined = Web3.utils.toWei(amountMin + "", "ether");
     let deadline: number = Math.floor(Date.now() / 1000) + 60;
-    return this.contract.Router?.methods
+    return obj?.methods
       .swapExactTokensForETH(amounted, amountOutMined, Arr, addr, deadline)
       .send({ from: addr, gasPrice: "2000000000" });
   }
-  swapExactETHForTokens(addr: string, amount: any, Arr: any) {
-    this.verification("Router");
+  swapExactETHForTokens(
+    addr: string,
+    amount: any,
+    Arr: any,
+    contractAddress: any
+  ) {
+    // this.verification("Router");
+    let obj = new this.web3.eth.Contract(abiObj?.Router, contractAddress);
     var amounted = Web3.utils.toWei(amount + "", "ether");
     let deadline: number = Math.floor(Date.now() / 1000) + 60;
     console.log(0, Arr, addr, deadline, "debugger");
-    return this.contract.Router?.methods
+    return obj?.methods
       .swapExactETHForTokens(0, Arr, addr, deadline)
       .send({ from: addr, gasPrice: "2000000000", value: amounted });
   }
@@ -230,9 +243,11 @@ export class Contracts {
     addr: string,
     tokenAddress: string,
     amount: any,
-    USDTamount: any
+    USDTamount: any,
+    contractAddress: any
   ) {
-    this.verification("Router");
+    // this.verification("Router");
+    let obj = new this.web3.eth.Contract(abiObj?.Router, contractAddress);
     var amounted = Web3.utils.toWei(amount + "", "ether");
     var USDTamounted = Web3.utils.toWei(USDTamount + "", "ether");
     let deadline: number = Math.floor(Date.now() / 1000) + 60;
@@ -246,16 +261,22 @@ export class Contracts {
       amounted,
       "addLiquidity"
     );
-    return this.contract.Router?.methods
+    return obj?.methods
       .addLiquidityETH(tokenAddress, USDTamounted, 0, 0, addr, deadline)
       .send({ from: addr, gasPrice: "2000000000", value: amounted });
   }
-  removeLiquidityETH(addr: string, tokenAddress: string, LPamount: any) {
-    this.verification("Router");
+  removeLiquidityETH(
+    addr: string,
+    tokenAddress: string,
+    LPamount: any,
+    contractAddress: any
+  ) {
+    // this.verification("Router");
+    let obj = new this.web3.eth.Contract(abiObj?.Router, contractAddress);
     var LPamounted = Web3.utils.toWei(LPamount + "", "ether");
     let deadline: number = Math.floor(Date.now() / 1000) + 60;
 
-    return this.contract.Router?.methods
+    return obj?.methods
       .removeLiquidityETH(tokenAddress, LPamounted, 0, 0, addr, deadline)
       .send({ from: addr, gasPrice: "2000000000" });
   }
@@ -263,28 +284,33 @@ export class Contracts {
     addr: string,
     tokenAddress: string,
     amount: any,
-    USDTamount: any
+    USDTamount: any,
+    contractAddress: any
   ) {
-    this.verification("Router");
+    // this.verification("Router");
+    let obj = new this.web3.eth.Contract(abiObj?.Router, contractAddress);
     var amounted = Web3.utils.toWei(amount + "", "ether");
     var USDTamounted = Web3.utils.toWei(USDTamount + "", "ether");
     let deadline: number = Math.floor(Date.now() / 1000) + 60;
     debugger;
-    return this.contract.Router?.methods
+    return obj?.methods
       .addLiquidityETH(tokenAddress, USDTamounted, 0, 0, addr, deadline)
       .call({ from: addr });
   }
-  getAmountsOut(addr: string, amount: any, Arr: any) {
-    this.verification("Router");
+  getAmountsOut(addr: string, amount: any, Arr: any, contractAddress: any) {
+    // this.verification("Router");
+    let obj = new this.web3.eth.Contract(abiObj?.Router, contractAddress);
     var amounted = Web3.utils.toWei(amount + "", "ether");
-    return this.contract.Router?.methods
+    return obj?.methods
       .getAmountsOut(amounted, Arr)
       .call({ from: addr, gasPrice: "2000000000" });
   }
-  getPair(addr: string, addr1: any, addr2: any) {
-    this.verification("Factory");
+  getPair(addr: string, addr1: any, addr2: any, contractAddress: any) {
+    // this.verification("Factory");
+    let obj = new this.web3.eth.Contract(abiObj?.Factory, contractAddress);
+
     // var amounted = Web3.utils.toWei(amount + "", "ether");
-    return this.contract.Factory?.methods
+    return obj?.methods
       .getPair(addr1, addr2)
       .call({ from: addr, gasPrice: "2000000000" });
   }

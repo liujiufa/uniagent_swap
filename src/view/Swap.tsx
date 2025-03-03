@@ -68,6 +68,7 @@ import { isNumber } from "lodash";
 import AddLiquidityModalContentSuccess from "../components/AddLiquidityModalContentSuccess";
 import { Modal } from "antd";
 import Footer from "../components/Footer";
+import PriceChart from "../components/PriceChart";
 const HomeContainerBox = styled.div<{ src: string }>`
   padding-top: 64px;
   width: 100%;
@@ -978,13 +979,15 @@ const SwapBanner = styled.div`
   }
 `;
 
-let tokenList: any = [
+export let tokenList: any = [
   {
     icon: usdtIcon,
     name: "USDT",
     tokenAddress: contractAddress?.USDTUNI,
     symbol: "Tether USD",
     chainId: curentUNIChainId,
+    contractAddress: contractAddress?.UACFactory,
+    Router: contractAddress?.UACRouter,
   },
   {
     icon: uacIcon,
@@ -992,6 +995,8 @@ let tokenList: any = [
     tokenAddress: contractAddress?.WUAC,
     symbol: "UniAgent",
     chainId: curentUNIChainId,
+    contractAddress: contractAddress?.UACFactory,
+    Router: contractAddress?.UACRouter,
   },
   {
     icon: pijsIcon,
@@ -999,6 +1004,8 @@ let tokenList: any = [
     tokenAddress: contractAddress?.PIJSBSC,
     symbol: "PIJS",
     chainId: curentBSCChainId,
+    contractAddress: contractAddress?.PIJSFactory,
+    Router: contractAddress?.PIJSRouter,
   },
   {
     icon: usdtIcon,
@@ -1006,6 +1013,8 @@ let tokenList: any = [
     tokenAddress: contractAddress?.USDTBSC,
     symbol: "Tether USD",
     chainId: curentBSCChainId,
+    contractAddress: contractAddress?.PIJSFactory,
+    Router: contractAddress?.PIJSRouter,
   },
   {
     icon: piIcon,
@@ -1013,6 +1022,8 @@ let tokenList: any = [
     tokenAddress: contractAddress?.PiBSC,
     symbol: "Pi Network",
     chainId: curentBSCChainId,
+    contractAddress: contractAddress?.PIJSFactory,
+    Router: contractAddress?.PIJSRouter,
   },
 ];
 let timer: any = null;
@@ -1101,6 +1112,9 @@ export default function Rank() {
       addMessage(t("Copied successfully"));
     }
   };
+  let CurrentRouter: any = tokenList?.find(
+    (item: any) => String(item?.name) === String(FromToken)
+  )?.Router;
 
   const getWebsocketData = () => {
     timer = setInterval(() => {
@@ -1133,7 +1147,17 @@ export default function Rank() {
     if (!!web3ModalAccount) {
       for (let item of tokenList) {
         let value: any = 0;
-        if (String(item?.name) === "USDT") {
+        if (String(item?.name) === "UAC") {
+          try {
+            value = await Contracts.example.getBalance(
+              web3ModalAccount as string
+            );
+          } catch (error: any) {}
+          item = {
+            ...item,
+            balance: Web3.utils.fromWei(value + "", "ether") || 0,
+          };
+        } else {
           try {
             value = await Contracts.example.balanceOf(
               web3ModalAccount as string,
@@ -1146,19 +1170,10 @@ export default function Rank() {
             ...item,
             balance: Web3.utils.fromWei(value + "", "ether") || 0,
           };
-        } else if (String(item?.name) === "UAC") {
-          try {
-            value = await Contracts.example.getBalance(
-              web3ModalAccount as string
-            );
-          } catch (error: any) {}
-          item = {
-            ...item,
-            balance: Web3.utils.fromWei(value + "", "ether") || 0,
-          };
-        } else {
-          item = item;
         }
+        // else {
+        //   item = item;
+        // }
         Arr.push(item);
       }
       setCoinListObj(Arr || []);
@@ -1170,16 +1185,29 @@ export default function Rank() {
     if (String(CurrentSelectedState) === "from") {
       setFromToken(tokenName);
       setToToken(
-        tokenList?.filter(
-          (item: any) => String(item?.name) !== String(tokenName)
-        )[0].name
+        tokenList?.filter((item: any) => {
+          const Result = (obj: any) => {
+            return (
+              obj?.chainId === chainId &&
+              String(obj?.name) !== String(tokenName)
+            );
+          };
+
+          return Result(item);
+        })[0]?.name
       );
     } else if (String(CurrentSelectedState) === "to") {
       setToToken(tokenName);
       setFromToken(
-        tokenList?.filter(
-          (item: any) => String(item?.name) !== String(tokenName)
-        )[0].name
+        tokenList?.filter((item: any) => {
+          const Result = (item: any) => {
+            return (
+              item?.chainId === chainId &&
+              String(item?.name) !== String(tokenName)
+            );
+          };
+          return Result(item);
+        })[0]?.name
       );
     }
   };
@@ -1188,16 +1216,28 @@ export default function Rank() {
       setAddLiquidityToken1(tokenName);
 
       setAddLiquidityToken2(
-        tokenList?.filter(
-          (item: any) => String(item?.name) !== String(tokenName)
-        )[0].name
+        tokenList?.filter((item: any) => {
+          const Result = (item: any) => {
+            return (
+              item?.chainId === chainId &&
+              String(item?.name) !== String(tokenName)
+            );
+          };
+          return Result(item);
+        })[0]?.name
       );
     } else if (Number(AddLiquidityTokenType) === 2) {
       setAddLiquidityToken2(tokenName);
       setAddLiquidityToken1(
-        tokenList?.filter(
-          (item: any) => String(item?.name) !== String(tokenName)
-        )[0].name
+        tokenList?.filter((item: any) => {
+          const Result = (item: any) => {
+            return (
+              item?.chainId === chainId &&
+              String(item?.name) !== String(tokenName)
+            );
+          };
+          return Result(item);
+        })[0]?.name
       );
     }
   };
@@ -1254,7 +1294,8 @@ export default function Rank() {
                 tokenList?.find(
                   (item: any) => String(item?.name) === String(ToToken)
                 )?.tokenAddress,
-              ]
+              ],
+              CurrentRouter
             );
           } catch (error: any) {
             if (error?.code === 4001) {
@@ -1315,7 +1356,8 @@ export default function Rank() {
             tokenList?.find(
               (item: any) => String(item?.name) === String(ToToken)
             )?.tokenAddress,
-          ]
+          ],
+          CurrentRouter
         );
       } catch (error: any) {
         if (error?.code === 4001) {
@@ -1343,7 +1385,7 @@ export default function Rank() {
       }
     }
   };
-
+  // 原生代币和ERC-20代币
   const AddLiquidityFun = async () => {
     // return addMessage(t("Coming soon"));
 
@@ -1374,7 +1416,8 @@ export default function Rank() {
               (item: any) => String(item?.name) === String("USDT")
             )?.tokenAddress,
             UACAmount,
-            USDTAmount
+            USDTAmount,
+            CurrentRouter
           );
         } catch (error: any) {
           if (error?.code === 4001) {
@@ -1459,7 +1502,8 @@ export default function Rank() {
             )?.tokenAddress,
             (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
               Number(LPBalance ?? 0) +
-              ""
+              "",
+            CurrentRouter
           );
         } catch (error: any) {
           if (error?.code === 4001) {
@@ -1533,7 +1577,8 @@ export default function Rank() {
           ?.tokenAddress,
         tokenList?.find((item: any) => String(item?.name) === String(ToToken))
           ?.tokenAddress,
-      ]
+      ],
+      CurrentRouter
     );
     setReceiveAmount(EthertoWei(receiveAmount[1] ?? "0"));
   };
@@ -1556,7 +1601,8 @@ export default function Rank() {
           tokenList?.find(
             (item: any) => String(item?.name) === String(AddLiquidityToken2)
           )?.tokenAddress,
-        ]
+        ],
+        CurrentRouter
       );
       setAddLiquidityTokenAmount2(EthertoWei(receiveAmount[1] ?? "0"));
     } else {
@@ -1572,7 +1618,8 @@ export default function Rank() {
           tokenList?.find(
             (item: any) => String(item?.name) === String(AddLiquidityToken1)
           )?.tokenAddress,
-        ]
+        ],
+        CurrentRouter
       );
       setAddLiquidityTokenAmount1(EthertoWei(receiveAmount[1] ?? "0"));
     }
@@ -1586,7 +1633,10 @@ export default function Rank() {
         )?.tokenAddress,
         tokenList?.find(
           (item: any) => String(item?.name) === String(AddLiquidityToken2)
-        )?.tokenAddress
+        )?.tokenAddress,
+        tokenList?.find(
+          (item: any) => String(item?.name) === String(AddLiquidityToken1)
+        )?.contractAddress
       );
       setLpAddress(lpAddress ?? "");
 
@@ -1595,10 +1645,8 @@ export default function Rank() {
         lpAddress
         // "0x27e199Afb97612542d8dcD88C8DCE83b4b516992"
       );
-      // debugger;
       setLPBalance(EthertoWei(LPbalance ?? "0"));
     } catch (error: any) {
-      // debugger;
       setLPBalance("0");
     }
   };
@@ -1611,7 +1659,10 @@ export default function Rank() {
         )?.tokenAddress,
         tokenList?.find(
           (item: any) => String(item?.name) === String(AddLiquidityToken2)
-        )?.tokenAddress
+        )?.tokenAddress,
+        tokenList?.find(
+          (item: any) => String(item?.name) === String(AddLiquidityToken1)
+        )?.contractAddress
       );
 
       let LPTokenBalance1: any = await Contracts.example.balanceOf(
@@ -1633,7 +1684,8 @@ export default function Rank() {
           )?.tokenAddress,
           tokenList?.find((item: any) => String(item?.name) === String(ToToken))
             ?.tokenAddress,
-        ]
+        ],
+        CurrentRouter
       );
       // debugger;
 
@@ -1663,13 +1715,19 @@ export default function Rank() {
   const getPrice = async () => {
     try {
       Contracts.example
-        ?.getAmountsOut(web3ModalAccount as string, 1, [
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(FromToken)
-          )?.tokenAddress,
-          tokenList?.find((item: any) => String(item?.name) === String(ToToken))
-            ?.tokenAddress,
-        ])
+        ?.getAmountsOut(
+          web3ModalAccount as string,
+          1,
+          [
+            tokenList?.find(
+              (item: any) => String(item?.name) === String(FromToken)
+            )?.tokenAddress,
+            tokenList?.find(
+              (item: any) => String(item?.name) === String(ToToken)
+            )?.tokenAddress,
+          ],
+          CurrentRouter
+        )
         .then((res: any) => {
           // debugger;
           setOneUACToUSDT(EthertoWei(res[1] ?? "0"));
@@ -1686,7 +1744,10 @@ export default function Rank() {
       )?.tokenAddress,
       tokenList?.find(
         (item: any) => String(item?.name) === String(AddLiquidityToken2)
-      )?.tokenAddress
+      )?.tokenAddress,
+      tokenList?.find(
+        (item: any) => String(item?.name) === String(AddLiquidityToken1)
+      )?.contractAddress
     );
     let LiquidityTokenBalance1: any = await Contracts.example.balanceOf(
       lpAddress as string,
@@ -1717,7 +1778,8 @@ export default function Rank() {
           )?.tokenAddress,
           tokenList?.find((item: any) => String(item?.name) === String(ToToken))
             ?.tokenAddress,
-        ]
+        ],
+        CurrentRouter
       );
       setReceiveAmount(EthertoWei(res1[1] ?? "0"));
     } catch (e: any) {
@@ -1739,7 +1801,8 @@ export default function Rank() {
           tokenList?.find(
             (item: any) => String(item?.name) === String(AddLiquidityToken2)
           )?.tokenAddress,
-        ]
+        ],
+        CurrentRouter
       );
       setAddLiquidityTokenAmount2(EthertoWei(res2[1] ?? "0"));
     } catch (e: any) {
@@ -1822,7 +1885,6 @@ export default function Rank() {
   }, [web3ModalAccount, token, PercentValue]);
   useEffect(() => {
     if (chainId) {
-      // debugger;
       // console.log(chainId, "chainId");
       setFromToken(
         tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name ??
@@ -1990,11 +2052,11 @@ export default function Rank() {
             <div
               className={String(TabActive) === "TWAP" ? "active" : ""}
               onClick={() => {
-                return addMessage(t("Coming soon"));
+                // return addMessage(t("Coming soon"));
                 setTabActive("TWAP");
               }}
             >
-              TWAP
+              Price
             </div>
             <div
               className={String(TabActive) === "Liquidity" ? "active" : ""}
@@ -2144,6 +2206,152 @@ export default function Rank() {
                 </div>
               </SwapInfo>
             </SwapContainer>
+          )}
+          {String(TabActive) === "TWAP" && (
+            <>
+              <PriceChart coinName={FromToken}></PriceChart>
+              <SwapContainer>
+                <SwapContainer_Title>PIJSwap</SwapContainer_Title>
+                <SwapItem>
+                  <SwapItem_Title>
+                    {t("发送")}{" "}
+                    <div>
+                      {t("余额")}:{" "}
+                      {NumSplic1(
+                        CoinListObj?.find(
+                          (item: any) =>
+                            String(item?.name) === String(FromToken)
+                        )?.balance,
+                        4
+                      ) || 0}
+                    </div>
+                  </SwapItem_Title>
+
+                  <Item>
+                    <Item_Left
+                      onClick={() => {
+                        setCurrentSelectedState("from");
+                        setSelectTokensModalState(true);
+                      }}
+                    >
+                      <img
+                        src={
+                          tokenList?.find(
+                            (item: any) =>
+                              String(item?.name) === String(FromToken)
+                          )?.icon
+                        }
+                        alt=""
+                      />
+                      <div className="coin_info">
+                        {/* <div className="chain">BSC Chain</div> */}
+                        <div className="coin">{FromToken}</div>
+                      </div>
+                      <img src={dropIcon} alt="" />
+                    </Item_Left>
+                    <Devider></Devider>
+                    <Item_Right>
+                      <input
+                        type="text"
+                        value={InputAmount}
+                        onChange={InputFun}
+                      />
+                    </Item_Right>
+                  </Item>
+                </SwapItem>
+                <SwapToIcon>
+                  <img src={toSwaps} alt="" />
+                </SwapToIcon>
+
+                <SwapItem>
+                  <SwapItem_Title style={{ marginTop: "0px" }}>
+                    {t("接收")}{" "}
+                    {/* <div>
+              Balance: 100 <span>All</span>
+            </div> */}
+                  </SwapItem_Title>
+
+                  <Item>
+                    <Item_Left
+                      onClick={() => {
+                        setCurrentSelectedState("to");
+                        setSelectTokensModalState(true);
+                      }}
+                    >
+                      <img
+                        src={
+                          tokenList?.find(
+                            (item: any) =>
+                              String(item?.name) === String(ToToken)
+                          )?.icon
+                        }
+                        alt=""
+                      />
+                      <div className="coin_info">
+                        {/* <div className="chain">UniAgent Chain</div> */}
+                        <div className="coin">{ToToken}</div>
+                      </div>
+                      <img src={dropIcon} alt="" />
+                    </Item_Left>
+                    <Devider></Devider>
+                    <Item_Right>
+                      <input
+                        type="text"
+                        value={
+                          Number(ReceiveAmount) > 0
+                            ? NumSplic1(ReceiveAmount, 4)
+                            : "-"
+                        }
+                        readOnly={true}
+                      />
+                    </Item_Right>
+                  </Item>
+                </SwapItem>
+
+                {BtnBox()}
+
+                <SwapInfo>
+                  <div>
+                    {t("参考价格")}{" "}
+                    <span>
+                      1 {FromToken} = {NumSplic1(OneUACToUSDT, 4)} {ToToken}
+                    </span>
+                  </div>
+                  <div>
+                    {t("价格影响")} <span>{NumSplic1(PriceImpact, 4)}%</span>
+                  </div>
+                  <div>
+                    {t("滑点限制")}{" "}
+                    <span>
+                      {SlippageValue ?? "-"}%{" "}
+                      <img
+                        src={setIcon}
+                        alt=""
+                        onClick={() => {
+                          setSettingSlippage(true);
+                        }}
+                      />
+                    </span>
+                  </div>
+
+                  <div>
+                    {t("最低接收数量")}{" "}
+                    <span>
+                      {NumSplic1(
+                        Number(ReceiveAmount) *
+                          (1 - Number(SlippageValue) / 100),
+                        4
+                      )}{" "}
+                      {ToToken}
+                    </span>
+                  </div>
+                  <div>
+                    {t("交换路径")}
+                    <span>PIJSwap</span>
+                  </div>
+                </SwapInfo>
+              </SwapContainer>
+            </>
           )}
           {String(TabActive) === "Liquidity" &&
             (Number(LiquidityType) === 1 ? (

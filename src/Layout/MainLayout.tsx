@@ -783,7 +783,6 @@ const MainLayout: any = () => {
     (web3ModalAccount as string)?.toLowerCase()
   );
 
- 
   let connectedObj = [
     {
       value: "绑定推荐码",
@@ -1145,6 +1144,7 @@ const MainLayout: any = () => {
   useEffect(() => {
     new Contracts(walletProvider);
     console.log(chainId, web3ModalAccount, "chainId");
+    // debugger;
     if (!!invite && String(invite).length >= 6) {
       let str = String(invite).length > 6 ? String(invite).slice(0, 6) : invite;
       setInputValue(str);

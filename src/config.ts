@@ -16,9 +16,7 @@ const result = url.split(".").slice(1).join(".");
 export let baseUrl: string = isMain
   ? `https://pijswap.xyz/pjisswap-api`
   : "http://82.156.97.39:8880/";
-//  "https://yhhyn.com/" + "api"
-// "https://kf-panda.com/" + "api";
-// "http://172.20.10.2:28889/";
+
 export let ContractUrl: string = isMain
   ? "https://bscscan.com/address/"
   : "https://testnet.bscscan.com/address/";
@@ -180,7 +178,10 @@ export const Main: contractAddressType = {
   PiBSC: "0x74cA830003Bc76693830d37DCcE9C56be78Ae66C",
   Factory: "0x55D3a5458be5AFc639858825FaBc34CD3D5a6117",
   WUAC: "0x001C41f7b0cB226a19dfBEc7a18C8a8DA249eC46",
-  Router: "0x51d5273F6Eb69e37C86De5bDCF6efb0424255A5a",
+  UACRouter: "0x51d5273F6Eb69e37C86De5bDCF6efb0424255A5a",
+  WBNB: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+  PIJSFactory: "0x748C54e7bd5592F755DDFFE6Ad59b6Ef519E0635",
+  PIJSRouter: "0x83728DF7204BDbDE3cd23122a224F36C0Dbd6892",
 };
 
 const Test = {
@@ -188,10 +189,13 @@ const Test = {
   BridgeBSC: "0x31221fBcCa8d331E867dd44B9a01086aF35ad851",
   USDTUNI: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
   BridgeUNI: "0x69B92335D53C6fe719169BD4BDeffd6ED2833a4a",
-  PIJSBSC: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
+  PIJSBSC: "0x2E50C2E94365E49E54278F1bfcE6acbBf2dDD8A7",
   PiBSC: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
-  Factory: "0x82d3B7112eFD2127cD1eE771286D1cA1Ee3EfC2a",
+  UACFactory: "0x82d3B7112eFD2127cD1eE771286D1cA1Ee3EfC2a",
   WUAC: "0xFB572Ae3f87E322f65D2869e08a8b283501614aF",
-  Router: "0xf9D1e5Ce5b2851625A9E73859b15A14bbad39dC8",
+  UACRouter: "0xf9D1e5Ce5b2851625A9E73859b15A14bbad39dC8",
+  WBNB: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+  PIJSFactory: "0x748C54e7bd5592F755DDFFE6Ad59b6Ef519E0635",
+  PIJSRouter: "0x83728DF7204BDbDE3cd23122a224F36C0Dbd6892",
 };
 export const contractAddress: contractAddressType = isMain ? Main : Test;
