@@ -1033,7 +1033,7 @@ export default function Rank() {
   const Navigate = useNavigate();
   let dispatch = useDispatch();
   const { open, close } = useAppKit();
-
+  const { selectedNetworkId } = useAppKitState();
   const { caipNetwork, caipNetworkId, chainId, switchNetwork } =
     useAppKitNetwork();
   const [IsBindState, setIsBindState] = useState(false);
@@ -1087,22 +1087,24 @@ export default function Rank() {
     useState("0");
   const [AddLiquidityTokenBalance2, setAddLiquidityTokenBalance2] =
     useState("0");
-  // TabActive等于Liquidity
+  let CurrentRouter: any = tokenList?.find(
+    (item: any) => String(item?.name) === String(FromToken)
+  )?.Router;
   const {
     TOKENBalance,
     TOKENAllowance,
     handleApprove,
     handleTransaction,
     handleUSDTRefresh,
-  } = useUSDTGroup(contractAddress?.Router, contractAddress?.USDTUNI);
+  } = useUSDTGroup(contractAddress?.UACRouter, contractAddress?.USDTUNI);
   const {
     TOKENBalance: LPTOKENBalance,
     TOKENAllowance: LPTOKENAllowance,
     handleApprove: LPhandleApprove,
     handleTransaction: LPhandleTransaction,
     handleUSDTRefresh: LPhandleUSDTRefresh,
-  } = useUSDTGroup(contractAddress?.Router, LpAddress);
-  const { selectedNetworkId } = useAppKitState();
+  } = useUSDTGroup(contractAddress?.UACRouter, LpAddress);
+
   const CopyCodeFun = (code: string) => {
     if (!IsBindState) return addMessage(t("9"));
     if (!web3ModalAccount) {
@@ -1112,9 +1114,6 @@ export default function Rank() {
       addMessage(t("Copied successfully"));
     }
   };
-  let CurrentRouter: any = tokenList?.find(
-    (item: any) => String(item?.name) === String(FromToken)
-  )?.Router;
 
   const getWebsocketData = () => {
     timer = setInterval(() => {
@@ -1477,6 +1476,7 @@ export default function Rank() {
       }
     );
   };
+
   const RemoveLiquidityFun = async () => {
     // return addMessage(t("Coming soon"));
 
@@ -1786,10 +1786,6 @@ export default function Rank() {
       setReceiveAmount("0");
     }
 
-    // .then((res: any) => {
-    //   setReceiveAmount(EthertoWei(res[1] ?? "0"));
-    // });
-
     try {
       res2 = await Contracts.example?.getAmountsOut(
         web3ModalAccount as string,
@@ -1808,9 +1804,6 @@ export default function Rank() {
     } catch (e: any) {
       setAddLiquidityTokenAmount2("0");
     }
-    // .then((res: any) => {
-    //   setAddLiquidityTokenAmount2(EthertoWei(res[1] ?? "0"));
-    // });
 
     getLpBalance();
     // 计算价格影响

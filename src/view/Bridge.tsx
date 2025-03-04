@@ -53,7 +53,13 @@ import fromToLine from "../assets/image/Swap/fromToLine.png";
 import copyFun from "copy-to-clipboard";
 import { Contracts } from "../web3";
 import useUSDTGroup from "../hooks/useUSDTGroup";
-import { contractAddress, curentBSCChainId, curentUNIChainId, isMain, loginNetworkId } from "../config";
+import {
+  contractAddress,
+  curentBSCChainId,
+  curentUNIChainId,
+  isMain,
+  loginNetworkId,
+} from "../config";
 import { createLoginSuccessAction } from "../store/actions";
 import { useNoGas } from "../hooks/useNoGas";
 import ModalContent from "../components/ModalContent";
@@ -717,9 +723,6 @@ export default function Rank() {
   const [SuccessFulHash, setSuccessFulHash] = useState("");
   const [BridgeData, setBridgeData] = useState<any>({});
   const [BridgeExchangeRecord, setBridgeExchangeRecord] = useState<any>([]);
-  const [DrawData, setDrawData] = useState<any>(0);
-  // 1=挖矿节点 2=未挖矿节点
-  const [ModalType, setModalType] = useState<any>(1);
 
   const [Amount, setAmount] = useState(1);
   const { address: web3ModalAccount, isConnected } = useAppKitAccount();
@@ -881,6 +884,7 @@ export default function Rank() {
   const getBridgeData = () => {
     getExchangeFormDataList().then((res: any) => {
       if (!!LinkType1) {
+        // debugger;
         setBridgeData(
           res?.data?.find(
             (item: any) => String(item?.chainName) === String(LinkType1)
