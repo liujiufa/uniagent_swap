@@ -191,7 +191,7 @@
   "Approved 5 AI Nodes": "Approved {{num}} AI Nodes",
 
   "Approve 100.0000 USDT (BSC)": "Approve {{num}} USDT ({{chain}})",
-  "Approve 100.0000 USDT": "Approve {{num}} USDT",
+  "Approve 100.0000 USDT": "Approve {{num}} {{coin}}",
   "UAC exchanging for USDT": "{{FromToken}} exchanging for {{ToToken}}",
   "Exchange successful, received 100.0000 USDT": "Exchange successful, received {{amount}} {{ToToken}}",
   "Adding UAC-USDT LP": "Adding {{AddLiquidityToken1}}-{{AddLiquidityToken2}} LP",
@@ -209,7 +209,6 @@
   "Expected Receipt": "Expected Receipt",
   "Reference Price": "Reference Price",
   "Fee": "Fee",
-
 
   "Setting Slippage": "Setting Slippage",
 
@@ -281,7 +280,7 @@
   "推荐码已绑定": "Referral code has been bound",
 
   "Not yet": "Not yet",
-  "Remove UAC-USDT Liquidity": "Remove UAC-USDT Liquidity",
+  "Remove UAC-USDT Liquidity": "Remove {{coin1}}-{{coin2}} Liquidity",
   "Enter Withdrawal Percentage": "Enter Withdrawal Percentage",
   "Received Amount": "Received Amount",
   "Reference Price": "Reference Price",

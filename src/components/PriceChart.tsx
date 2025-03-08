@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import ReactEcharts from "echarts-for-react";
 import "../assets/style/componentsStyle/PriceChart.scss";
-import { tokenList } from "../view/Swap";
+import { tokenList } from "../view/SwapUni";
 import styled from "styled-components";
 import { FlexBox, FlexSBCBox } from "./FlexBox";
 import { getKineData } from "../API";
 import { dateFormat } from "../utils/tool";
 import nodata from "../assets/image/Swap/nodata.png";
+import { curentUNIChainId } from "../config";
+import { useAppKitNetwork } from "@reown/appkit/react";
 
 const CoinInfo = styled(FlexBox)`
   align-items: center;
@@ -132,8 +134,13 @@ export default function PriceChart(props: any) {
   const [Time, setTime] = useState<any>(1);
   const [TimeString, setTimeString] = useState<any>([]);
   const [ChartData, setChartData] = useState<any>([]);
+  const { caipNetwork, caipNetworkId, chainId, switchNetwork } =
+    useAppKitNetwork();
   let TokenObj: any = tokenList?.find(
-    (item: any) => String(item?.name) === String(props?.coinName)
+    (item: any) =>
+      String(item?.name) ===
+      String(chainId === curentUNIChainId ? "UAC" : props?.FromCoinName)
+    // (item: any) => String(item?.name) === String(props?.FromCoinName)
   );
   let getOption = () => {
     let option = {
@@ -249,8 +256,11 @@ export default function PriceChart(props: any) {
   };
 
   useEffect(() => {
-    if (!!props?.coinName) {
-      getKineData(props?.coinName, Time).then((res: any) => {
+    if (
+      String(props?.FromCoinName) === "UAC" ||
+      String(props?.ToCoinName) === "UAC"
+    ) {
+      getKineData("UAC", Time).then((res: any) => {
         setChartData(res?.data || []);
         if (Number(Time) === 1) {
           setTimeString(
@@ -267,7 +277,7 @@ export default function PriceChart(props: any) {
         }
       });
     }
-  }, [props?.coinName, Time]);
+  }, [props?.FromCoinName, , props?.ToCoinName, Time]);
 
   return (
     <div className="wrapper">

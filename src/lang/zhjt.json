@@ -189,23 +189,6 @@
   "188": "",
   "189": "",
 
-  "Approving 1000USDT buy for 2 nodes": "Approving {{amount}} USDT buy for {{num}} nodes",
-  "Pay 1000 USDT to purchase 2 nodes": "Pay {{amount}} USDT to purchase {{num}} nodes",
-  "2 nodes purchased successfully": "{{num}} nodes purchased successfully",
-  "Please purchase UniAgent AI Node Key to get referral codes": "Please purchase UniAgent AI Node Key to get referral codes",
-
-  "Pledge 600 UAC to get 1 edge node": "Pledge {{amount}} UAC to get {{num}} edge node",
-  "Stake 5 AI Nodes for Mining": "Stake {{num}} AI Nodes for Mining",
-  "Pay 3000 UAC to light up 5 edge nodes": "Pay {{amount}} UAC to light up {{num}} edge nodes",
-  "Approved 5 AI Nodes": "Approved {{num}} AI Nodes",
-
-  "Approve 100.0000 USDT (BSC)": "Approve {{num}} USDT ({{chain}})",
-  "Approve 100.0000 USDT": "Approve {{num}} USDT",
-  "UAC exchanging for USDT": "{{FromToken}} exchanging for {{ToToken}}",
-  "Exchange successful, received 100.0000 USDT": "Exchange successful, received {{amount}} {{ToToken}}",
-  "Adding UAC-USDT LP": "Adding {{AddLiquidityToken1}}-{{AddLiquidityToken2}} LP",
-  "Received 12.0000 UAC-USDT LP": "Received {{amount}} {{AddLiquidityToken1}}-{{AddLiquidityToken2}} LP",
-
   "绑定推荐码": "绑定推荐码",
   "我的邀请码": "我的邀请码",
   "断开连接": "断开连接",
@@ -282,7 +265,7 @@
   "Approved 5 AI Nodes": "授权 {{num}} 個 AI 節點",
 
   "Approve 100.0000 USDT (BSC)": "授权 {{num}} USDT （{{chain}}）",
-  "Approve 100.0000 USDT": "授权 {{num}} USDT",
+  "Approve 100.0000 USDT": "授权 {{num}} {{coin}}",
   "UAC exchanging for USDT": "{{FromToken}} 交換 {{ToToken}}",
   "Exchange successful, received 100.0000 USDT": "交換成功，收到 {{amount}} {{ToToken}}",
   "Adding UAC-USDT LP": "添加 {{AddLiquidityToken1}}-{{AddLiquidityToken2}} LP",
@@ -292,7 +275,7 @@
   "分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5% 的节点返佣奖励！": "分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5% 的节点返佣奖励！",
   "Please fill in the correct receiving address": "请输入正确的接收地址",
 
-  "Remove UAC-USDT Liquidity": "移除 UAC-USDT 流动性",
+  "Remove UAC-USDT Liquidity": "移除 {{coin1}}-{{coin2}} 流动性",
   "Enter Withdrawal Percentage": "输入撤回百分比",
   "Received Amount": "接收金额",
   "Reference Price": "参考价格",

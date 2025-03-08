@@ -200,7 +200,7 @@
   "Approved 5 AI Nodes": "授權 {{num}} 個 AI 節點",
 
   "Approve 100.0000 USDT (BSC)": "授權 {{num}} USDT （{{chain}}）",
-  "Approve 100.0000 USDT": "授權 {{num}} USDT",
+  "Approve 100.0000 USDT": "授權 {{num}} {{coin}}",
   "UAC exchanging for USDT": "{{FromToken}} 交換 {{ToToken}}",
   "Exchange successful, received 100.0000 USDT": "交換成功，收到 {{amount}} {{ToToken}}",
   "Adding UAC-USDT LP": "添加 {{AddLiquidityToken1}}-{{AddLiquidityToken2}} LP",
@@ -279,7 +279,7 @@
 
   "Not yet": "暫時沒有",
 
-  "Remove UAC-USDT Liquidity": "移除 UAC-USDT 流動性",
+  "Remove UAC-USDT Liquidity": "移除 {{coin1}}-{{coin2}} 流動性",
   "Enter Withdrawal Percentage": "輸入撤回百分比",
   "Received Amount": "接收金額",
   "Reference Price": "參考價格",

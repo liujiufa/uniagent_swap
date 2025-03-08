@@ -324,6 +324,7 @@ const SwapToIcon = styled(FlexCCBox)`
   width: 36px;
   height: 36px;
   > img {
+    cursor: pointer;
     width: 100%;
   }
   @media (max-width: 768px) {
@@ -737,7 +738,7 @@ const PercentageBox = styled(FlexBox)`
     text-align: center;
     letter-spacing: 0em;
     font-variation-settings: "opsz" auto;
-    color: #7fc33a;
+    color: #f4c134;
     margin-right: 8px;
   }
   @media (max-width: 768px) {
@@ -750,7 +751,7 @@ const PercentageBox = styled(FlexBox)`
       text-align: center;
       letter-spacing: 0em;
       font-variation-settings: "opsz" auto;
-      color: #7fc33a;
+      color: #f4c134;
     }
   }
   @media (max-width: 375px) {
@@ -1060,16 +1061,20 @@ export default function Rank() {
   const [CoinListObj, setCoinListObj] = useState<any>([]);
 
   const [FromToken, setFromToken] = useState(
-    tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name
+    tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name ||
+      "PIJS"
   );
   const [ToToken, setToToken] = useState(
-    tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name
+    tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name ||
+      "USDT"
   );
   const [AddLiquidityToken1, setAddLiquidityToken1] = useState(
-    tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name
+    tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name ||
+      "PIJS"
   );
   const [AddLiquidityToken2, setAddLiquidityToken2] = useState(
-    tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name
+    tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name ||
+      "USDT"
   );
   const [CurrentSelectedState, setCurrentSelectedState] = useState("from");
   const [AddLiquidityTokenType, setAddLiquidityTokenType] = useState(1);
@@ -1087,23 +1092,94 @@ export default function Rank() {
     useState("0");
   const [AddLiquidityTokenBalance2, setAddLiquidityTokenBalance2] =
     useState("0");
-  let CurrentRouter: any = tokenList?.find(
-    (item: any) => String(item?.name) === String(FromToken)
-  )?.Router;
+  let CurrentFromToken: any = tokenList
+    ?.filter((item: any) => item?.chainId === chainId)
+    ?.find((item: any) => String(item?.name) === String(FromToken)) || {
+    icon: pijsIcon,
+    name: "PIJS",
+    tokenAddress: contractAddress?.PIJSBSC,
+    symbol: "PIJS",
+    chainId: curentBSCChainId,
+    contractAddress: contractAddress?.PIJSFactory,
+    Router: contractAddress?.PIJSRouter,
+  };
+  let CurrentToToken: any = tokenList
+    ?.filter((item: any) => item?.chainId === chainId)
+    ?.find((item: any) => String(item?.name) === String(ToToken)) || {
+    icon: usdtIcon,
+    name: "USDT",
+    tokenAddress: contractAddress?.USDTBSC,
+    symbol: "Tether USD",
+    chainId: curentBSCChainId,
+    contractAddress: contractAddress?.PIJSFactory,
+    Router: contractAddress?.PIJSRouter,
+  };
+  let CurrentAddLiquidityToken1: any = tokenList
+    ?.filter((item: any) => item?.chainId === chainId)
+    ?.find(
+      (item: any) => String(item?.name) === String(AddLiquidityToken1)
+    ) || {
+    icon: pijsIcon,
+    name: "PIJS",
+    tokenAddress: contractAddress?.PIJSBSC,
+    symbol: "PIJS",
+    chainId: curentBSCChainId,
+    contractAddress: contractAddress?.PIJSFactory,
+    Router: contractAddress?.PIJSRouter,
+  };
+  let CurrentAddLiquidityToken2: any = tokenList
+    ?.filter((item: any) => item?.chainId === chainId)
+    ?.find(
+      (item: any) => String(item?.name) === String(AddLiquidityToken2)
+    ) || {
+    icon: usdtIcon,
+    name: "USDT",
+    tokenAddress: contractAddress?.USDTBSC,
+    symbol: "Tether USD",
+    chainId: curentBSCChainId,
+    contractAddress: contractAddress?.PIJSFactory,
+    Router: contractAddress?.PIJSRouter,
+  };
+
   const {
     TOKENBalance,
     TOKENAllowance,
     handleApprove,
     handleTransaction,
     handleUSDTRefresh,
-  } = useUSDTGroup(contractAddress?.UACRouter, contractAddress?.USDTUNI);
+  } = useUSDTGroup(CurrentFromToken?.Router, CurrentFromToken?.tokenAddress);
+  const {
+    TOKENBalance: CurrentAddLiquidity1TOKENBalance,
+    TOKENAllowance: CurrentAddLiquidity1TOKENAllowance,
+    handleApprove: CurrentAddLiquidity1handleApprove,
+    handleTransaction: CurrentAddLiquidity1handleTransaction,
+    handleUSDTRefresh: CurrentAddLiquidity1handleUSDTRefresh,
+  } = useUSDTGroup(
+    CurrentAddLiquidityToken1?.Router,
+    CurrentAddLiquidityToken1?.tokenAddress
+  );
+  const {
+    TOKENBalance: CurrentAddLiquidity2TOKENBalance,
+    TOKENAllowance: CurrentAddLiquidity2TOKENAllowance,
+    handleApprove: CurrentAddLiquidity2handleApprove,
+    handleTransaction: CurrentAddLiquidity2handleTransaction,
+    handleUSDTRefresh: CurrentAddLiquidity2handleUSDTRefresh,
+  } = useUSDTGroup(
+    CurrentAddLiquidityToken1?.Router,
+    CurrentAddLiquidityToken2?.tokenAddress
+  );
+  console.log(
+    CurrentAddLiquidity1TOKENAllowance,
+    CurrentAddLiquidity2TOKENAllowance,
+    "授权额度"
+  );
   const {
     TOKENBalance: LPTOKENBalance,
     TOKENAllowance: LPTOKENAllowance,
     handleApprove: LPhandleApprove,
     handleTransaction: LPhandleTransaction,
     handleUSDTRefresh: LPhandleUSDTRefresh,
-  } = useUSDTGroup(contractAddress?.UACRouter, LpAddress);
+  } = useUSDTGroup(CurrentAddLiquidityToken1?.Router, LpAddress);
 
   const CopyCodeFun = (code: string) => {
     if (!IsBindState) return addMessage(t("9"));
@@ -1267,8 +1343,111 @@ export default function Rank() {
 
   const SwapFun = async () => {
     // return addMessage(t("Coming soon"));
+    // usdt、uac之间兑换特殊处理
+    if (chainId === curentUNIChainId) {
+      if (String(FromToken) === "USDT") {
+        handleTransaction(
+          InputAmount + "",
+          async (call: any) => {
+            let res: any = null;
+            try {
+              if (!!(await isNoGasFun())) return;
+              setTip(
+                t("UAC exchanging for USDT", {
+                  FromToken: FromToken,
+                  ToToken: ToToken,
+                })
+              );
+              setShowTipModal(true);
+              res = await Contracts.example?.swapExactTokensForETH(
+                web3ModalAccount as string,
+                InputAmount,
+                Number(ReceiveAmount) * (1 - Number(SlippageValue) / 100),
+                [CurrentFromToken?.tokenAddress, CurrentToToken?.tokenAddress],
+                CurrentFromToken?.Router
+              );
+            } catch (error: any) {
+              if (error?.code === 4001) {
+                setShowTipModal(false);
+                return addMessage(t("failed"));
+              }
+            }
+            setShowTipModal(false);
 
-    if (String(FromToken) === "USDT") {
+            if (!!res?.status) {
+              await call();
+              await getCoinList();
+              setSuccessFulHash(res?.transactionHash);
+              setShowTipModal(false);
+              setShowSuccessTipModal(true);
+              return setTip(
+                t("Exchange successful, received 100.0000 USDT", {
+                  amount: NumSplic1(ReceiveAmount, 4),
+                  ToToken: ToToken,
+                })
+              );
+              // setShowTipModal(true);
+            } else if (res?.status === false) {
+              setShowTipModal(false);
+              return addMessage(t("failed"));
+            }
+          },
+          () => {
+            setTip(
+              t("Approve 100.0000 USDT", {
+                num: InputAmount,
+                coin: FromToken,
+              })
+            );
+            setShowTipModal(true);
+          },
+          () => {
+            setShowTipModal(false);
+          }
+        );
+      } else if (String(FromToken) === "UAC") {
+        let res: any = null;
+        try {
+          if (!!(await isNoGasFun())) return;
+          setTip(
+            t("UAC exchanging for USDT", {
+              FromToken: FromToken,
+              ToToken: ToToken,
+            })
+          );
+          setShowTipModal(true);
+          res = await Contracts.example?.swapExactETHForTokens(
+            web3ModalAccount as string,
+            InputAmount,
+            [CurrentFromToken?.tokenAddress, CurrentToToken?.tokenAddress],
+            CurrentFromToken?.Router
+          );
+        } catch (error: any) {
+          if (error?.code === 4001) {
+            setShowTipModal(false);
+            return addMessage(t("failed"));
+          }
+        }
+        setShowTipModal(false);
+
+        if (!!res?.status) {
+          await getCoinList();
+          setSuccessFulHash(res?.transactionHash);
+          setShowTipModal(false);
+          setShowSuccessTipModal(true);
+          return setTip(
+            t("Exchange successful, received 100.0000 USDT", {
+              amount: NumSplic1(ReceiveAmount, 4),
+              ToToken: ToToken,
+            })
+          );
+          // setShowTipModal(true);
+        } else if (res?.status === false) {
+          setShowTipModal(false);
+          return addMessage(t("failed"));
+        }
+      }
+    } else {
       handleTransaction(
         InputAmount + "",
         async (call: any) => {
@@ -1282,20 +1461,14 @@ export default function Rank() {
               })
             );
             setShowTipModal(true);
-            res = await Contracts.example?.swapExactTokensForETH(
-              web3ModalAccount as string,
-              InputAmount,
-              Number(ReceiveAmount) * (1 - Number(SlippageValue) / 100),
-              [
-                tokenList?.find(
-                  (item: any) => String(item?.name) === String(FromToken)
-                )?.tokenAddress,
-                tokenList?.find(
-                  (item: any) => String(item?.name) === String(ToToken)
-                )?.tokenAddress,
-              ],
-              CurrentRouter
-            );
+            res =
+              await Contracts.example?.swapExactTokensForTokensSupportingFeeOnTransferTokens(
+                web3ModalAccount as string,
+                InputAmount,
+                Number(ReceiveAmount) * (1 - Number(SlippageValue) / 100),
+                [CurrentFromToken?.tokenAddress, CurrentToToken?.tokenAddress],
+                CurrentFromToken?.Router
+              );
           } catch (error: any) {
             if (error?.code === 4001) {
               setShowTipModal(false);
@@ -1326,6 +1499,7 @@ export default function Rank() {
           setTip(
             t("Approve 100.0000 USDT", {
               num: InputAmount,
+              coin: FromToken,
             })
           );
           setShowTipModal(true);
@@ -1334,60 +1508,11 @@ export default function Rank() {
           setShowTipModal(false);
         }
       );
-    } else if (String(FromToken) === "UAC") {
-      let res: any = null;
-      try {
-        if (!!(await isNoGasFun())) return;
-        setTip(
-          t("UAC exchanging for USDT", {
-            FromToken: FromToken,
-            ToToken: ToToken,
-          })
-        );
-        setShowTipModal(true);
-        res = await Contracts.example?.swapExactETHForTokens(
-          web3ModalAccount as string,
-          InputAmount,
-          [
-            tokenList?.find(
-              (item: any) => String(item?.name) === String(FromToken)
-            )?.tokenAddress,
-            tokenList?.find(
-              (item: any) => String(item?.name) === String(ToToken)
-            )?.tokenAddress,
-          ],
-          CurrentRouter
-        );
-      } catch (error: any) {
-        if (error?.code === 4001) {
-          setShowTipModal(false);
-          return addMessage(t("failed"));
-        }
-      }
-      setShowTipModal(false);
-
-      if (!!res?.status) {
-        await getCoinList();
-        setSuccessFulHash(res?.transactionHash);
-        setShowTipModal(false);
-        setShowSuccessTipModal(true);
-        return setTip(
-          t("Exchange successful, received 100.0000 USDT", {
-            amount: NumSplic1(ReceiveAmount, 4),
-            ToToken: ToToken,
-          })
-        );
-        // setShowTipModal(true);
-      } else if (res?.status === false) {
-        setShowTipModal(false);
-        return addMessage(t("failed"));
-      }
     }
   };
   // 原生代币和ERC-20代币
   const AddLiquidityFun = async () => {
     // return addMessage(t("Coming soon"));
-
     let USDTAmount =
       String(AddLiquidityToken1) === "USDT"
         ? AddLiquidityTokenAmount1
@@ -1396,7 +1521,12 @@ export default function Rank() {
       String(AddLiquidityToken1) === "UAC"
         ? AddLiquidityTokenAmount1
         : AddLiquidityTokenAmount2;
-    handleTransaction(
+    // coin1、coin2哪个币ERC20就授权哪个
+    let fun: any =
+      String(AddLiquidityToken1) === "UAC"
+        ? CurrentAddLiquidity2handleTransaction
+        : CurrentAddLiquidity1handleTransaction;
+    fun(
       USDTAmount,
       async (call: any) => {
         let res: any = null;
@@ -1411,13 +1541,15 @@ export default function Rank() {
           setShowTipModal(true);
           res = await Contracts.example?.addLiquidityETH(
             web3ModalAccount as string,
-            tokenList?.find(
-              (item: any) => String(item?.name) === String("USDT")
-            )?.tokenAddress,
+            tokenList
+              ?.filter((item: any) => item?.chainId === chainId)
+              ?.find((item: any) => String(item?.name) === String("USDT"))
+              ?.tokenAddress,
             UACAmount,
             USDTAmount,
-            CurrentRouter
+            CurrentFromToken?.Router
           );
+          // debugger;
         } catch (error: any) {
           if (error?.code === 4001) {
             setShowTipModal(false);
@@ -1467,6 +1599,7 @@ export default function Rank() {
         setTip(
           t("Approve 100.0000 USDT", {
             num: USDTAmount,
+            coin: "USDT",
           })
         );
         setShowTipModal(true);
@@ -1475,6 +1608,71 @@ export default function Rank() {
         setShowTipModal(false);
       }
     );
+  };
+
+  // ERC-20代币和ERC-20代币
+  const AddLiquidityFun1 = async () => {
+    let res: any = null;
+    try {
+      if (!!(await isNoGasFun())) return;
+      setTip(
+        t("Adding UAC-USDT LP", {
+          AddLiquidityToken1: AddLiquidityToken1,
+          AddLiquidityToken2: AddLiquidityToken2,
+        })
+      );
+      setShowTipModal(true);
+      res = await Contracts.example?.addLiquidity(
+        web3ModalAccount as string,
+        CurrentAddLiquidityToken1.tokenAddress,
+        CurrentAddLiquidityToken2.tokenAddress,
+        AddLiquidityTokenAmount1,
+        AddLiquidityTokenAmount2,
+        CurrentAddLiquidityToken1?.Router
+      );
+    } catch (error: any) {
+      debugger;
+      if (error?.code === 4001) {
+        setShowTipModal(false);
+        return addMessage(t("failed"));
+      }
+    }
+    setShowTipModal(false);
+
+    let lastEvent: any = null;
+    if (!!res?.status) {
+      try {
+        for (const key in res?.events) {
+          const log = res?.events[key];
+          const event = parseTransferEvent(log);
+
+          if (event) {
+            lastEvent = event;
+          }
+          if (lastEvent) {
+            // setCurrentLPBalance(EthertoWei(lastEvent?.value ?? "0"));
+          }
+        }
+      } catch (error: any) {}
+      await getCoinList();
+      await getLpBalance();
+      // setCurrentLPBalance();
+      setSuccessFulHash(res?.transactionHash);
+      setShowTipModal(false);
+      setShowAddLiquiditySuccessTipModal(true);
+      setTitle(t("Liquidity Added Successfully"));
+      return setTip(
+        t("Received 12.0000 UAC-USDT LP", {
+          amount: NumSplic1(EthertoWei(lastEvent?.value ?? "0"), 4),
+          AddLiquidityToken1: AddLiquidityToken1,
+          AddLiquidityToken2: AddLiquidityToken2,
+        })
+      );
+      // setShowTipModal(true);
+    } else if (res?.status === false) {
+      setShowTipModal(false);
+      return addMessage(t("failed"));
+    }
   };
 
   const RemoveLiquidityFun = async () => {
@@ -1495,16 +1693,31 @@ export default function Rank() {
             })
           );
           setShowTipModal(true);
-          res = await Contracts.example?.removeLiquidityETH(
-            web3ModalAccount as string,
-            tokenList?.find(
-              (item: any) => String(item?.name) === String("USDT")
-            )?.tokenAddress,
-            (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
-              Number(LPBalance ?? 0) +
-              "",
-            CurrentRouter
-          );
+          // 原生币+ERC20
+          if (chainId === curentUNIChainId) {
+            res = await Contracts.example?.removeLiquidityETH(
+              web3ModalAccount as string,
+              tokenList
+                ?.filter((item: any) => item?.chainId === chainId)
+                ?.find((item: any) => String(item?.name) === String("USDT"))
+                ?.tokenAddress,
+              (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
+                Number(LPBalance ?? 0) +
+                "",
+              CurrentAddLiquidityToken1?.Router
+            );
+          } else {
+            // ERC20+ERC20
+            res = await Contracts.example?.removeLiquidity(
+              web3ModalAccount as string,
+              CurrentAddLiquidityToken1?.tokenAddress,
+              CurrentAddLiquidityToken2?.tokenAddress,
+              (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
+                Number(LPBalance ?? 0) +
+                "",
+              CurrentAddLiquidityToken1?.Router
+            );
+          }
         } catch (error: any) {
           if (error?.code === 4001) {
             setShowTipModal(false);
@@ -1572,13 +1785,8 @@ export default function Rank() {
     let receiveAmount: any = await Contracts.example?.getAmountsOut(
       web3ModalAccount as string,
       decimalIndex,
-      [
-        tokenList?.find((item: any) => String(item?.name) === String(FromToken))
-          ?.tokenAddress,
-        tokenList?.find((item: any) => String(item?.name) === String(ToToken))
-          ?.tokenAddress,
-      ],
-      CurrentRouter
+      [CurrentFromToken?.tokenAddress, CurrentToToken?.tokenAddress],
+      CurrentFromToken?.Router
     );
     setReceiveAmount(EthertoWei(receiveAmount[1] ?? "0"));
   };
@@ -1595,14 +1803,10 @@ export default function Rank() {
         web3ModalAccount as string,
         decimalIndex,
         [
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(AddLiquidityToken1)
-          )?.tokenAddress,
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(AddLiquidityToken2)
-          )?.tokenAddress,
+          CurrentAddLiquidityToken1?.tokenAddress,
+          CurrentAddLiquidityToken2?.tokenAddress,
         ],
-        CurrentRouter
+        CurrentAddLiquidityToken1?.Router
       );
       setAddLiquidityTokenAmount2(EthertoWei(receiveAmount[1] ?? "0"));
     } else {
@@ -1612,14 +1816,10 @@ export default function Rank() {
         web3ModalAccount as string,
         decimalIndex,
         [
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(AddLiquidityToken2)
-          )?.tokenAddress,
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(AddLiquidityToken1)
-          )?.tokenAddress,
+          CurrentAddLiquidityToken2?.tokenAddress,
+          CurrentAddLiquidityToken1?.tokenAddress,
         ],
-        CurrentRouter
+        CurrentAddLiquidityToken1?.Router
       );
       setAddLiquidityTokenAmount1(EthertoWei(receiveAmount[1] ?? "0"));
     }
@@ -1628,15 +1828,9 @@ export default function Rank() {
     try {
       let lpAddress: any = await Contracts.example?.getPair(
         web3ModalAccount as string,
-        tokenList?.find(
-          (item: any) => String(item?.name) === String(AddLiquidityToken1)
-        )?.tokenAddress,
-        tokenList?.find(
-          (item: any) => String(item?.name) === String(AddLiquidityToken2)
-        )?.tokenAddress,
-        tokenList?.find(
-          (item: any) => String(item?.name) === String(AddLiquidityToken1)
-        )?.contractAddress
+        CurrentAddLiquidityToken1?.tokenAddress,
+        CurrentAddLiquidityToken2?.tokenAddress,
+        CurrentAddLiquidityToken1?.contractAddress
       );
       setLpAddress(lpAddress ?? "");
 
@@ -1647,6 +1841,7 @@ export default function Rank() {
       );
       setLPBalance(EthertoWei(LPbalance ?? "0"));
     } catch (error: any) {
+      // debugger;
       setLPBalance("0");
     }
   };
@@ -1654,38 +1849,24 @@ export default function Rank() {
     try {
       let lpAddress: any = await Contracts.example?.getPair(
         web3ModalAccount as string,
-        tokenList?.find(
-          (item: any) => String(item?.name) === String(AddLiquidityToken1)
-        )?.tokenAddress,
-        tokenList?.find(
-          (item: any) => String(item?.name) === String(AddLiquidityToken2)
-        )?.tokenAddress,
-        tokenList?.find(
-          (item: any) => String(item?.name) === String(AddLiquidityToken1)
-        )?.contractAddress
+        CurrentAddLiquidityToken1?.tokenAddress,
+        CurrentAddLiquidityToken2?.tokenAddress,
+        CurrentAddLiquidityToken1?.contractAddress
       );
 
       let LPTokenBalance1: any = await Contracts.example.balanceOf(
         lpAddress as string,
-        tokenList?.find((item: any) => String(item?.name) === String(FromToken))
-          ?.tokenAddress
+        CurrentFromToken?.tokenAddress
       );
       let LPTokenBalance2: any = await Contracts.example.balanceOf(
         lpAddress as string,
-        tokenList?.find((item: any) => String(item?.name) === String(ToToken))
-          ?.tokenAddress
+        CurrentToToken?.tokenAddress
       );
       let SwapOutAmount: any = await Contracts.example?.getAmountsOut(
         web3ModalAccount as string,
         InputAmount,
-        [
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(FromToken)
-          )?.tokenAddress,
-          tokenList?.find((item: any) => String(item?.name) === String(ToToken))
-            ?.tokenAddress,
-        ],
-        CurrentRouter
+        [CurrentFromToken?.tokenAddress, CurrentToToken?.tokenAddress],
+        CurrentFromToken?.Router
       );
       // debugger;
 
@@ -1718,15 +1899,8 @@ export default function Rank() {
         ?.getAmountsOut(
           web3ModalAccount as string,
           1,
-          [
-            tokenList?.find(
-              (item: any) => String(item?.name) === String(FromToken)
-            )?.tokenAddress,
-            tokenList?.find(
-              (item: any) => String(item?.name) === String(ToToken)
-            )?.tokenAddress,
-          ],
-          CurrentRouter
+          [CurrentFromToken?.tokenAddress, CurrentToToken?.tokenAddress],
+          CurrentFromToken?.Router
         )
         .then((res: any) => {
           // debugger;
@@ -1739,27 +1913,17 @@ export default function Rank() {
   const getRemoveLiquidityInfo = async () => {
     let lpAddress: any = await Contracts.example?.getPair(
       web3ModalAccount as string,
-      tokenList?.find(
-        (item: any) => String(item?.name) === String(AddLiquidityToken1)
-      )?.tokenAddress,
-      tokenList?.find(
-        (item: any) => String(item?.name) === String(AddLiquidityToken2)
-      )?.tokenAddress,
-      tokenList?.find(
-        (item: any) => String(item?.name) === String(AddLiquidityToken1)
-      )?.contractAddress
+      CurrentAddLiquidityToken1?.tokenAddress,
+      CurrentAddLiquidityToken2?.tokenAddress,
+      CurrentAddLiquidityToken1?.contractAddress
     );
     let LiquidityTokenBalance1: any = await Contracts.example.balanceOf(
       lpAddress as string,
-      tokenList?.find(
-        (item: any) => String(item?.name) === String(AddLiquidityToken1)
-      )?.tokenAddress
+      CurrentAddLiquidityToken1?.tokenAddress
     );
     let LiquidityTokenBalance2: any = await Contracts.example.balanceOf(
       lpAddress as string,
-      tokenList?.find(
-        (item: any) => String(item?.name) === String(AddLiquidityToken2)
-      )?.tokenAddress
+      CurrentAddLiquidityToken2?.tokenAddress
     );
     setAddLiquidityTokenBalance1(EthertoWei(LiquidityTokenBalance1 ?? "0"));
     setAddLiquidityTokenBalance2(EthertoWei(LiquidityTokenBalance2 ?? "0"));
@@ -1772,14 +1936,8 @@ export default function Rank() {
       res1 = await Contracts.example?.getAmountsOut(
         web3ModalAccount as string,
         InputAmount,
-        [
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(FromToken)
-          )?.tokenAddress,
-          tokenList?.find((item: any) => String(item?.name) === String(ToToken))
-            ?.tokenAddress,
-        ],
-        CurrentRouter
+        [CurrentFromToken?.tokenAddress, CurrentToToken?.tokenAddress],
+        CurrentFromToken?.Router
       );
       setReceiveAmount(EthertoWei(res1[1] ?? "0"));
     } catch (e: any) {
@@ -1791,14 +1949,10 @@ export default function Rank() {
         web3ModalAccount as string,
         AddLiquidityTokenAmount1,
         [
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(AddLiquidityToken1)
-          )?.tokenAddress,
-          tokenList?.find(
-            (item: any) => String(item?.name) === String(AddLiquidityToken2)
-          )?.tokenAddress,
+          CurrentAddLiquidityToken1?.tokenAddress,
+          CurrentAddLiquidityToken2?.tokenAddress,
         ],
-        CurrentRouter
+        CurrentAddLiquidityToken1?.Router
       );
       setAddLiquidityTokenAmount2(EthertoWei(res2[1] ?? "0"));
     } catch (e: any) {
@@ -1880,24 +2034,27 @@ export default function Rank() {
     if (chainId) {
       // console.log(chainId, "chainId");
       setFromToken(
-        tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name ??
+        tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name ||
           "PIJS"
       );
       setToToken(
-        tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name ??
+        tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name ||
           "USDT"
       );
       setAddLiquidityToken1(
-        tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name ??
+        tokenList?.filter((item: any) => item?.chainId === chainId)[0]?.name ||
           "PIJS"
       );
       setAddLiquidityToken2(
-        tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name ??
+        tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name ||
           "USDT"
       );
+      debugger;
     }
   }, [chainId]);
 
+  // console.log(FromToken, AddLiquidityToken1);
+  // AddLiquidityTokenAmount1:添加流动性 InputAmount:swap
   const BtnBox = () => {
     if (!web3ModalAccount)
       return (
@@ -1916,7 +2073,7 @@ export default function Rank() {
     if (
       Number(InputAmount) >
       Number(
-        CoinListObj?.find(
+        CoinListObj?.filter((item: any) => item?.chainId === chainId)?.find(
           (item: any) => String(item?.name) === String(FromToken)
         )?.balance
       )
@@ -1941,6 +2098,7 @@ export default function Rank() {
       </Btn>
     );
   };
+  // AddLiquidityTokenAmount1:添加流动性 InputAmount:swap
   const AddLiquidityBtnBox = () => {
     if (!web3ModalAccount)
       return (
@@ -1964,7 +2122,7 @@ export default function Rank() {
     if (
       Number(AddLiquidityTokenAmount1) >
       Number(
-        CoinListObj?.find(
+        CoinListObj?.filter((item: any) => item?.chainId === chainId)?.find(
           (item: any) => String(item?.name) === String(AddLiquidityToken1)
         )?.balance
       )
@@ -1977,7 +2135,7 @@ export default function Rank() {
     if (
       Number(AddLiquidityTokenAmount2) >
       Number(
-        CoinListObj?.find(
+        CoinListObj?.filter((item: any) => item?.chainId === chainId)?.find(
           (item: any) => String(item?.name) === String(AddLiquidityToken2)
         )?.balance
       )
@@ -1987,16 +2145,109 @@ export default function Rank() {
           {t("Insufficient {{name}} balance", { name: AddLiquidityToken2 })}
         </Btn>
       );
-    return (
-      <Btn
-        isActive={true}
-        onClick={() => {
-          AddLiquidityFun();
-        }}
-      >
-        {Number(TOKENAllowance) >= Number(InputAmount) ? t("添加") : t("授权")}
-      </Btn>
-    );
+    // 链原生添加流动性只需授权一次
+    if (chainId === curentUNIChainId) {
+      return (
+        <Btn
+          isActive={true}
+          onClick={() => {
+            AddLiquidityFun();
+          }}
+        >
+          {Number(TOKENAllowance) >= Number(AddLiquidityTokenAmount1)
+            ? t("添加")
+            : t("授权")}
+        </Btn>
+      );
+    } else {
+      // 双ERC20代币
+      if (
+        Number(AddLiquidityTokenAmount1) >
+        Number(CurrentAddLiquidity1TOKENAllowance)
+      ) {
+        return (
+          <Btn
+            isActive={true}
+            onClick={() => {
+              // handleApprove(price, transactionCallBack, onDoingFun, failFun)
+              CurrentAddLiquidity1handleApprove(
+                AddLiquidityTokenAmount1 + "",
+                async (call: any) => {
+                  // 授权完token1查询token2的额度
+                  CurrentAddLiquidity1handleUSDTRefresh();
+                  CurrentAddLiquidity2handleUSDTRefresh();
+                  call();
+                  setShowTipModal(false);
+                },
+                () => {
+                  setTip(
+                    t("Approve 100.0000 USDT", {
+                      num: AddLiquidityTokenAmount1,
+                      coin: AddLiquidityToken1,
+                    })
+                  );
+                  setShowTipModal(true);
+                },
+                () => {
+                  setShowTipModal(false);
+                }
+              );
+            }}
+          >
+            {t("授权")} {AddLiquidityToken1}
+          </Btn>
+        );
+      }
+      if (
+        Number(AddLiquidityTokenAmount2) >
+        Number(CurrentAddLiquidity2TOKENAllowance)
+      ) {
+        return (
+          <Btn
+            isActive={true}
+            onClick={() => {
+              // handleApprove(price, transactionCallBack, onDoingFun, failFun)
+              CurrentAddLiquidity2handleApprove(
+                AddLiquidityTokenAmount2 + "",
+                async (call: any) => {
+                  // 授权完token1查询token2的额度
+                  CurrentAddLiquidity1handleUSDTRefresh();
+                  CurrentAddLiquidity2handleUSDTRefresh();
+                  call();
+                  setShowTipModal(false);
+                  // debugger;
+                },
+                () => {
+                  setTip(
+                    t("Approve 100.0000 USDT", {
+                      num: AddLiquidityTokenAmount2,
+                      coin: AddLiquidityToken2,
+                    })
+                  );
+                  setShowTipModal(true);
+                },
+                () => {
+                  setShowTipModal(false);
+                }
+              );
+            }}
+          >
+            {t("授权")} {AddLiquidityToken2}
+          </Btn>
+        );
+      }
+
+      return (
+        <Btn
+          isActive={true}
+          onClick={() => {
+            AddLiquidityFun1();
+          }}
+        >
+          {t("添加")}
+        </Btn>
+      );
+    }
   };
   const RemoveLiquidityBtn = () => {
     if (!web3ModalAccount)
@@ -2069,7 +2320,9 @@ export default function Rank() {
                   <div>
                     {t("余额")}:{" "}
                     {NumSplic1(
-                      CoinListObj?.find(
+                      CoinListObj?.filter(
+                        (item: any) => item?.chainId === chainId
+                      )?.find(
                         (item: any) => String(item?.name) === String(FromToken)
                       )?.balance,
                       4
@@ -2084,15 +2337,7 @@ export default function Rank() {
                       setSelectTokensModalState(true);
                     }}
                   >
-                    <img
-                      src={
-                        tokenList?.find(
-                          (item: any) =>
-                            String(item?.name) === String(FromToken)
-                        )?.icon
-                      }
-                      alt=""
-                    />
+                    <img src={CurrentFromToken?.icon} alt="" />
                     <div className="coin_info">
                       {/* <div className="chain">BSC Chain</div> */}
                       <div className="coin">{FromToken}</div>
@@ -2110,7 +2355,14 @@ export default function Rank() {
                 </Item>
               </SwapItem>
               <SwapToIcon>
-                <img src={toSwaps} alt="" />
+                <img
+                  src={toSwaps}
+                  alt=""
+                  onClick={() => {
+                    setFromToken(ToToken);
+                    setToToken(FromToken);
+                  }}
+                />
               </SwapToIcon>
 
               <SwapItem>
@@ -2128,14 +2380,7 @@ export default function Rank() {
                       setSelectTokensModalState(true);
                     }}
                   >
-                    <img
-                      src={
-                        tokenList?.find(
-                          (item: any) => String(item?.name) === String(ToToken)
-                        )?.icon
-                      }
-                      alt=""
-                    />
+                    <img src={CurrentToToken?.icon} alt="" />
                     <div className="coin_info">
                       {/* <div className="chain">UniAgent Chain</div> */}
                       <div className="coin">{ToToken}</div>
@@ -2202,7 +2447,10 @@ export default function Rank() {
           )}
           {String(TabActive) === "TWAP" && (
             <>
-              <PriceChart coinName={FromToken}></PriceChart>
+              <PriceChart
+                FromCoinName={FromToken}
+                ToCoinName={ToToken}
+              ></PriceChart>
               <SwapContainer>
                 <SwapContainer_Title>PIJSwap</SwapContainer_Title>
                 <SwapItem>
@@ -2211,7 +2459,9 @@ export default function Rank() {
                     <div>
                       {t("余额")}:{" "}
                       {NumSplic1(
-                        CoinListObj?.find(
+                        CoinListObj?.filter(
+                          (item: any) => item?.chainId === chainId
+                        )?.find(
                           (item: any) =>
                             String(item?.name) === String(FromToken)
                         )?.balance,
@@ -2227,15 +2477,7 @@ export default function Rank() {
                         setSelectTokensModalState(true);
                       }}
                     >
-                      <img
-                        src={
-                          tokenList?.find(
-                            (item: any) =>
-                              String(item?.name) === String(FromToken)
-                          )?.icon
-                        }
-                        alt=""
-                      />
+                      <img src={CurrentFromToken?.icon} alt="" />
                       <div className="coin_info">
                         {/* <div className="chain">BSC Chain</div> */}
                         <div className="coin">{FromToken}</div>
@@ -2271,15 +2513,7 @@ export default function Rank() {
                         setSelectTokensModalState(true);
                       }}
                     >
-                      <img
-                        src={
-                          tokenList?.find(
-                            (item: any) =>
-                              String(item?.name) === String(ToToken)
-                          )?.icon
-                        }
-                        alt=""
-                      />
+                      <img src={CurrentToToken?.icon} alt="" />
                       <div className="coin_info">
                         {/* <div className="chain">UniAgent Chain</div> */}
                         <div className="coin">{ToToken}</div>
@@ -2355,7 +2589,11 @@ export default function Rank() {
                   }}
                 >
                   {" "}
-                  <img src={toIcon} alt="" /> {t("Remove UAC-USDT Liquidity")}
+                  <img src={toIcon} alt="" />{" "}
+                  {t("Remove UAC-USDT Liquidity", {
+                    coin1: AddLiquidityToken1,
+                    coin2: AddLiquidityToken2,
+                  })}
                 </SwapContainer_Title>
 
                 <SwapItem_Title>
@@ -2403,16 +2641,7 @@ export default function Rank() {
                   <ReceivedBox>
                     <ReceivedBox_Item>
                       <div>
-                        <img
-                          src={
-                            tokenList?.find(
-                              (item: any) =>
-                                String(item?.name) ===
-                                String(AddLiquidityToken1)
-                            )?.icon
-                          }
-                          alt=""
-                        />
+                        <img src={CurrentAddLiquidityToken1?.icon} alt="" />
                         {AddLiquidityToken1}
                       </div>
                       <div>
@@ -2428,16 +2657,7 @@ export default function Rank() {
                     </ReceivedBox_Item>
                     <ReceivedBox_Item>
                       <div>
-                        <img
-                          src={
-                            tokenList?.find(
-                              (item: any) =>
-                                String(item?.name) ===
-                                String(AddLiquidityToken2)
-                            )?.icon
-                          }
-                          alt=""
-                        />
+                        <img src={CurrentAddLiquidityToken2?.icon} alt="" />
                         {AddLiquidityToken2}
                       </div>
                       <div>
@@ -2476,15 +2696,7 @@ export default function Rank() {
                         setSelectTokensAddLiquidityModalState(true);
                       }}
                     >
-                      <img
-                        src={
-                          tokenList?.find(
-                            (item: any) =>
-                              String(item?.name) === String(AddLiquidityToken1)
-                          )?.icon
-                        }
-                        alt=""
-                      />
+                      <img src={CurrentAddLiquidityToken1?.icon} alt="" />
                       <div>{AddLiquidityToken1}</div>
                       <img src={dropdownIcon} alt="" />
                     </Token>
@@ -2495,15 +2707,7 @@ export default function Rank() {
                         setSelectTokensAddLiquidityModalState(true);
                       }}
                     >
-                      <img
-                        src={
-                          tokenList?.find(
-                            (item: any) =>
-                              String(item?.name) === String(AddLiquidityToken2)
-                          )?.icon
-                        }
-                        alt=""
-                      />
+                      <img src={CurrentAddLiquidityToken2?.icon} alt="" />
                       <div>{AddLiquidityToken2}</div>
                       <img src={dropdownIcon} alt="" />
                     </Token>
@@ -2514,15 +2718,7 @@ export default function Rank() {
                 <SwapItem>
                   <SwapItem_Title_Item>
                     <div>
-                      <img
-                        src={
-                          tokenList?.find(
-                            (item: any) =>
-                              String(item?.name) === String(AddLiquidityToken1)
-                          )?.icon
-                        }
-                        alt=""
-                      />
+                      <img src={CurrentAddLiquidityToken1?.icon} alt="" />
                       <div>{AddLiquidityToken1}</div>
 
                       <img src={copyIcon} alt="" />
@@ -2530,7 +2726,9 @@ export default function Rank() {
                     <div>
                       {t("Balance")}:{" "}
                       {NumSplic1(
-                        CoinListObj?.find(
+                        CoinListObj?.filter(
+                          (item: any) => item?.chainId === chainId
+                        )?.find(
                           (item: any) =>
                             String(item?.name) === String(AddLiquidityToken1)
                         )?.balance,
@@ -2566,15 +2764,7 @@ export default function Rank() {
                 <SwapItemBottom>
                   <SwapItem_Title_Item>
                     <div>
-                      <img
-                        src={
-                          tokenList?.find(
-                            (item: any) =>
-                              String(item?.name) === String(AddLiquidityToken2)
-                          )?.icon
-                        }
-                        alt=""
-                      />
+                      <img src={CurrentAddLiquidityToken2?.icon} alt="" />
                       <div>{AddLiquidityToken2}</div>
 
                       <img src={copyIcon} alt="" />
@@ -2582,7 +2772,9 @@ export default function Rank() {
                     <div>
                       {t("Balance")}:{" "}
                       {NumSplic1(
-                        CoinListObj?.find(
+                        CoinListObj?.filter(
+                          (item: any) => item?.chainId === chainId
+                        )?.find(
                           (item: any) =>
                             String(item?.name) === String(AddLiquidityToken2)
                         )?.balance,
@@ -2606,7 +2798,7 @@ export default function Rank() {
                         value={
                           !!AddLiquidityTokenAmount2
                             ? NumSplic1(AddLiquidityTokenAmount2, 4)
-                            : 0
+                            : ""
                         }
                         onChange={(e: any) => {
                           InputAddLiquidityFun(e, 2);

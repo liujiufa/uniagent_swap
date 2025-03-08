@@ -6,7 +6,11 @@ import { t } from "i18next";
 import { Contracts } from "../web3";
 import { useNoGas } from "./useNoGas";
 import useTipLoding from "../components/ModalContent";
-import { useAppKitAccount } from "@reown/appkit/react";
+import {
+  useAppKitAccount,
+  useAppKitNetwork,
+  useAppKitProvider,
+} from "@reown/appkit/react";
 
 type AddressType = string;
 type CoinAddressType = string;
@@ -15,14 +19,19 @@ export default function useUSDTGroup(
   contractAddress: AddressType,
   tokenAddress: CoinAddressType
 ) {
+  const { walletProvider } = useAppKitProvider("eip155");
   console.log(contractAddress, tokenAddress, "-----");
   // debugger;
   const { address: web3ModalAccount, isConnected } = useAppKitAccount();
+
+  const { caipNetwork, caipNetworkId, chainId, switchNetwork } =
+    useAppKitNetwork();
   const [hash, setHash] = useState(0);
   const [TOKENBalance, setTOKENBalance] = useState("0");
   const [TOKENAllowance, setTOKENAllowance] = useState("0");
   const [symbol, setSymbol] = useState("");
   const { isNoGasFun } = useNoGas();
+
   /**
    *  TOKENBalance 余额
    */
@@ -87,6 +96,7 @@ export default function useUSDTGroup(
    */
   const initTOKENAllowance = useCallback(async () => {
     if (!!web3ModalAccount && tokenAddress) {
+      // debugger;
       const allowance = await Contracts.example?.Tokenapprove(
         web3ModalAccount,
         contractAddress,
@@ -118,9 +128,6 @@ export default function useUSDTGroup(
     setHash(+new Date());
   }, [tokenAddress, contractAddress]);
 
-  /**
-   *  TOKENBalance 授权额度
-   */
   const handleTransaction = useCallback(
     async (
       price: string,
@@ -152,12 +159,13 @@ export default function useUSDTGroup(
   );
 
   useEffect(() => {
+    new Contracts(walletProvider);
     if (!!web3ModalAccount && tokenAddress) {
       initTOKENAllowance();
       initTOKENBalance();
       initSymbol();
     }
-  }, [web3ModalAccount, hash, tokenAddress, contractAddress]);
+  }, [web3ModalAccount, hash, tokenAddress, contractAddress, chainId]);
 
   return {
     TOKENBalance,

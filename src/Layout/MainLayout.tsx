@@ -1143,7 +1143,7 @@ const MainLayout: any = () => {
 
   useEffect(() => {
     new Contracts(walletProvider);
-    console.log(chainId, web3ModalAccount, "chainId");
+    // console.log(chainId, web3ModalAccount, "chainId");
     // debugger;
     if (!!invite && String(invite).length >= 6) {
       let str = String(invite).length > 6 ? String(invite).slice(0, 6) : invite;
