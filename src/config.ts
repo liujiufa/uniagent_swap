@@ -7,7 +7,7 @@ import UniAgentRouter from "./ABI/UniAgentRouter.json";
 import UniAgentFactory from "./ABI/UniAgentFactory.json";
 import { defineChain } from "@reown/appkit/networks";
 // 正式
-export const isMain = true;
+export const isMain = false;
 export const curentBSCChainId = isMain ? 56 : 97;
 export const curentUNIChainId = isMain ? 656898 : 656231;
 export const LOCAL_KEY = "PIJS_LANG";

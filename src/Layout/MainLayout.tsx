@@ -69,6 +69,7 @@ import newLogo from "../assets/image/layout/logo.png";
 import c_img1 from "../assets/image/layout/c_img1.png";
 import c_img2 from "../assets/image/layout/c_img2.png";
 import c_img3 from "../assets/image/layout/c_img3.png";
+import wallet_img0 from "../assets/image/layout/wallet_img0.png";
 import wallet_img1 from "../assets/image/layout/wallet_img1.png";
 import wallet_img2 from "../assets/image/layout/wallet_img2.png";
 import wallet_img3 from "../assets/image/layout/wallet_img3.png";
@@ -85,6 +86,7 @@ import languageIcon from "../assets/image/layout/languageIcon.svg";
 import dropdown from "../assets/image/layout/dropdown.svg";
 import ReferListModal from "../components/ReferListModal";
 import closeIcon from "../assets/image/closeIcon.svg";
+import RewardRecordModal from "../components/RewardRecordModal";
 
 const { Header, Content } = Layout;
 
@@ -758,6 +760,7 @@ const MainLayout: any = () => {
 
   const [showMask, setShowMask] = useState(false);
   const [MyInviteCodeStateModal, setMyInviteCodeStateModal] = useState(false);
+  const [RewardRecordModalState, setRewardRecordModalState] = useState(false);
   const [OpenList, setOpenList] = useState<any>([]);
   const [UserInfo, setUserInfo] = useState<any>({});
   const [NewUserState, setNewUserState] = useState(false);
@@ -784,6 +787,11 @@ const MainLayout: any = () => {
   );
 
   let connectedObj = [
+    {
+      value: "节点收益",
+      key: "wallet_item0",
+      img: wallet_img0,
+    },
     {
       value: "绑定推荐码",
       key: "wallet_item1",
@@ -1148,9 +1156,9 @@ const MainLayout: any = () => {
     if (!!invite && String(invite).length >= 6) {
       let str = String(invite).length > 6 ? String(invite).slice(0, 6) : invite;
       setInputValue(str);
-      SelectBindFun(str);
+      // SelectBindFun(str);
     } else {
-      SelectBindFun();
+      // SelectBindFun();
     }
   }, [web3ModalAccount, chainId, isConnected, invite]);
 
@@ -1227,7 +1235,7 @@ const MainLayout: any = () => {
                   String(ItemActive) === "/Pool" ? "active menu" : "menu"
                 }
                 onClick={() => {
-                  return addMessage("Coming soon");
+                  // return addMessage("Coming soon");
                   // switchNetwork(customNetwork_UNI);
                   Navigate("/View/Pool");
                 }}
@@ -1241,7 +1249,7 @@ const MainLayout: any = () => {
                     : "menu"
                 }
                 onClick={() => {
-                  return addMessage("Coming soon");
+                  // return addMessage("Coming soon");
                   // switchNetwork(customNetwork_UNI);
                   Navigate("/View/LiquidityPledge");
                 }}
@@ -1472,9 +1480,10 @@ const MainLayout: any = () => {
                 String(ItemActive) === "/Pool" ? "active menu" : "menu"
               }
               onClick={() => {
-                return addMessage("Coming soon");
+                // return addMessage("Coming soon");
                 // switchNetwork(customNetwork_UNI);
                 Navigate("/View/Pool");
+                setShowMask(false);
               }}
             >
               {t("质押糖浆池")}
@@ -1486,9 +1495,10 @@ const MainLayout: any = () => {
                   : "menu"
               }
               onClick={() => {
-                return addMessage("Coming soon");
+                // return addMessage("Coming soon");
                 // switchNetwork(customNetwork_UNI);
                 Navigate("/View/LiquidityPledge");
+                setShowMask(false);
               }}
             >
               {t("流动性挖矿")}
@@ -1652,6 +1662,13 @@ const MainLayout: any = () => {
         ShowTipModal={MyInviteCodeStateModal}
         close={() => {
           setMyInviteCodeStateModal(false);
+        }}
+      />
+      <RewardRecordModal
+        userInfo={UserInfo}
+        ShowTipModal={RewardRecordModalState}
+        close={() => {
+          setRewardRecordModalState(false);
         }}
       />
       <AllModal

@@ -37,6 +37,13 @@ const AllModal = styled(Modal)`
       }
     }
   }
+  @media (max-width: 768px) {
+    .ant-modal-content {
+      .ant-modal-body {
+        padding: 22px 14px;
+      }
+    }
+  }
 `;
 
 const ModalContainer = styled(FlexBox)`
@@ -87,7 +94,7 @@ export const ModalContainer_Title = styled(FlexBox)`
 
 const ModalContainer_Content = styled.div`
   width: 100%;
-  margin-top: 27px;
+  margin-top: 18.5px;
   font-family: MiSans;
   font-size: 18px;
   font-weight: normal;
@@ -104,6 +111,9 @@ const ModalContainer_Content = styled.div`
     font-variation-settings: "opsz" auto;
     color: #ffffff;
   }
+  @media (max-width: 768px) {
+    margin-top: 18px;
+  }
 `;
 const Table = styled.div`
   margin-top: 15px;
@@ -113,7 +123,7 @@ const Table = styled.div`
   box-sizing: border-box;
   border: 1px solid #c2c2c2;
   @media (max-width: 1200px) {
-    margin-top: 12px;
+    margin-top: 10px;
   }
 `;
 const Table_Title = styled.div`
@@ -157,10 +167,7 @@ const Items = styled(FlexBox)`
     text-align: center;
     letter-spacing: 0em;
     color: #3d3d3d;
-    &:first-child {
-      flex: auto;
-      max-width: 108px;
-    }
+
     &:last-child {
       border: none;
     }
@@ -168,9 +175,6 @@ const Items = styled(FlexBox)`
   @media (max-width: 1200px) {
     > div {
       padding: 7px 0px;
-      &:first-child {
-        max-width: 58px;
-      }
     }
   }
 `;
@@ -294,8 +298,8 @@ export const PaginationContainer = styled(FlexBox)`
     margin-top: 18px;
     .ant-pagination-item,
     .ant-pagination-total-text {
-      height: 24px;
       width: 24px;
+      height: 24px;
       min-width: 24px;
       a {
         padding: 0px 4px;
@@ -305,8 +309,8 @@ export const PaginationContainer = styled(FlexBox)`
     .ant-pagination-jump-prev,
     .ant-pagination-next,
     .ant-pagination-prev {
-      height: 24px;
       width: 24px;
+      height: 24px;
       min-width: 24px;
     }
   }
@@ -365,118 +369,24 @@ const Code = styled.div`
     }
   }
 `;
-const Title = styled(FlexBox)`
-  width: 100%;
-  justify-content: flex-end;
-  align-items: center;
-
-  font-family: MiSans;
-  font-size: 16px;
-  font-weight: normal;
-  line-height: normal;
-  letter-spacing: 0em;
-  font-variation-settings: "opsz" auto;
-  color: #999999;
-  align-items: center;
-  margin-bottom: 10px;
-  > img {
-    cursor: pointer;
-    margin-left: 12px;
-  }
-  @media (max-width: 1200px) {
-    font-family: MiSans;
-    font-size: 14px;
-    font-weight: normal;
-    line-height: normal;
-    letter-spacing: 0em;
-    color: #abb1b9;
-    > img {
-      margin-left: 8px;
-    }
-  }
-`;
-const EarnValue = styled(FlexBox)`
-  margin-top: 10px;
-  align-items: center;
-  font-family: Space Grotesk;
-  font-size: 30px;
-  font-weight: normal;
-  line-height: normal;
-  letter-spacing: 0em;
-  font-variation-settings: "opsz" auto;
-  color: #ffffff;
-  > div {
-    font-family: MiSans;
-    font-size: 20px;
-    font-weight: normal;
-    line-height: 20px;
-    letter-spacing: 0em;
-    color: #ffffff;
-    margin: 0px 2px 0px 8px;
-  }
-  @media (max-width: 1200px) {
-    font-family: MiSans;
-    font-size: 24px;
-    font-weight: normal;
-    line-height: normal;
-    letter-spacing: 0em;
-    color: #ffffff;
-    > div {
-      font-family: MiSans;
-      font-size: 14px;
-      font-weight: normal;
-      line-height: normal;
-      letter-spacing: 0em;
-      color: #ffffff;
-      margin: 0px 4px;
-    }
-    > img {
-      width: 16px;
-      height: 16px;
-    }
-  }
-`;
-
-const InvitedNum = styled.div`
-  font-family: MiSans;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: normal;
-  letter-spacing: 0em;
-  color: #999999;
-`;
-const InvitedLink = styled(FlexBox)`
-  align-items: center;
-  font-family: MiSans;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: normal;
-  letter-spacing: 0em;
-  color: #ffffff;
-  margin: 15px 0px;
-  > img {
-    cursor: pointer;
-    margin-left: 24px;
-  }
-`;
 const InvitedTip = styled.div`
+  margin-top: 24px;
   font-family: Space Grotesk;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: normal;
   line-height: normal;
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
-  color: #999999;
-`;
-const WalletTip = styled.div`
-  margin: 20px 0px 16px;
-  font-family: MiSans;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: normal;
-  letter-spacing: 0em;
-  font-variation-settings: "opsz" auto;
-  color: #abb1b9;
+  color: #bcc6cf;
+  @media (max-width: 768px) {
+    margin-top: 16px;
+    font-family: MiSans;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: normal;
+    letter-spacing: 0em;
+    color: #bcc6cf;
+  }
 `;
 const ModalContainer_Avtor = styled(FlexBox)`
   width: 100%;
@@ -528,6 +438,151 @@ const ModalContainer_Avtor = styled(FlexBox)`
         color: #bcc6cf;
       }
     }
+  }
+`;
+const RewardData = styled(FlexSBCBox)`
+  background: #292a2b;
+  padding: 16px 20px;
+  border-radius: 8px;
+  > div {
+    flex: 1;
+  }
+  .devider {
+    margin: 0 20px;
+    flex: auto;
+    max-width: 2px;
+    height: 77px;
+    opacity: 1;
+    background-color: #353738;
+  }
+  @media (max-width: 768px) {
+    padding: 12px 15px;
+    .devider {
+      margin: 0 15px;
+      height: 68px;
+    }
+  }
+`;
+const RewardData1 = styled(RewardData)`
+  margin-top: 16px;
+`;
+const RewardData_Left = styled.div`
+  opacity: 1;
+  .title {
+    font-family: MiSans;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: normal;
+    letter-spacing: 0em;
+    font-variation-settings: "opsz" auto;
+    color: #c5ccd4;
+    margin-bottom: 12px;
+  }
+  font-family: MiSans;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: normal;
+  text-align: left;
+  letter-spacing: 0em;
+  font-variation-settings: "opsz" auto;
+  color: #ffffff;
+  .bottom {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: MiSans;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: normal;
+    text-align: right;
+    letter-spacing: 0em;
+    font-variation-settings: "opsz" auto;
+    color: #ffffff;
+    .btn {
+      width: fit-content;
+      padding: 9px 20px;
+      border-radius: 144px;
+      opacity: 1;
+      background: #f4c134;
+      backdrop-filter: blur(143px);
+      font-family: MiSans;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: normal;
+      text-align: center;
+      letter-spacing: 0em;
+      font-variation-settings: "opsz" auto;
+      color: #000000;
+    }
+  }
+  @media (max-width: 768px) {
+    .title {
+      font-family: MiSans;
+      font-size: 12px;
+      font-weight: normal;
+      line-height: normal;
+      letter-spacing: 0em;
+      font-variation-settings: "opsz" auto;
+      color: #c5ccd4;
+      text-align: left;
+      margin-bottom: 4px;
+    }
+    font-family: MiSans;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: normal;
+    text-align: left;
+    letter-spacing: 0em;
+    font-variation-settings: "opsz" auto;
+    color: #ffffff;
+    .bottom {
+      display: block;
+      font-family: MiSans;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: normal;
+      text-align: left;
+      letter-spacing: 0em;
+      font-variation-settings: "opsz" auto;
+      color: #ffffff;
+      .btn {
+        margin-top: 10px;
+        font-size: 12px;
+        border-radius: 144px;
+        opacity: 1;
+        background: #f4c134;
+        backdrop-filter: blur(143px);
+      }
+    }
+  }
+`;
+const RewardData_Right = styled.div`
+  text-align: left;
+
+  div {
+    margin-bottom: 4px;
+    &:nth-child(3) {
+      margin-bottom: 0px;
+    }
+  }
+  .title {
+    font-family: MiSans;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: normal;
+    letter-spacing: 0em;
+    font-variation-settings: "opsz" auto;
+    color: #c5ccd4;
+  }
+  .content {
+    font-family: MiSans;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0em;
+    font-variation-settings: "opsz" auto;
+    color: #ffffff;
   }
 `;
 
@@ -604,7 +659,6 @@ export default function ModalContent(props: any) {
         </ModalContainer_Avtor>
 
         <ModalContainer_Title>
-          {t("我的邀请码")}
           <ModalContainer_Close>
             {" "}
             <img
@@ -618,82 +672,61 @@ export default function ModalContent(props: any) {
           </ModalContainer_Close>
         </ModalContainer_Title>
         <MyInvitedInfo>
-          {!!token ? (
-            <>
-              <MyInvitedInfo_Earns>
-                <Earn>
-                  {t("推荐奖励")}
-                  <EarnValue>
-                    {RecordList3?.awardNum ?? 0} <div>PiJS</div>{" "}
-                    <img src={goIcon} alt="" />
-                  </EarnValue>
-                </Earn>
-                <Code>
-                  <Title>
-                    {t("我的推荐码")}{" "}
-                    <img
-                      src={copy}
-                      alt=""
-                      onClick={() => {
-                        CopyCodeFun(props?.userInfo?.inviteCode);
-                      }}
-                    />
-                  </Title>
-                  <div className="codes">
-                    {String(props?.userInfo?.inviteCode)
-                      ?.split("")
-                      ?.map((item: any, index: any) => (
-                        <div key={index}>{item}</div>
-                      ))}
-                  </div>
-                </Code>
-              </MyInvitedInfo_Earns>
-              <InvitedNum>
-                {t("Invited users")} {RecordList3?.refereeNum ?? 0}
-              </InvitedNum>
-              <InvitedLink>
-                {t("Referral Link")}：
-                {window.location.origin +
-                  `?inviteCode=${props?.userInfo?.inviteCode}`}{" "}
-                <img
-                  src={copy}
-                  alt=""
-                  onClick={() => {
-                    CopyCodeFun(
-                      window.location.origin +
-                        `?inviteCode=${props?.userInfo?.inviteCode}`
-                    );
-                  }}
-                />
-              </InvitedLink>
-            </>
-          ) : (
-            <WalletTip>{t("请连接您的钱包")}</WalletTip>
-          )}
+          <RewardData>
+            <RewardData_Left>
+              <div className="title">权益收入金额</div>
+              100,000 PIJS
+            </RewardData_Left>
+            <div className="devider"></div>
+            <RewardData_Right>
+              <div className="title">累计收益</div>
+              <div className="content">10,000USDT</div>
+              <div className="content">10,000,000PIJS</div>
+            </RewardData_Right>
+          </RewardData>
+          <RewardData1>
+            <RewardData_Left>
+              <div className="title">待提收益</div>
+              <div className="bottom">
+                {" "}
+                100,000 PIJS <div className="btn">提收益</div>{" "}
+              </div>
+            </RewardData_Left>
+            <div className="devider"></div>
+            <RewardData_Left>
+              <div className="title">待提收益</div>
+              <div className="bottom">
+                {" "}
+                100,000 PIJS <div className="btn">提收益</div>{" "}
+              </div>
+            </RewardData_Left>
+          </RewardData1>
 
           <InvitedTip>
             {t(
-              "分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5% 的节点返佣奖励！"
+              "节点权益分红根据平台收入，不定期向所有节点和超级节点发放合伙人权益分红，收益您可以随时提取到您的钱包。"
             )}
           </InvitedTip>
         </MyInvitedInfo>
 
         <ModalContainer_Content>
-          {t("邀请列表")}
+          {t("收益记录")}
           <Table>
             <Table_Title>
               <Items>
-                <div>{t("Number")}</div>
-                <div>{t("Address")}</div>
-                <div>{t("Contribution Rewards")}</div>
+                <div>{t("收益类型")}</div>
+                <div>{t("时间")}</div>
+                <div>{t("币种")}</div>
+                <div>{t("数量")}</div>
               </Items>
             </Table_Title>
             <Table_Content>
               {RecordList3?.list?.map((item: any, index: any) => (
                 <Items key={index}>
-                  <div>{Number(index) + (Number(PageNum) - 1) * 10 + 1}</div>
-                  <div>{AddrHandle(item?.address, 6, 4)}</div>
-                  <div>{item?.num}</div>
+                  <div>手续费分红</div>
+                  <div>2025-02-15 12:34</div>
+                  <div>PIJS</div>
+                  <div>1000</div>
                 </Items>
               ))}
             </Table_Content>

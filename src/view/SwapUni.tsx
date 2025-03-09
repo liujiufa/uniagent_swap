@@ -2049,7 +2049,7 @@ export default function Rank() {
         tokenList?.filter((item: any) => item?.chainId === chainId)[1]?.name ||
           "USDT"
       );
-      debugger;
+      // debugger;
     }
   }, [chainId]);
 

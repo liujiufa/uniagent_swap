@@ -1,0 +1,426 @@
+.LiquidityPledge {
+  //   > div {
+  //     &:first-child {
+  //       display: flex;
+  //       align-items: center;
+  //       flex-direction: column;
+  //       min-height: calc(100vh - 320px);
+  //       height: 100%;
+  //       width: 100%;
+  //       max-width: 778px;
+  //       padding: 0px 15px;
+  //       padding: 0px 15px 226px;
+  //       width: 100%;
+  //       margin: auto;
+  //       @media (max-width: 1200px) {
+  //         padding: 0px 15px 226px;
+  //       }
+  //     }
+  //   }
+
+  .banner {
+    min-height: 240px;
+    opacity: 1;
+    background: #212428;
+  }
+  .content {
+    width: 100%;
+    max-width: 1176px;
+
+    padding: 72px 15px 105px;
+    margin: auto;
+    min-height: calc(100vh - 560px);
+    .tabs {
+      width: fit-content;
+      border-radius: 19px;
+      opacity: 1;
+      background: #181819;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .tab {
+        font-family: MiSans;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: normal;
+        text-align: center;
+        letter-spacing: 0em;
+        font-variation-settings: "opsz" auto;
+        color: #c5ccd4;
+        padding: 8px 24px;
+      }
+      .active {
+        border-radius: 19px;
+        opacity: 1;
+        background: #f4c134;
+        font-family: MiSans;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: normal;
+        text-align: center;
+        letter-spacing: 0em;
+        font-variation-settings: "opsz" auto;
+        color: #0a0a0a;
+      }
+    }
+
+    .items {
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+
+      .item {
+        flex: 1;
+        max-width: 366px;
+        border-radius: 16px;
+        opacity: 1;
+        background: #1f2021;
+        box-sizing: border-box;
+        border: 1px solid #232323;
+        backdrop-filter: blur(143px);
+        padding: 24px 20px;
+        margin: 24px 24px 24px 0px;
+        &:last-child {
+          margin-right: 0px;
+        }
+        .coins_info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .coins_info_left {
+            img {
+              width: 38px;
+              height: 38px;
+              &:nth-child(2) {
+                margin-left: -12px;
+                margin-top: 10px;
+              }
+            }
+          }
+          .coins_info_right {
+            font-family: MiSans;
+            font-size: 20px;
+            font-weight: 600;
+            line-height: normal;
+            text-align: right;
+            letter-spacing: 0em;
+            font-variation-settings: "opsz" auto;
+            color: #ffffff;
+          }
+        }
+        .tip {
+          font-family: MiSans;
+          font-size: 14px;
+          font-weight: 500;
+          line-height: normal;
+          letter-spacing: 0em;
+          font-variation-settings: "opsz" auto;
+          color: #c5ccd4;
+          margin: 24px 0px;
+        }
+        .all_info {
+          padding: 15px;
+          border-radius: 8px;
+          opacity: 1;
+          background: #292a2b;
+          backdrop-filter: blur(143px);
+          margin-bottom: 10px;
+          > div {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: MiSans;
+            font-size: 16px;
+            font-weight: normal;
+            line-height: normal;
+            letter-spacing: 0em;
+            font-variation-settings: "opsz" auto;
+            color: #c5ccd4;
+            margin-bottom: 15px;
+            &:last-child {
+              margin-bottom: 0px;
+              span {
+                font-family: MiSans;
+                font-size: 16px;
+                font-weight: 500;
+                line-height: normal;
+                text-align: right;
+                letter-spacing: 0em;
+                font-variation-settings: "opsz" auto;
+                color: #f4c134;
+              }
+            }
+            span {
+              font-family: MiSans;
+              font-size: 16px;
+              font-weight: 500;
+              line-height: normal;
+              text-align: right;
+              letter-spacing: 0em;
+              font-variation-settings: "opsz" auto;
+              color: #ffffff;
+            }
+          }
+        }
+        .mybox {
+          border-radius: 8px;
+          opacity: 1;
+          background: #292a2b;
+          backdrop-filter: blur(143px);
+          padding: 15px;
+          .mybox_top {
+            .mybox_top_reward {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              .reward_data {
+                font-family: MiSans;
+                font-size: 14px;
+                font-weight: normal;
+                line-height: normal;
+                letter-spacing: 0em;
+                font-variation-settings: "opsz" auto;
+                color: #c5ccd4;
+                div {
+                  margin-top: 2px;
+                  font-family: MiSans;
+                  font-size: 16px;
+                  font-weight: 500;
+                  line-height: normal;
+                  text-align: right;
+                  letter-spacing: 0em;
+                  font-variation-settings: "opsz" auto;
+                  color: #ffffff;
+                }
+              }
+              .reward_btn {
+                border-radius: 8px;
+                opacity: 1;
+                background: #f4c134;
+                backdrop-filter: blur(143px);
+                font-family: MiSans;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: normal;
+                text-align: center;
+                letter-spacing: 0em;
+                font-variation-settings: "opsz" auto;
+                color: #000000;
+                padding: 9px 20px;
+              }
+            }
+            .time {
+              font-family: MiSans;
+              font-size: 12px;
+              font-weight: normal;
+              line-height: normal;
+              letter-spacing: 0em;
+              font-variation-settings: "opsz" auto;
+              color: #c5ccd4;
+              margin-top: 4px;
+            }
+          }
+          .devider {
+            margin: 16px 0px;
+            opacity: 1;
+            border-top: 1px solid #353738;
+          }
+          .mybox_bottom {
+            .my_data {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              .my {
+                flex: 1;
+                font-family: MiSans;
+                font-size: 14px;
+                font-weight: normal;
+                line-height: normal;
+                letter-spacing: 0em;
+                font-variation-settings: "opsz" auto;
+                color: #c5ccd4;
+                .num {
+                  font-family: MiSans;
+                  font-size: 16px;
+                  font-weight: 500;
+                  line-height: normal;
+                  text-align: left;
+                  letter-spacing: 0em;
+                  font-variation-settings: "opsz" auto;
+                  color: #ffffff;
+                  margin: 2px 0px;
+                }
+                .value {
+                  font-family: MiSans;
+                  font-size: 12px;
+                  font-weight: normal;
+                  line-height: normal;
+                  letter-spacing: 0em;
+                  font-variation-settings: "opsz" auto;
+                  color: #c5ccd4;
+                }
+              }
+            }
+            .no_my_box {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              font-family: MiSans;
+              font-size: 16px;
+              font-weight: normal;
+              line-height: normal;
+              letter-spacing: 0em;
+              font-variation-settings: "opsz" auto;
+              color: #8a9096;
+              margin: 4px 0px 36px;
+              img {
+                width: 38px;
+                height: 38px;
+                margin-bottom: 12px;
+              }
+            }
+            .btns {
+              margin-top: 24px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              div {
+                flex: 1;
+                margin-right: 16px;
+                padding: 10px 0px;
+                &:last-child {
+                  margin: 0px;
+                }
+              }
+              .btn_left {
+                border-radius: 8px;
+                opacity: 1;
+                background: rgba(244, 193, 52, 0.1);
+                box-sizing: border-box;
+                border: 1px solid #f4c134;
+                backdrop-filter: blur(143px);
+                font-family: MiSans;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: normal;
+                text-align: center;
+                letter-spacing: 0em;
+                font-variation-settings: "opsz" auto;
+                color: #f4c134;
+              }
+              .btn_mid {
+                border-radius: 8px;
+                opacity: 1;
+                background: #f4c134;
+                backdrop-filter: blur(143px);
+                font-family: MiSans;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: normal;
+                text-align: center;
+                letter-spacing: 0em;
+                font-variation-settings: "opsz" auto;
+                color: #000000;
+              }
+              .btn_right {
+                border-radius: 8px;
+                opacity: 1;
+                background: #383e45;
+                backdrop-filter: blur(143px);
+                font-family: MiSans;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: normal;
+                text-align: center;
+                letter-spacing: 0em;
+                font-variation-settings: "opsz" auto;
+                color: #c5ccd4;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .content .items {
+      display: block;
+      .item {
+        max-width: 100%;
+        margin: 20px 0px 0px 0px;
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    .banner {
+      min-height: 168px;
+    }
+    .content {
+      padding: 24px 15px 36px;
+      .tabs {
+        margin: auto;
+        .tab {
+          font-family: MiSans;
+          font-size: 14px;
+          font-weight: 500;
+          line-height: normal;
+          text-align: center;
+          letter-spacing: 0em;
+          font-variation-settings: "opsz" auto;
+          color: #c5ccd4;
+        }
+        .active {
+          font-family: MiSans;
+          font-size: 14px;
+          font-weight: 500;
+          line-height: normal;
+          text-align: center;
+          letter-spacing: 0em;
+          font-variation-settings: "opsz" auto;
+          color: #0a0a0a;
+        }
+      }
+      .items .item {
+        padding: 20px 14px;
+        .coins_info {
+          .coins_info_left img {
+            width: 32px;
+            height: 32px;
+            &:last-child {
+              width: 38px;
+              height: 38px;
+            }
+          }
+          .coins_info_right {
+            font-family: MiSans;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: normal;
+            text-align: right;
+            letter-spacing: 0em;
+            font-variation-settings: "opsz" auto;
+            color: #ffffff;
+          }
+        }
+        .tip {
+          font-family: MiSans;
+          font-size: 14px;
+          font-weight: 500;
+          line-height: normal;
+          letter-spacing: 0em;
+          font-variation-settings: "opsz" auto;
+          color: #c5ccd4;
+          margin: 24px 0px;
+        }
+        .all_info {
+          padding: 15px 13px;
+        }
+        .mybox .mybox_bottom .btns div {
+          margin-right: 12px;
+        }
+      }
+    }
+  }
+}

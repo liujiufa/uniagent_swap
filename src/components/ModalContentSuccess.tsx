@@ -93,7 +93,7 @@ const SuccessfulBtn2 = styled(FlexCCBox)`
   padding: 11px 44px;
   border-radius: 8px;
   opacity: 1;
-  background: #F4C134;
+  background: #f4c134;
   font-family: "Space Grotesk";
   font-size: 20px;
   font-weight: 500;
@@ -125,7 +125,7 @@ export default function ModalContent(props: any) {
               props?.close();
             }}
           >
-            {t("Knew")}
+            {t("知道了")}
           </SuccessfulBtn1>
           <SuccessfulBtn2
             onClick={() => {
