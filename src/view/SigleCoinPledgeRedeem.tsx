@@ -64,6 +64,7 @@ import { Modal } from "antd";
 import Footer from "../components/Footer";
 import PriceChart from "../components/PriceChart";
 import { getNodeRedeemInfo, getPledgeBaasList, getUserInfo } from "../API";
+import ModalContentSuccessSigleBtn from "../components/ModalContentSuccessSigleBtn";
 const HomeContainerBox = styled.div<{ src: string }>`
   padding-top: 64px;
   width: 100%;
@@ -386,7 +387,7 @@ export default function Rank() {
     handleTransaction,
     handleUSDTRefresh,
     withdrawHandleTransaction,
-  } = useUSDTGroup(contractAddress?.LPPledge, LpAddress);
+  } = useUSDTGroup(contractAddress?.LPPledge, contractAddress?.PIJSBSC);
   const { CoinId } = useParams();
   const CurrentLP: any = PledgeCoinList?.find(
     (item: any) => item?.id === Number(CoinId)
@@ -397,12 +398,12 @@ export default function Rank() {
       : CurrentLP?.pledgeUser?.pledgeNum * percentToDecimal(PercentValue);
   const getInitData = () => {
     // 类型 1-LP 2-代币  状态 0-未开始 1-进行中 2-已结束
-    getPledgeBaasList(1, -1).then((res: any) => {
+    getPledgeBaasList(2, -1).then((res: any) => {
       if (res.code === 200) {
         setPledgeCoinList(res?.data || []);
       }
     });
-    getNodeRedeemInfo(1).then((res: any) => {
+    getNodeRedeemInfo(2).then((res: any) => {
       if (res.code === 200) {
         setNodeRedeemInfo(res?.data || []);
       }
@@ -411,6 +412,7 @@ export default function Rank() {
 
   const RemoveLiquidityFun = async () => {
     // return addMessage(t("Coming soon"));
+
     withdrawHandleTransaction(
       Number(Amount ?? 0) + "",
       async (call: any) => {
@@ -420,7 +422,7 @@ export default function Rank() {
           setTip(t("本金提取中"));
           setShowTipModal(true);
 
-          res = await Contracts.example?.unstakeLP(
+          res = await Contracts.example?.unstakePIJS(
             web3ModalAccount as string,
             Amount + "",
             contractAddress?.LPPledge
@@ -445,7 +447,7 @@ export default function Rank() {
       },
       () => {
         setTip(
-          t("批准 100.0000 LP", {
+          t("批准 100.0000 PIJS", {
             num: Number(Amount ?? 0),
           })
         );
@@ -457,28 +459,6 @@ export default function Rank() {
     );
   };
 
-  const getLpBalance = async () => {
-    try {
-      let lpAddress: any = await Contracts.example?.getPair(
-        web3ModalAccount as string,
-        contractAddress?.PIJSBSC,
-        contractAddress?.USDTBSC,
-        contractAddress?.PIJSFactory
-      );
-
-      setLpAddress(lpAddress ?? "");
-
-      let LPbalance = await Contracts.example.balanceOf(
-        web3ModalAccount as string,
-        lpAddress
-      );
-      setLPBalance(EthertoWei(LPbalance ?? "0"));
-    } catch (error: any) {
-      // debugger;
-      // debugger;
-      setLPBalance("0");
-    }
-  };
   const getInitUserData = () => {
     getUserInfo().then((res: any) => {
       setUserInfo(res?.data || {});
@@ -489,11 +469,6 @@ export default function Rank() {
     getInitData();
   }, [web3ModalAccount, token]);
 
-  useEffect(() => {
-    if (!!web3ModalAccount) {
-      getLpBalance();
-    }
-  }, [web3ModalAccount, chainId]);
   useEffect(() => {
     if (!!token) {
       getInitUserData();
@@ -513,8 +488,6 @@ export default function Rank() {
       );
     if (String(PercentValue) === "0%")
       return <Btn isActive={false}>{t("请输入撤出比例")}</Btn>;
-    // if (Number(Amount) > Number(CurrentLP?.pledgeUser?.pledgeNum))
-    //   return <Btn isActive={false}>{t("余额不足")}</Btn>;
 
     return (
       <Btn
@@ -523,7 +496,8 @@ export default function Rank() {
           RemoveLiquidityFun();
         }}
       >
-        {Number(TOKENAllowance) >= Number(Amount) ? t("提取") : t("授权")} LP
+        {Number(TOKENAllowance) >= Number(Amount) ? t("提取") : t("授权")}{" "}
+        {CurrentLP?.title}
       </Btn>
     );
   };
@@ -622,7 +596,10 @@ export default function Rank() {
                     <div className="tip">权益质押只能一次性提取</div>
                     <input
                       type="text"
-                      value={NodeRedeemInfo?.totalPledgeNum ?? 0 + " " + "LP"}
+                      value={
+                        NodeRedeemInfo?.totalPledgeNum ??
+                        0 + " " + CurrentLP?.title
+                      }
                       readOnly={true}
                     />
                   </LiquidityItem>
@@ -640,7 +617,7 @@ export default function Rank() {
               setShowTipModal(false);
             }}
           />
-          <ModalContentSuccess
+          <ModalContentSuccessSigleBtn
             ShowTipModal={ShowSuccessTipModal}
             Tip={Tip}
             hash={SuccessFulHash}

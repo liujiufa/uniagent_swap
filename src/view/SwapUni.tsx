@@ -18,7 +18,7 @@ import {
   thousandsSeparator,
 } from "../utils/tool";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   ContainerBox,
   FlexBox,
@@ -1054,7 +1054,8 @@ export default function Rank() {
 
   const [SuccessFulHash, setSuccessFulHash] = useState("");
   const [LiquidityType, setLiquidityType] = useState<any>(2);
-  const [TabActive, setTabActive] = useState("Trade");
+  const { state: stateObj } = useLocation();
+  const [TabActive, setTabActive] = useState(stateObj?.tab ?? "Trade");
 
   const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const { isNoGasFun } = useNoGas();
@@ -2154,7 +2155,12 @@ export default function Rank() {
             AddLiquidityFun();
           }}
         >
-          {Number(TOKENAllowance) >= Number(AddLiquidityTokenAmount1)
+          {Number(TOKENAllowance) >=
+          Number(
+            String(AddLiquidityToken1) === "USDT"
+              ? AddLiquidityTokenAmount1
+              : AddLiquidityTokenAmount2
+          )
             ? t("添加")
             : t("授权")}
         </Btn>
@@ -2276,6 +2282,13 @@ export default function Rank() {
       </Btn>
     );
   };
+
+  useEffect(() => {
+    if (stateObj?.tab) {
+      // 清除 location.state
+      Navigate(window.location.pathname, { replace: true, state: null });
+    }
+  }, [stateObj?.tab, Navigate]);
 
   return (
     <>
@@ -2684,7 +2697,8 @@ export default function Rank() {
               <SwapContainer>
                 <SwapContainer_Title>
                   {" "}
-                  <img src={toIcon} alt="" /> {t("Add V2 Liquidity")}
+                  {/* <img src={toIcon} alt="" />  */}
+                  {t("Add V2 Liquidity")}
                 </SwapContainer_Title>
 
                 <SelectTokenPair>

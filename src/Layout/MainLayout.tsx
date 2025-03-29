@@ -87,6 +87,9 @@ import dropdown from "../assets/image/layout/dropdown.svg";
 import ReferListModal from "../components/ReferListModal";
 import closeIcon from "../assets/image/closeIcon.svg";
 import RewardRecordModal from "../components/RewardRecordModal";
+import ModalContent from "../components/ModalContent";
+import ModalContentSuccessSigleBtn from "../components/ModalContentSuccessSigleBtn";
+import { useGetReward } from "../hooks/useGetReward";
 
 const { Header, Content } = Layout;
 
@@ -763,8 +766,10 @@ const MainLayout: any = () => {
   const [RewardRecordModalState, setRewardRecordModalState] = useState(false);
   const [OpenList, setOpenList] = useState<any>([]);
   const [UserInfo, setUserInfo] = useState<any>({});
-  const [NewUserState, setNewUserState] = useState(false);
-
+  const [Tip, setTip] = useState("");
+  const [ShowTipModal, setShowTipModal] = useState(false);
+  const [ShowSuccessTipModal, setShowSuccessTipModal] = useState(false);
+  const { getReward } = useGetReward();
   function changeLanguage(lang: any) {
     window.localStorage.setItem(LOCAL_KEY, lang.key);
     i18n.changeLanguage(lang.key);
@@ -896,7 +901,9 @@ const MainLayout: any = () => {
             <span
               className="LangItem"
               onClick={() => {
-                if (item?.key === "wallet_item1") {
+                if (item?.key === "wallet_item0") {
+                  setRewardRecordModalState(true);
+                } else if (item?.key === "wallet_item1") {
                   if (!UserInfo?.isBind) {
                     setBindModal(true);
                   } else {
@@ -1139,6 +1146,58 @@ const MainLayout: any = () => {
       setUserInfo(res?.data || {});
     });
   };
+  // 1领U 2领PIJS
+  const getRewardFun = async (type: 1 | 2, call: any) => {
+    if (type === 1) {
+      getReward(
+        () => {
+          // getRewardData();
+          // getRewardRecord();
+          setRewardRecordModalState(false);
+          setTip("收益提取成功");
+          setShowSuccessTipModal(true);
+          call();
+        },
+        contractAddress?.NodeDistribute,
+        {
+          coinName: "USDT",
+          id: 0,
+          type: 2,
+        },
+        () => {
+          setTip("收益提取中");
+          setShowTipModal(true);
+        },
+        () => {
+          setShowTipModal(false);
+        }
+      );
+    } else {
+      getReward(
+        () => {
+          // getRewardData();
+          // getRewardRecord();
+          setRewardRecordModalState(false);
+          setTip("收益提取成功");
+          setShowSuccessTipModal(true);
+          call();
+        },
+        contractAddress?.NodeDistribute,
+        {
+          coinName: "PIJS",
+          id: 0,
+          type: 2,
+        },
+        () => {
+          setTip("收益提取中");
+          setShowTipModal(true);
+        },
+        () => {
+          setShowTipModal(false);
+        }
+      );
+    }
+  };
 
   useEffect(() => {
     // if (String(pathname) !== "/Bridge") {
@@ -1151,14 +1210,12 @@ const MainLayout: any = () => {
 
   useEffect(() => {
     new Contracts(walletProvider);
-    // console.log(chainId, web3ModalAccount, "chainId");
-    // debugger;
     if (!!invite && String(invite).length >= 6) {
       let str = String(invite).length > 6 ? String(invite).slice(0, 6) : invite;
       setInputValue(str);
-      // SelectBindFun(str);
+      SelectBindFun(str);
     } else {
-      // SelectBindFun();
+      SelectBindFun();
     }
   }, [web3ModalAccount, chainId, isConnected, invite]);
 
@@ -1656,7 +1713,7 @@ const MainLayout: any = () => {
           ></div>
         )}
       </Content>
-
+      {/* 我的邀请码 */}
       <ReferListModal
         userInfo={UserInfo}
         ShowTipModal={MyInviteCodeStateModal}
@@ -1664,13 +1721,37 @@ const MainLayout: any = () => {
           setMyInviteCodeStateModal(false);
         }}
       />
+      {/* 节点奖励 */}
       <RewardRecordModal
         userInfo={UserInfo}
         ShowTipModal={RewardRecordModalState}
         close={() => {
           setRewardRecordModalState(false);
         }}
+        getRewardFun={getRewardFun}
       />
+
+      <ModalContent
+        ShowTipModal={ShowTipModal}
+        Tip={Tip}
+        close={() => {
+          setShowTipModal(false);
+        }}
+      />
+      <ModalContentSuccessSigleBtn
+        ShowTipModal={ShowSuccessTipModal}
+        Tip={Tip}
+        fun={() => {
+          if (!!token) {
+            // getRewardData();
+            // getRewardRecord();
+          }
+        }}
+        close={() => {
+          setShowSuccessTipModal(false);
+        }}
+      />
+
       <AllModal
         visible={BindModal}
         className="Modal"

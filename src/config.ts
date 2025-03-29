@@ -5,17 +5,19 @@ import NFT from "./ABI/NFT.json";
 import Bridge from "./ABI/Bridge.json";
 import UniAgentRouter from "./ABI/UniAgentRouter.json";
 import UniAgentFactory from "./ABI/UniAgentFactory.json";
+import NodeDistribute from "./ABI/NodeRewardDistribute.json";
+import PIJSPool from "./ABI/PIJSPool.json";
+import LPPledge from "./ABI/PIJSStake.json";
 import { defineChain } from "@reown/appkit/networks";
 // 正式
 export const isMain = false;
 export const curentBSCChainId = isMain ? 56 : 97;
 export const curentUNIChainId = isMain ? 656898 : 656231;
 export const LOCAL_KEY = "PIJS_LANG";
-const url = window.location.hostname;
-const result = url.split(".").slice(1).join(".");
 export let baseUrl: string = isMain
   ? `https://pijswap.xyz/pjisswap-api`
-  : "http://82.156.97.39:8880/";
+  : // "http://192.168.1.37:8880/";
+    "http://82.156.97.39:8880/";
 
 export let ContractUrl: string = isMain
   ? "https://bscscan.com/address/"
@@ -167,6 +169,8 @@ export const abiObj: abiObjType = {
   BridgeUNI: Bridge,
   Router: UniAgentRouter,
   Factory: UniAgentFactory,
+  NodeDistribute: NodeDistribute,
+  LPPledge: LPPledge,
 };
 
 export const Main: contractAddressType = {
@@ -189,7 +193,7 @@ const Test = {
   BridgeBSC: "0x31221fBcCa8d331E867dd44B9a01086aF35ad851",
   USDTUNI: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
   BridgeUNI: "0x69B92335D53C6fe719169BD4BDeffd6ED2833a4a",
-  PIJSBSC: "0x2E50C2E94365E49E54278F1bfcE6acbBf2dDD8A7",
+  PIJSBSC: "0xEa96D3e27fBe6baf623A6f66dC1C7a6B6811b7D3",
   PiBSC: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
   UACFactory: "0x82d3B7112eFD2127cD1eE771286D1cA1Ee3EfC2a",
   WUAC: "0xFB572Ae3f87E322f65D2869e08a8b283501614aF",
@@ -197,5 +201,9 @@ const Test = {
   WBNB: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
   PIJSFactory: "0x748C54e7bd5592F755DDFFE6Ad59b6Ef519E0635",
   PIJSRouter: "0x83728DF7204BDbDE3cd23122a224F36C0Dbd6892",
+  NodeDistribute: "0x7CE667BEb42c5E706eb70531170d5380f9f9420a",
+  StakingRewardDistribute: "0x1b918363140E92ed10e485d7666ff23bf9493d8B",
+  // LP&&单币
+  LPPledge: "0x16b5a6446999414Fae04D86BedA1D9756eADEE80",
 };
 export const contractAddress: contractAddressType = isMain ? Main : Test;

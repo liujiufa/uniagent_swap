@@ -299,7 +299,11 @@
   "Expected Receipt": "预期接收",
   "Reference Price": "参考价格",
   "Fee": "手续费",
-
+ 
+  "质押PIJS中": "质押{{coin}}中",
+  "批准 100.0000 PIJS": "批准 {{num}} PIJS",
+  "批准 100.0000 LP": "批准 {{num}} LP",
+  "质押PIJS-USDT LP中": "质押{{coin}} LP中",
   "Bind referral code": "绑定推荐码",
   "推荐码已绑定": "推荐码已绑定",
   "Not yet": "暂时没有",

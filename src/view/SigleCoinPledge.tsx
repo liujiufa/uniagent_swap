@@ -15,11 +15,10 @@ import {
   dateFormat,
   decimalNum,
   getFullNum,
-  percentToDecimal,
   thousandsSeparator,
 } from "../utils/tool";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   ContainerBox,
   FlexBox,
@@ -30,15 +29,8 @@ import {
   FlexSCBox,
 } from "../components/FlexBox";
 import toIcon from "../assets/image/Swap/toIcon.svg";
-import piIcon from "../assets/image/Swap/piIcon.png";
-import usdtIcon from "../assets/image/Swap/usdtIcon.png";
-import pijsIcon from "../assets/image/Swap/pijsIcon.png";
-import uacIcon from "../assets/image/Swap/uacIcon.png";
-import swapBanner from "../assets/image/Swap/swapBanner.png";
-import MainBg from "../assets/image/layout/MainBg.png";
 import mainBgMobile from "../assets/image/layout/mainBgMobile.png";
 import pledge_bg from "../assets/image/Pledge/pledge_bg.png";
-import rightIcon from "../assets/image/Pledge/rightIcon.png";
 
 import copyFun from "copy-to-clipboard";
 import { Contracts } from "../web3";
@@ -63,7 +55,8 @@ import AddLiquidityModalContentSuccess from "../components/AddLiquidityModalCont
 import { Modal } from "antd";
 import Footer from "../components/Footer";
 import PriceChart from "../components/PriceChart";
-import { getNodeRedeemInfo, getPledgeBaasList, getUserInfo } from "../API";
+import { getPledgeBaasList } from "../API";
+import ModalContentSuccessSigleBtn from "../components/ModalContentSuccessSigleBtn";
 const HomeContainerBox = styled.div<{ src: string }>`
   padding-top: 64px;
   width: 100%;
@@ -139,6 +132,13 @@ const SwapContainer_Title = styled(FlexBox)`
 `;
 const SwapItem = styled.div``;
 
+const SwapItemBottom = styled.div`
+  margin-top: 36px;
+  @media (max-width: 768px) {
+    margin-top: 24px;
+  }
+`;
+
 const SwapItem_Title = styled(FlexSBCBox)`
   font-family: MiSans;
   font-size: 18px;
@@ -147,33 +147,7 @@ const SwapItem_Title = styled(FlexSBCBox)`
   letter-spacing: 0em;
   font-variation-settings: "opsz" auto;
   color: #bcc6cf;
-  margin-top: 36px;
-  padding: 17px 24px;
-  .selectBox {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    font-family: MiSans;
-    font-size: 18px;
-    font-weight: 500;
-    line-height: normal;
-    letter-spacing: 0em;
-    font-variation-settings: "opsz" auto;
-    color: #bcc6cf;
-    div {
-      cursor: pointer;
-      border-radius: 4px;
-      opacity: 1;
-      box-sizing: border-box;
-      border: 1px solid #bcc6cf;
-      width: 20px;
-      height: 20px;
-    }
-    img {
-      width: 20px;
-      height: 20px;
-    }
-  }
+  margin: 36px 0px 15px;
 
   span {
     font-family: MiSans;
@@ -184,13 +158,11 @@ const SwapItem_Title = styled(FlexSBCBox)`
     letter-spacing: 0em;
     font-variation-settings: "opsz" auto;
     color: #c8c8c8;
-    margin-left: 12px;
   }
   @media (max-width: 768px) {
-    margin: 24px 0px 0px;
-    padding: 14px 12px;
+    margin: 24px 0px 10px;
+    font-size: 16px;
     span {
-      font-size: 14px;
     }
   }
 `;
@@ -221,26 +193,14 @@ const Btn = styled(FlexCCBox)<{ isActive: boolean }>`
 `;
 const LiquidityItem = styled.div`
   padding: 24px;
-  border-radius: 0px 0px 16px 16px;
+  border-radius: 16px;
   opacity: 1;
   background: #000000;
-  overflow: hidden;
-
-  .tip {
-    font-family: MiSans;
-    font-size: 18px;
-    font-weight: 500;
-    line-height: normal;
-    letter-spacing: 0em;
-    font-variation-settings: "opsz" auto;
-    color: #53575c;
-    margin-bottom: 8px;
-  }
   > input {
     font-family: MiSans;
     font-size: 32px;
     font-weight: 500;
-    line-height: 42px;
+    line-height: normal;
     letter-spacing: 0em;
     font-variation-settings: "opsz" auto;
     color: #bcc6cf;
@@ -249,18 +209,15 @@ const LiquidityItem = styled.div`
     border: none;
   }
   @media (max-width: 768px) {
-    padding: 14px 12px;
+    padding: 14px;
     > input {
       font-family: MiSans;
-      font-size: 18px;
+      font-size: 28px;
       font-weight: 500;
-      line-height: 24px;
+      line-height: normal;
       letter-spacing: 0em;
       font-variation-settings: "opsz" auto;
-      color: #bcc6cf;
-    }
-    .tip {
-      font-size: 14px;
+      color: #ffffff;
     }
   }
 `;
@@ -283,73 +240,101 @@ const PercentageBox = styled(FlexBox)`
     margin-right: 8px;
   }
   @media (max-width: 768px) {
-    margin-top: 40px;
+    margin-top: 60px;
     > div {
-      padding: 6px 16px;
+      border-radius: 24px;
+      opacity: 1;
+      background: #383e45;
+      padding: 6px 24px;
+      font-family: MiSans;
       font-size: 14px;
+      font-weight: 500;
+      line-height: normal;
+      text-align: center;
+      letter-spacing: 0em;
+      font-variation-settings: "opsz" auto;
+      color: #c8c8c8;
     }
   }
   @media (max-width: 375px) {
     flex-wrap: wrap;
+    > div {
+      margin-top: 6px;
+    }
+  }
+`;
+
+const MyHold = styled(FlexBox)`
+  align-items: flex-end;
+  justify-content: space-between;
+  width: fit-content;
+  margin-bottom: 298px;
+  > div {
+    font-family: MiSans;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: normal;
+    letter-spacing: 0em;
+    font-variation-settings: "opsz" auto;
+    color: #c8c8c8;
+    .value {
+      margin-top: 13px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 12px;
+      opacity: 1;
+      background: #383e45;
+      height: 54px;
+      font-family: MiSans;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: normal;
+      letter-spacing: 0em;
+      font-variation-settings: "opsz" auto;
+      color: #ffffff;
+    }
+    .oddValue {
+      padding: 0 16px;
+      background: transparent;
+    }
+  }
+  @media (max-width: 768px) {
+    margin-bottom: 130px;
+
+    > div {
+      font-family: MiSans;
+      font-size: 12px;
+      font-weight: normal;
+      line-height: normal;
+      letter-spacing: 0em;
+      font-variation-settings: "opsz" auto;
+      color: #c8c8c8;
+      .value {
+        margin-top: 8px;
+        height: 44px;
+        padding: 0px 10px;
+        font-family: MiSans;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: normal;
+        text-align: center;
+        letter-spacing: 0em;
+        font-variation-settings: "opsz" auto;
+        color: #ffffff;
+      }
+    }
+  }
+  @media (max-width: 375px) {
+    flex-wrap: wrap;
+    justify-content: flex-start;
     > div {
       margin-top: 8px;
     }
   }
 `;
 
-const SwapBox = styled.div`
-  border-radius: 16px;
-  opacity: 1;
-  background: #292a2b;
-`;
-
-export let tokenList: any = [
-  {
-    icon: usdtIcon,
-    name: "USDT",
-    tokenAddress: contractAddress?.USDTUNI,
-    symbol: "Tether USD",
-    chainId: curentUNIChainId,
-    contractAddress: contractAddress?.UACFactory,
-    Router: contractAddress?.UACRouter,
-  },
-  {
-    icon: uacIcon,
-    name: "UAC",
-    tokenAddress: contractAddress?.WUAC,
-    symbol: "UniAgent",
-    chainId: curentUNIChainId,
-    contractAddress: contractAddress?.UACFactory,
-    Router: contractAddress?.UACRouter,
-  },
-  {
-    icon: pijsIcon,
-    name: "PIJS",
-    tokenAddress: contractAddress?.PIJSBSC,
-    symbol: "PIJS",
-    chainId: curentBSCChainId,
-    contractAddress: contractAddress?.PIJSFactory,
-    Router: contractAddress?.PIJSRouter,
-  },
-  {
-    icon: usdtIcon,
-    name: "USDT",
-    tokenAddress: contractAddress?.USDTBSC,
-    symbol: "Tether USD",
-    chainId: curentBSCChainId,
-    contractAddress: contractAddress?.PIJSFactory,
-    Router: contractAddress?.PIJSRouter,
-  },
-  {
-    icon: piIcon,
-    name: "Pi",
-    tokenAddress: contractAddress?.PiBSC,
-    symbol: "Pi Network",
-    chainId: curentBSCChainId,
-    contractAddress: contractAddress?.PIJSFactory,
-    Router: contractAddress?.PIJSRouter,
-  },
-];
 let timer: any = null;
 export default function Rank() {
   const { width } = useViewport();
@@ -360,69 +345,86 @@ export default function Rank() {
   const { selectedNetworkId } = useAppKitState();
   const { caipNetwork, caipNetworkId, chainId, switchNetwork } =
     useAppKitNetwork();
-  const [IsBindState, setIsBindState] = useState(false);
+  const [LpAddress, setLpAddress] = useState("");
   const { token } = useSelector<stateType, stateType>((state) => state);
   const [Tip, setTip] = useState("");
   const [Title, setTitle] = useState("");
   const [ShowTipModal, setShowTipModal] = useState(false);
   const [ShowSuccessTipModal, setShowSuccessTipModal] = useState(false);
+  const [ShowAddLiquiditySuccessTipModal, setShowAddLiquiditySuccessTipModal] =
+    useState(false);
 
   const [SuccessFulHash, setSuccessFulHash] = useState("");
-  const [LpAddress, setLpAddress] = useState("");
-  const [LPBalance, setLPBalance] = useState("0");
   const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const { isNoGasFun } = useNoGas();
-  const [RedeemType, setRedeemType] = useState(1);
-  const [PercentValue, setPercentValue] = useState("0%");
-  const [UserInfo, setUserInfo] = useState<any>({});
-
   const [PledgeCoinList, setPledgeCoinList] = useState<any>([]);
-  const [NodeRedeemInfo, setNodeRedeemInfo] = useState<any>([]);
 
-  const {
-    TOKENBalance,
-    TOKENAllowance,
-    handleApprove,
-    handleTransaction,
-    handleUSDTRefresh,
-    withdrawHandleTransaction,
-  } = useUSDTGroup(contractAddress?.LPPledge, LpAddress);
+  const [InputAmount, setInputAmount] = useState(1);
   const { CoinId } = useParams();
   const CurrentLP: any = PledgeCoinList?.find(
     (item: any) => item?.id === Number(CoinId)
   );
-  const Amount: any =
-    Number(UserInfo?.nodeType) === 1 && RedeemType === 2
-      ? NodeRedeemInfo?.totalPledgeNum
-      : CurrentLP?.pledgeUser?.pledgeNum * percentToDecimal(PercentValue);
+
+  const {
+    TOKENBalance: LPTOKENBalance,
+    TOKENAllowance: LPTOKENAllowance,
+    handleApprove: LPhandleApprove,
+    handleTransaction: LPhandleTransaction,
+    handleUSDTRefresh: LPhandleUSDTRefresh,
+  } = useUSDTGroup(contractAddress?.LPPledge, contractAddress?.PIJSBSC);
+
   const getInitData = () => {
     // 类型 1-LP 2-代币  状态 0-未开始 1-进行中 2-已结束
-    getPledgeBaasList(1, -1).then((res: any) => {
+    getPledgeBaasList(2, -1).then((res: any) => {
       if (res.code === 200) {
         setPledgeCoinList(res?.data || []);
       }
     });
-    getNodeRedeemInfo(1).then((res: any) => {
-      if (res.code === 200) {
-        setNodeRedeemInfo(res?.data || []);
-      }
-    });
   };
 
-  const RemoveLiquidityFun = async () => {
+  // 解析 Transfer 事件
+  function parseTransferEvent(log: any) {
+    const transferEventSignature =
+      "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+
+    if (
+      String(log.raw.topics[0])?.toUpperCase() ===
+      String(transferEventSignature)?.toUpperCase()
+    ) {
+      const from = `0x${log.raw.topics[1].slice(26)}`;
+      const to = `0x${log.raw.topics[2].slice(26)}`;
+      let web3 = new Web3();
+      const value = web3.utils.hexToNumberString(log.raw.data);
+
+      return {
+        from,
+        to,
+        value,
+      };
+    }
+
+    return null;
+  }
+
+  const PledgeLiquidityFun = async () => {
     // return addMessage(t("Coming soon"));
-    withdrawHandleTransaction(
-      Number(Amount ?? 0) + "",
+
+    LPhandleTransaction(
+      Number(InputAmount ?? 0) + "",
       async (call: any) => {
         let res: any = null;
         try {
           if (!!(await isNoGasFun())) return;
-          setTip(t("本金提取中"));
+          setTip(
+            t("质押PIJS中", {
+              coin: CurrentLP?.title,
+            })
+          );
           setShowTipModal(true);
 
-          res = await Contracts.example?.unstakeLP(
+          res = await Contracts.example?.stakePIJS(
             web3ModalAccount as string,
-            Amount + "",
+            InputAmount + "",
             contractAddress?.LPPledge
           );
         } catch (error: any) {
@@ -435,7 +437,7 @@ export default function Rank() {
         if (!!res?.status) {
           await call();
           setSuccessFulHash(res?.transactionHash);
-          setTip(t("本金提取成功"));
+          setTip(t("流动性质押成功"));
           getInitData();
           return setShowSuccessTipModal(true);
         } else if (res?.status === false) {
@@ -445,8 +447,8 @@ export default function Rank() {
       },
       () => {
         setTip(
-          t("批准 100.0000 LP", {
-            num: Number(Amount ?? 0),
+          t("批准 100.0000 PIJS", {
+            num: Number(InputAmount ?? 0),
           })
         );
         setShowTipModal(true);
@@ -457,48 +459,19 @@ export default function Rank() {
     );
   };
 
-  const getLpBalance = async () => {
-    try {
-      let lpAddress: any = await Contracts.example?.getPair(
-        web3ModalAccount as string,
-        contractAddress?.PIJSBSC,
-        contractAddress?.USDTBSC,
-        contractAddress?.PIJSFactory
-      );
-
-      setLpAddress(lpAddress ?? "");
-
-      let LPbalance = await Contracts.example.balanceOf(
-        web3ModalAccount as string,
-        lpAddress
-      );
-      setLPBalance(EthertoWei(LPbalance ?? "0"));
-    } catch (error: any) {
-      // debugger;
-      // debugger;
-      setLPBalance("0");
-    }
-  };
-  const getInitUserData = () => {
-    getUserInfo().then((res: any) => {
-      setUserInfo(res?.data || {});
-    });
+  const InputFun = async (e: any) => {
+    let filteredValue: any = String(e.target.value)
+      ?.replace(/[+-]/g, "")
+      .replace(/[^0-9.]/g, "");
+    // Remove + and - characters
+    const decimalIndex = filteredValue;
+    setInputAmount(decimalIndex);
   };
 
   useEffect(() => {
     getInitData();
   }, [web3ModalAccount, token]);
 
-  useEffect(() => {
-    if (!!web3ModalAccount) {
-      getLpBalance();
-    }
-  }, [web3ModalAccount, chainId]);
-  useEffect(() => {
-    if (!!token) {
-      getInitUserData();
-    }
-  }, [token]);
   const RemoveLiquidityBtn = () => {
     if (!web3ModalAccount)
       return (
@@ -511,26 +484,29 @@ export default function Rank() {
           {t("连接钱包")}
         </Btn>
       );
-    if (String(PercentValue) === "0%")
-      return <Btn isActive={false}>{t("请输入撤出比例")}</Btn>;
-    // if (Number(Amount) > Number(CurrentLP?.pledgeUser?.pledgeNum))
-    //   return <Btn isActive={false}>{t("余额不足")}</Btn>;
+    if (Number(InputAmount) === 0)
+      return <Btn isActive={false}>{t("请输入质押数量")}</Btn>;
+    if (Number(InputAmount) > Number(LPTOKENBalance ?? 0))
+      return <Btn isActive={false}>{t("余额不足")}</Btn>;
 
     return (
       <Btn
         isActive={true}
         onClick={() => {
-          RemoveLiquidityFun();
+          PledgeLiquidityFun();
         }}
       >
-        {Number(TOKENAllowance) >= Number(Amount) ? t("提取") : t("授权")} LP
+        {Number(LPTOKENAllowance) >= Number(InputAmount)
+          ? t("质押")
+          : t("授权")}{" "}
+        {CurrentLP?.title}
       </Btn>
     );
   };
 
   return (
     <>
-      <HomeContainerBox src={width >= 1400 ? pledge_bg : pledge_bg}>
+      <HomeContainerBox src={width >= 1400 ? pledge_bg : mainBgMobile}>
         <div>
           <SwapContainer>
             <SwapContainer_Title
@@ -539,96 +515,77 @@ export default function Rank() {
               }}
             >
               {" "}
-              <img src={toIcon} alt="" /> {t("质押赎回")}
+              <img src={toIcon} alt="" /> {CurrentLP?.title} {t("质押")}
             </SwapContainer_Title>
-            <SwapBox>
-              <SwapItem_Title>
-                <div className="selectBox">
-                  {RedeemType === 1 ? (
-                    <img src={rightIcon} alt="" />
-                  ) : (
-                    <div
-                      onClick={() => {
-                        setRedeemType(1);
-                      }}
-                    ></div>
-                  )}
-                  <span>我的质押</span>
-                </div>
 
-                <span>
-                  当前持仓: {CurrentLP?.pledgeUser?.pledgeNum ?? 0}{" "}
-                  {CurrentLP?.title}
-                </span>
-              </SwapItem_Title>
-
-              <SwapItem>
-                <LiquidityItem>
-                  <div className="tip">输入撤出比例</div>
-                  <input type="text" value={PercentValue} />
-                  <PercentageBox>
-                    <div
-                      onClick={() => {
-                        setPercentValue("25%");
-                      }}
-                    >
-                      25%
-                    </div>
-                    <div
-                      onClick={() => {
-                        setPercentValue("50%");
-                      }}
-                    >
-                      50%
-                    </div>
-                    <div
-                      onClick={() => {
-                        setPercentValue("75%");
-                      }}
-                    >
-                      75%
-                    </div>
-                    <div
-                      onClick={() => {
-                        setPercentValue("100%");
-                      }}
-                    >
-                      100%
-                    </div>
-                  </PercentageBox>
-                </LiquidityItem>
-              </SwapItem>
-            </SwapBox>
-            {Number(UserInfo?.nodeType) === 1 && (
-              <SwapBox>
-                <SwapItem_Title>
-                  <div className="selectBox">
-                    {RedeemType === 2 ? (
-                      <img src={rightIcon} alt="" />
-                    ) : (
-                      <div
-                        onClick={() => {
-                          setRedeemType(2);
-                        }}
-                      ></div>
-                    )}
-                    <span>超级节点权益质押</span>
+            <SwapItem_Title>
+              {t("输入质押数量")}{" "}
+              <span>
+                {CurrentLP?.title}余额: {NumSplic1(LPTOKENBalance, 4) ?? 0}
+              </span>
+            </SwapItem_Title>
+            <SwapItem>
+              <LiquidityItem>
+                <input type="text" value={InputAmount} onChange={InputFun} />
+                <PercentageBox>
+                  <div
+                    onClick={() => {
+                      setInputAmount(10);
+                    }}
+                  >
+                    10
                   </div>
-
-                  <span>权益已兑付 {NodeRedeemInfo?.redeemRate ?? 0}%</span>
-                </SwapItem_Title>
-                <SwapItem>
-                  <LiquidityItem>
-                    <div className="tip">权益质押只能一次性提取</div>
-                    <input
-                      type="text"
-                      value={NodeRedeemInfo?.totalPledgeNum ?? 0 + " " + "LP"}
-                      readOnly={true}
-                    />
-                  </LiquidityItem>
-                </SwapItem>
-              </SwapBox>
-            )}
+                  <div
+                    onClick={() => {
+                      setInputAmount(20);
+                    }}
+                  >
+                    20
+                  </div>
+                  <div
+                    onClick={() => {
+                      setInputAmount(50);
+                    }}
+                  >
+                    50
+                  </div>
+                  <div
+                    onClick={() => {
+                      setInputAmount(100);
+                    }}
+                  >
+                    100
+                  </div>
+                </PercentageBox>
+              </LiquidityItem>
+            </SwapItem>
+            <SwapItemBottom>
+              <MyHold>
+                <div>
+                  已持仓
+                  <div className="value">
+                    {CurrentLP?.pledgeUser?.pledgeNum ?? 0}
+                  </div>
+                </div>
+                <div>
+                  <div className="value oddValue"> +</div>
+                </div>
+                <div>
+                  增加持仓
+                  <div className="value">{InputAmount ?? 0}</div>
+                </div>
+                <div>
+                  <div className="value oddValue"> =</div>
+                </div>
+                <div>
+                  我的持仓
+                  <div className="value">
+                    {(CurrentLP?.pledgeUser?.pledgeNum ?? 0) +
+                      (InputAmount ?? 0)}
+                  </div>
+                </div>
+              </MyHold>
+            </SwapItemBottom>
 
             {RemoveLiquidityBtn()}
           </SwapContainer>
@@ -640,7 +597,7 @@ export default function Rank() {
               setShowTipModal(false);
             }}
           />
-          <ModalContentSuccess
+          <ModalContentSuccessSigleBtn
             ShowTipModal={ShowSuccessTipModal}
             Tip={Tip}
             hash={SuccessFulHash}

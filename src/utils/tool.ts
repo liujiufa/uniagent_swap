@@ -354,3 +354,13 @@ export function thousandsSeparator(n: number): string {
   }
   return s;
 }
+// 百分号转小数
+export function percentToDecimal(percentString: any) {
+  // 移除百分号
+  const numericString = percentString.replace("%", "");
+
+  // 将字符串转换为浮点数并除以 100
+  const decimalValue = parseFloat(numericString) / 100;
+
+  return decimalValue;
+}

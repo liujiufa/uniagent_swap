@@ -10,10 +10,25 @@ import leftIcon from "../assets/image/Home/leftIcon.svg";
 import rightIcon from "../assets/image/Home/rightIcon.svg";
 import avtorImg from "../assets/image/avtorImg.png";
 import { useSelector } from "react-redux";
-import { getMyNft, getRefereeData, getRefereeList } from "../API";
-import { AddrHandle, addMessage, dateFormat } from "../utils/tool";
+import {
+  getMyNft,
+  getNodeUserEarnDetail,
+  getNodeUserInfo,
+  getRefereeData,
+  getRefereeList,
+} from "../API";
+import {
+  AddrHandle,
+  addMessage,
+  dateFormat,
+  thousandsSeparator,
+} from "../utils/tool";
 import { useAppKitAccount } from "@reown/appkit/react";
 import copyFun from "copy-to-clipboard";
+import { useGetReward } from "../hooks/useGetReward";
+import ModalContentSuccess from "./ModalContentSuccess";
+import ModalContentSuccessSigleBtn from "./ModalContentSuccessSigleBtn";
+import { contractAddress } from "../config";
 
 const AllModal = styled(Modal)`
   z-index: 10000;
@@ -585,18 +600,23 @@ const RewardData_Right = styled.div`
     color: #ffffff;
   }
 `;
+let rewardObj = { 1: "领取奖励", 2: "手续费分红", 3: "盈利分红" };
 
 export default function ModalContent(props: any) {
   const { t } = useTranslation();
   const token = useSelector((state: any) => state?.token);
   const [PageNum, setPageNum] = useState(1);
   const [RecordList3, setRecordList3] = useState<any>({});
+  const [NodeUserInfo, setNodeUserInfo] = useState<any>({});
+  const [Tip, setTip] = useState("");
+  const [ShowTipModal, setShowTipModal] = useState(false);
+  const [ShowSuccessTipModal, setShowSuccessTipModal] = useState(false);
   const onChange: PaginationProps["onChange"] = (page) => {
     console.log(page);
     setPageNum(page);
   };
   const { address: web3ModalAccount, isConnected } = useAppKitAccount();
-
+  const { getReward } = useGetReward();
   const itemRender: PaginationProps["itemRender"] = (
     _,
     type,
@@ -619,131 +639,238 @@ export default function ModalContent(props: any) {
     return originalElement;
   };
 
-  const CopyCodeFun = (code: string) => {
-    // if (!props?.userInfo?.isBind) return addMessage(t("9"));
-    if (!web3ModalAccount) {
-      return addMessage(t("Please Connect wallet"));
-    } else {
-      copyFun(code);
-      addMessage(t("Copied successfully"));
-    }
+  const getRewardData = async () => {
+    getNodeUserInfo().then((res: any) => {
+      setNodeUserInfo(res?.data || {});
+    });
+  };
+  const getRewardRecord = async () => {
+    getNodeUserEarnDetail({ pageNum: PageNum, pageSize: 10 }).then(
+      (res: any) => {
+        setRecordList3(res?.data || {});
+      }
+    );
   };
 
   useEffect(() => {
     if (!!token) {
-      getRefereeList({ pageNum: PageNum, pageSize: 10 }).then((res: any) => {
-        if (res.code !== 200) return;
-        setRecordList3(res?.data || {});
-      });
+      getRewardData();
+    } else {
+      setNodeUserInfo({});
+    }
+  }, [token, props?.ShowTipModal]);
+  useEffect(() => {
+    if (!!token) {
+      getRewardRecord();
     } else {
       setRecordList3({});
     }
   }, [token, PageNum, props?.ShowTipModal]);
 
   return (
-    <AllModal
-      visible={props?.ShowTipModal}
-      className="Modal"
-      centered
-      width={"656px"}
-      closable={false}
-      footer={null}
-    >
-      <ModalContainer>
-        <ModalContainer_Avtor>
-          <img src={avtorImg} alt="" />
-          <div>
-            0x1234.....4567
-            <div>超级节点</div>
-          </div>
-        </ModalContainer_Avtor>
+    <>
+      <AllModal
+        visible={props?.ShowTipModal}
+        className="Modal"
+        centered
+        width={"656px"}
+        closable={false}
+        footer={null}
+        zIndex={10000}
+      >
+        <ModalContainer>
+          <ModalContainer_Avtor>
+            <img src={avtorImg} alt="" />
+            <div>
+              {AddrHandle(web3ModalAccount as string, 6, 4)}
+              <div>{props?.userInfo?.nodeType === 1 ? "超级节点" : "普通"}</div>
+            </div>
+          </ModalContainer_Avtor>
 
-        <ModalContainer_Title>
-          <ModalContainer_Close>
-            {" "}
-            <img
-              src={closeIcon}
-              alt=""
-              onClick={() => {
-                // setBindModal(false);
-                props?.close();
-              }}
-            />
-          </ModalContainer_Close>
-        </ModalContainer_Title>
-        <MyInvitedInfo>
-          <RewardData>
-            <RewardData_Left>
-              <div className="title">权益收入金额</div>
-              100,000 PIJS
-            </RewardData_Left>
-            <div className="devider"></div>
-            <RewardData_Right>
-              <div className="title">累计收益</div>
-              <div className="content">10,000USDT</div>
-              <div className="content">10,000,000PIJS</div>
-            </RewardData_Right>
-          </RewardData>
-          <RewardData1>
-            <RewardData_Left>
-              <div className="title">待提收益</div>
-              <div className="bottom">
-                {" "}
-                100,000 PIJS <div className="btn">提收益</div>{" "}
-              </div>
-            </RewardData_Left>
-            <div className="devider"></div>
-            <RewardData_Left>
-              <div className="title">待提收益</div>
-              <div className="bottom">
-                {" "}
-                100,000 PIJS <div className="btn">提收益</div>{" "}
-              </div>
-            </RewardData_Left>
-          </RewardData1>
+          <ModalContainer_Title>
+            <ModalContainer_Close>
+              {" "}
+              <img
+                src={closeIcon}
+                alt=""
+                onClick={() => {
+                  // setBindModal(false);
+                  props?.close();
+                }}
+              />
+            </ModalContainer_Close>
+          </ModalContainer_Title>
+          <MyInvitedInfo>
+            <RewardData>
+              <RewardData_Left>
+                <div className="title">权益收入金额</div>
+                {thousandsSeparator(NodeUserInfo?.earnAmount ?? "0")} PIJS
+              </RewardData_Left>
+              <div className="devider"></div>
+              <RewardData_Right>
+                <div className="title">累计收益</div>
+                <div className="content">
+                  {thousandsSeparator(NodeUserInfo?.totalUsdNum ?? "0")} USDT
+                </div>
+                <div className="content">
+                  {thousandsSeparator(NodeUserInfo?.totalPijsNum ?? "0")} PIJS
+                </div>
+              </RewardData_Right>
+            </RewardData>
+            <RewardData1>
+              <RewardData_Left>
+                <div className="title">待提收益</div>
+                <div className="bottom">
+                  {" "}
+                  {thousandsSeparator(
+                    NodeUserInfo?.treatUsdNum ?? "0"
+                  )} USDT{" "}
+                  <div
+                    className="btn"
+                    onClick={() => {
+                      if (NodeUserInfo?.treatUsdNum > 0) {
+                        // getReward(
+                        //   () => {
+                        //     getRewardData();
+                        //     getRewardRecord();
+                        //     setShowSuccessTipModal(true);
+                        //   },
+                        //   contractAddress?.NodeDistribute,
+                        //   {
+                        //     coinName: "USDT",
+                        //     id: 0,
+                        //     type: 2,
+                        //   },
+                        //   () => {
+                        //     setTip(t("收益提取中"));
+                        //     setShowTipModal(true);
+                        //   },
+                        //   () => {
+                        //     setShowTipModal(false);
+                        //   }
+                        // );
+                        props?.getRewardFun(1, () => {
+                          getRewardData();
+                          getRewardRecord();
+                        });
+                      }
+                    }}
+                  >
+                    提收益
+                  </div>{" "}
+                </div>
+              </RewardData_Left>
+              <div className="devider"></div>
+              <RewardData_Left>
+                <div className="title">待提收益</div>
+                <div className="bottom">
+                  {" "}
+                  {thousandsSeparator(
+                    NodeUserInfo?.treatPijsNum ?? "0"
+                  )} PIJS{" "}
+                  <div
+                    className="btn"
+                    onClick={() => {
+                      if (NodeUserInfo?.treatPijsNum) {
+                        // getReward(
+                        //   () => {
+                        //     getRewardData();
+                        //     getRewardRecord();
+                        //     setTip("收益提取成功");
+                        //     setShowSuccessTipModal(true);
+                        //   },
+                        //   contractAddress?.NodeDistribute,
+                        //   {
+                        //     coinName: "PIJS",
+                        //     id: 0,
+                        //     type: 2,
+                        //   },
+                        //   () => {
+                        //     setTip("收益提取中");
+                        //     setShowTipModal(true);
+                        //   },
+                        //   () => {
+                        //     setShowTipModal(false);
+                        //   }
+                        // );
+                        props?.getRewardFun(2, () => {
+                          getRewardData();
+                          getRewardRecord();
+                        });
+                      }
+                    }}
+                  >
+                    提收益
+                  </div>{" "}
+                </div>
+              </RewardData_Left>
+            </RewardData1>
 
-          <InvitedTip>
-            {t(
-              "节点权益分红根据平台收入，不定期向所有节点和超级节点发放合伙人权益分红，收益您可以随时提取到您的钱包。"
-            )}
-          </InvitedTip>
-        </MyInvitedInfo>
+            <InvitedTip>
+              {t(
+                "节点权益分红根据平台收入，不定期向所有节点和超级节点发放合伙人权益分红，收益您可以随时提取到您的钱包。"
+              )}
+            </InvitedTip>
+          </MyInvitedInfo>
 
-        <ModalContainer_Content>
-          {t("收益记录")}
-          <Table>
-            <Table_Title>
-              <Items>
-                <div>{t("收益类型")}</div>
-                <div>{t("时间")}</div>
-                <div>{t("币种")}</div>
-                <div>{t("数量")}</div>
-              </Items>
-            </Table_Title>
-            <Table_Content>
-              {RecordList3?.list?.map((item: any, index: any) => (
-                <Items key={index}>
-                  <div>手续费分红</div>
-                  <div>2025-02-15 12:34</div>
-                  <div>PIJS</div>
-                  <div>1000</div>
+          <ModalContainer_Content>
+            {t("收益记录")}
+            <Table>
+              <Table_Title>
+                <Items>
+                  <div>{t("收益类型")}</div>
+                  <div>{t("时间")}</div>
+                  <div>{t("币种")}</div>
+                  <div>{t("数量")}</div>
                 </Items>
-              ))}
-            </Table_Content>
-          </Table>
-          <PaginationContainer>
-            <Pagination
-              current={PageNum}
-              pageSize={10}
-              onChange={onChange}
-              total={RecordList3?.total}
-              showQuickJumper
-              defaultCurrent={1}
-              itemRender={itemRender}
-            />
-          </PaginationContainer>
-        </ModalContainer_Content>
-      </ModalContainer>
-    </AllModal>
+              </Table_Title>
+              <Table_Content>
+                {RecordList3?.list?.map((item: any, index: any) => (
+                  <Items key={index}>
+                    <div>{rewardObj[item?.type]}</div>
+                    <div>
+                      {dateFormat("YY-mm-dd HH:MM", new Date(item?.createTime))}
+                    </div>
+                    <div>{item?.coinName}</div>
+                    <div>{item?.num}</div>
+                  </Items>
+                ))}
+              </Table_Content>
+            </Table>
+            <PaginationContainer>
+              <Pagination
+                current={PageNum}
+                pageSize={10}
+                onChange={onChange}
+                total={RecordList3?.total}
+                showQuickJumper
+                defaultCurrent={1}
+                itemRender={itemRender}
+              />
+            </PaginationContainer>
+          </ModalContainer_Content>
+        </ModalContainer>
+      </AllModal>
+      {/* <ModalContent
+        ShowTipModal={ShowTipModal}
+        Tip={Tip}
+        close={() => {
+          setShowTipModal(false);
+        }}
+      />
+      <ModalContentSuccessSigleBtn
+        ShowTipModal={ShowSuccessTipModal}
+        Tip={Tip}
+        fun={() => {
+          if (!!token) {
+            getRewardData();
+            getRewardRecord();
+          }
+        }}
+        close={() => {
+          setShowSuccessTipModal(false);
+        }}
+      /> */}
+    </>
   );
 }

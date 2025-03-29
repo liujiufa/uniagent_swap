@@ -279,7 +279,7 @@ export default function Rank() {
 
   const getInitData = () => {
     // 类型 1-LP 2-代币  状态 0-未开始 1-进行中 2-已结束
-    getPledgeBaasList(1, ActiveTab).then((res: any) => {
+    getPledgeBaasList(2, ActiveTab).then((res: any) => {
       if (res.code === 200) {
         setPledgeCoinList(res?.data || []);
       }
@@ -372,15 +372,15 @@ export default function Rank() {
               <div
                 className="btn_left"
                 onClick={() => {
-                  Navigate("/View/", { state: { tab: "Liquidity" } });
+                  Navigate("/View/", { state: { tab: "Trade" } });
                 }}
               >
-                添加LP
+                买入
               </div>
               <div
                 className="btn_mid"
                 onClick={() => {
-                  Navigate(`/View/LPPledge/${item?.id}`);
+                  Navigate(`/View/SigleCoinPledge/${item?.id}`);
                 }}
               >
                 添加质押
@@ -396,7 +396,9 @@ export default function Rank() {
           <div className="mybox_top_reward">
             <div className="reward_data">
               待提收益
-              <div>{item?.pledgeUser?.treatDrawNum ?? 0} PiJS</div>
+              <div>
+                {item?.pledgeUser?.treatDrawNum ?? 0} {item?.title}
+              </div>
             </div>
             <div
               className="reward_btn btn"
@@ -405,7 +407,6 @@ export default function Rank() {
                   getReward(
                     () => {
                       getInitData();
-                      setTip("收益提取成功");
                       setShowSuccessTipModal(true);
                     },
                     contractAddress?.StakingRewardDistribute,
@@ -446,12 +447,14 @@ export default function Rank() {
           <div className="my_data">
             <div className="my">
               我的质押
-              <div className="num">{item?.pledgeUser?.pledgeNum} LP</div>
+              <div className="num">
+                {item?.pledgeUser?.pledgeNum} {item?.title}
+              </div>
               <div className="value">
                 $
                 {NumSplic1(
                   Number(item?.pledgeUser?.pledgeNum) *
-                    Number(PriceInfo?.lpPrice),
+                    Number(PriceInfo?.pijsPrice),
                   4
                 )}
               </div>
@@ -476,7 +479,7 @@ export default function Rank() {
             <div
               className="btn_left"
               onClick={() => {
-                Navigate(`/View/PledgeRedeem/${item?.id}`);
+                Navigate(`/View/SigleCoinPledgeRedeem/${item?.id}`);
               }}
             >
               提本金
@@ -492,7 +495,7 @@ export default function Rank() {
             <div
               className="btn_right"
               onClick={() => {
-                Navigate(`/View/LPPledge/${item?.id}`);
+                Navigate(`/View/SigleCoinPledge/${item?.id}`);
               }}
             >
               添加质押
@@ -543,7 +546,7 @@ export default function Rank() {
               <div key={index} className="item">
                 <div className="coins_info">
                   <div className="coins_info_left">
-                    <img src={usdtIcon} alt="" />
+                    {/* <img src={usdtIcon} alt="" /> */}
                     <img src={pijsIcon} alt="" />
                   </div>
                   <div className="coins_info_right">{item?.title}</div>
@@ -555,7 +558,10 @@ export default function Rank() {
                 <div className="all_info">
                   <div>
                     {" "}
-                    质押的流动性 <span>${item?.pledgeTotalNum ?? "0"}</span>
+                    质押的流动性{" "}
+                    <span>
+                      {item?.pledgeTotalNum ?? "0"} {item?.title}
+                    </span>
                   </div>
                   <div>
                     {" "}
@@ -569,84 +575,6 @@ export default function Rank() {
                 {MyBox(item)}
               </div>
             ))}
-            {/* <div className="item">
-              <div className="coins_info">
-                <div className="coins_info_left">
-                  <img src={usdtIcon} alt="" />
-                  <img src={pijsIcon} alt="" />
-                </div>
-                <div className="coins_info_right">PiJS - USDT</div>
-              </div>
-
-              <div className="tip">
-                根据质押价值动态计算产出系数，产出根据您的LP质押价值权重占比分配。
-              </div>
-              <div className="all_info">
-                <div>
-                  {" "}
-                  质押的流动性 <span>$10000000</span>
-                </div>
-                <div>
-                  {" "}
-                  产出系数 <span>10%</span>
-                </div>
-                <div>
-                  {" "}
-                  APR <span>45.67%</span>
-                </div>
-              </div>
-              <div className="mybox">
-                <div className="mybox_bottom">
-                  <div className="no_my_box">
-                    <img src={no_my_img} alt="" />
-                    未找到持仓
-                  </div>
-                  <div className="btns">
-                    <div className="btn_left">添加LP</div>
-                    <div className="btn_mid">添加质押</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="item">
-              <div className="coins_info">
-                <div className="coins_info_left">
-                  <img src={usdtIcon} alt="" />
-                  <img src={pijsIcon} alt="" />
-                </div>
-                <div className="coins_info_right">PiJS - USDT</div>
-              </div>
-
-              <div className="tip">
-                根据质押价值动态计算产出系数，产出根据您的LP质押价值权重占比分配。
-              </div>
-              <div className="all_info">
-                <div>
-                  {" "}
-                  质押的流动性 <span>$10000000</span>
-                </div>
-                <div>
-                  {" "}
-                  产出系数 <span>10%</span>
-                </div>
-                <div>
-                  {" "}
-                  APR <span>45.67%</span>
-                </div>
-              </div>
-              <div className="mybox">
-                <div className="mybox_bottom">
-                  <div className="no_my_box">
-                    <img src={no_my_img} alt="" />
-                    未找到持仓
-                  </div>
-
-                  <div className="btns">
-                    <div className="btn_mid">连接钱包</div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
           </div>
 
           <ModalContent

@@ -278,7 +278,11 @@
   "移除": "Remove",
   "分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5% 的节点返佣奖励！": "Share your referral code and invite more people to participate. You will receive 15% of the mining revenue and 5% node commission rewards!",
   "推荐码已绑定": "Referral code has been bound",
-
+  
+  "质押PIJS中": "质押{{coin}}中",
+  "批准 100.0000 PIJS": "批准 {{num}} PIJS",
+  "批准 100.0000 LP": "批准 {{num}} LP",
+  "质押PIJS-USDT LP中": "质押{{coin}} LP中",
   "Not yet": "Not yet",
   "Remove UAC-USDT Liquidity": "Remove {{coin1}}-{{coin2}} Liquidity",
   "Enter Withdrawal Percentage": "Enter Withdrawal Percentage",

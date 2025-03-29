@@ -116,16 +116,16 @@ export class Contracts {
     );
   }
   //奖励领取
-  withdrawReward(addr: string, data: string, contractName: string) {
+  withdrawReward(addr: string, data: string, contractAddress: string) {
     // this.verification("Distribute");
     let obj = new this.web3.eth.Contract(
-      abiObj[contractName],
-      contractAddress[contractName]
+      abiObj.NodeDistribute,
+      contractAddress
     );
     console.log(data, "data");
     return obj?.methods
       .withdrawReward(data)
-      .send({ from: addr, gasPrice: "5000000000" });
+      .send({ from: addr, gasPrice: "2000000000" });
   }
   //查询绑定
   userBindInfo(addr: string) {
@@ -244,7 +244,7 @@ export class Contracts {
     contractAddress: any
   ) {
     // this.verification("Router");
-   
+
     // uint amountIn,
     // uint amountOutMin,
     // address[] calldata path,
@@ -409,5 +409,41 @@ export class Contracts {
     // var amounted = Web3.utils.toWei(amount + "", "ether");
     console.log(addr1, addr2, contractAddress, "Factory");
     return obj?.methods.getPair(addr1, addr2).call({ from: addr });
+  }
+  stakeLP(addr: string, LPamount: any, contractAddress: any) {
+    // this.verification("Router");
+    let obj = new this.web3.eth.Contract(abiObj?.LPPledge, contractAddress);
+    var LPamounted = Web3.utils.toWei(LPamount + "", "ether");
+
+    return obj?.methods
+      .stakeLP(LPamounted)
+      .send({ from: addr, gasPrice: "2000000000" });
+  }
+  stakePIJS(addr: string, LPamount: any, contractAddress: any) {
+    // this.verification("Router");
+    let obj = new this.web3.eth.Contract(abiObj?.LPPledge, contractAddress);
+    var LPamounted = Web3.utils.toWei(LPamount + "", "ether");
+
+    return obj?.methods
+      .stakePIJS(LPamounted)
+      .send({ from: addr, gasPrice: "2000000000" });
+  }
+  unstakeLP(addr: string, LPamount: any, contractAddress: any) {
+    // this.verification("Router");
+    let obj = new this.web3.eth.Contract(abiObj?.LPPledge, contractAddress);
+    var LPamounted = Web3.utils.toWei(LPamount + "", "ether");
+
+    return obj?.methods
+      .unstakeLP(LPamounted)
+      .send({ from: addr, gasPrice: "2000000000" });
+  }
+  unstakePIJS(addr: string, LPamount: any, contractAddress: any) {
+    // this.verification("Router");
+    let obj = new this.web3.eth.Contract(abiObj?.LPPledge, contractAddress);
+    var LPamounted = Web3.utils.toWei(LPamount + "", "ether");
+
+    return obj?.methods
+      .unstakePIJS(LPamounted)
+      .send({ from: addr, gasPrice: "2000000000" });
   }
 }

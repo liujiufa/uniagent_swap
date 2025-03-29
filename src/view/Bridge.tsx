@@ -64,14 +64,6 @@ import { createLoginSuccessAction } from "../store/actions";
 import { useNoGas } from "../hooks/useNoGas";
 import ModalContent from "../components/ModalContent";
 import ModalContentSuccess from "../components/ModalContentSuccess";
-import ReferListModal from "../components/ReferListModal";
-import MyNodeListModal from "../components/MyNodeListModal";
-import useTime from "../hooks/useTime";
-import LightUpNode from "../components/LightUpNode";
-import RecommendedOuputModal from "../components/RecommendedOuputModal";
-import RevokeNode from "../components/RevokeNode";
-import RecommendedMintedModal from "../components/RecommendedMintedModal";
-import { useGetReward } from "../hooks/useGetReward";
 import FromStakingMiningModal from "../components/FromStakingMiningModal";
 import ToStakingMiningModal from "../components/ToStakingMiningModal";
 import MainBg from "../assets/image/layout/MainBg.png";
@@ -707,10 +699,6 @@ export default function Rank() {
 
   const [IsBindState, setIsBindState] = useState(false);
   const token = useSelector<stateType, stateType>((state: any) => state?.token);
-  console.log(token, "1212");
-  const [NodeInfo, setNodeInfo] = useState<any>({});
-  const [UserInfo, setUserInfo] = useState<any>({});
-  const [NftBase, setNftBase] = useState<any>({});
   const [Tip, setTip] = useState("");
   const [ShowTipModal, setShowTipModal] = useState(false);
   const [ShowSuccessTipModal, setShowSuccessTipModal] = useState(false);
@@ -745,9 +733,6 @@ export default function Rank() {
   // const [TokenArr, setTokenArr] = useState([]);
 
   const { isNoGasFun } = useNoGas();
-  const [IsNode, setIsNode] = useState(false);
-  const { disconnect } = useDisconnect();
-  const { getReward } = useGetReward();
   const inputFun = (amount: any, num = 0) => {
     let amounted: any = Number(amount) + num;
     // debugger;
@@ -947,8 +932,6 @@ export default function Rank() {
 
   useEffect(() => {
     if (!token) {
-      setUserInfo({});
-      setNodeInfo({});
       setBridgeExchangeRecord([]);
     }
   }, []);

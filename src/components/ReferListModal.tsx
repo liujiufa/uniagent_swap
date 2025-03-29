@@ -530,6 +530,7 @@ const ModalContainer_Avtor = styled(FlexBox)`
     }
   }
 `;
+export const userTypeObj = { 0: "普通用户", 1: "超级节点", 2: "普通节点" };
 
 export default function ModalContent(props: any) {
   const { t } = useTranslation();
@@ -598,8 +599,8 @@ export default function ModalContent(props: any) {
         <ModalContainer_Avtor>
           <img src={avtorImg} alt="" />
           <div>
-            0x1234.....4567
-            <div>超级节点</div>
+            {AddrHandle(web3ModalAccount as string, 6, 4)}
+            <div>{userTypeObj[props?.userInfo?.nodeType]}</div>
           </div>
         </ModalContainer_Avtor>
 

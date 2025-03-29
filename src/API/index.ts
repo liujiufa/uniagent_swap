@@ -219,3 +219,52 @@ export function getKineData(token: any, time: any) {
     method: "get",
   });
 }
+export function getNodeUserInfo() {
+  return axois.request({
+    url: `/pledge/getNodeUserInfo`,
+    method: "get",
+  });
+}
+export function getNodeUserEarnDetail(data: any) {
+  return axois.request({
+    url: `/pledge/getNodeUserEarnDetail`,
+    method: "post",
+    data: {
+      ...data,
+    },
+  });
+}
+export function draw(data: any) {
+  return axois.request({
+    url: `/pledge/draw`,
+    method: "post",
+    data: {
+      ...data,
+    },
+  });
+}
+
+export function getPledgeBaasList(type: any, status: any) {
+  return axois.request({
+    url: `/pledge/getPledgeBaasList/${type}/${status}`,
+    method: "get",
+  });
+}
+export function getServerTime() {
+  return axois.request({
+    url: `/pledge/getServerTime`,
+    method: "get",
+  });
+}
+export function getPriceInfo() {
+  return axois.request({
+    url: `/pledge/getPriceInfo`,
+    method: "get",
+  });
+}
+export function getNodeRedeemInfo(type: any) {
+  return axois.request({
+    url: `/pledge/getNodeRedeemInfo/${type}`,
+    method: "get",
+  });
+}

@@ -76,9 +76,10 @@ export default function useUSDTGroup(
           setHash(+new Date());
           // showLoding(false);
           // setShowTipModal(false);
-          // failFun();
           await fun(handleUSDTRefresh);
         } catch (error: any) {
+          failFun();
+          // debugger;
           // showLoding(false);
           // setShowTipModal(false);
           if (error?.code === 4001) {
@@ -157,6 +158,32 @@ export default function useUSDTGroup(
       addMessage,
     ]
   );
+  // 单币质押提取操作无需判断余额
+  const withdrawHandleTransaction = useCallback(
+    async (
+      price: string,
+      transactionCallBack: (refreshCall: () => void) => void,
+      onDoingFun: () => void,
+      failFun: () => void
+    ) => {
+      if (Number(TOKENAllowance) >= Number(price)) {
+        await transactionCallBack(handleUSDTRefresh);
+      } else {
+        await handleApprove(price, transactionCallBack, onDoingFun, failFun);
+      }
+    },
+    [
+      web3ModalAccount,
+      handleApprove,
+      symbol,
+      handleUSDTRefresh,
+      tokenAddress,
+      contractAddress,
+      TOKENBalance,
+      TOKENAllowance,
+      addMessage,
+    ]
+  );
 
   useEffect(() => {
     new Contracts(walletProvider);
@@ -173,5 +200,6 @@ export default function useUSDTGroup(
     handleApprove,
     handleTransaction,
     handleUSDTRefresh,
+    withdrawHandleTransaction,
   };
 }
