@@ -1280,12 +1280,12 @@ const MainLayout: any = () => {
               <NodePartner
                 src={NodeMenuBg}
                 onClick={() => {
-                  return addMessage("Coming soon");
+                  // return addMessage("Coming soon");
                   window.open(GoTo);
                 }}
               >
                 <img src={hotIcon} alt="" />
-                {t("节点合伙人")}
+                {t("空投季")}
               </NodePartner>
               <div
                 className={
@@ -1523,12 +1523,12 @@ const MainLayout: any = () => {
               <NodePartner
                 src={NodeMenuBg}
                 onClick={() => {
-                  return addMessage("Coming soon");
+                  // return addMessage("Coming soon");
                   window.open(GoTo);
                 }}
               >
                 <img src={hotIcon} alt="" />
-                {t("节点合伙人")}
+                {t("空投季")}
               </NodePartner>
             </div>
 

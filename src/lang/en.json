@@ -283,6 +283,8 @@
   "批准 100.0000 PIJS": "批准 {{num}} PIJS",
   "批准 100.0000 LP": "批准 {{num}} LP",
   "质押PIJS-USDT LP中": "质押{{coin}} LP中",
+  "空投季": "Airdrop Season",
+
   "Not yet": "Not yet",
   "Remove UAC-USDT Liquidity": "Remove {{coin1}}-{{coin2}} Liquidity",
   "Enter Withdrawal Percentage": "Enter Withdrawal Percentage",
