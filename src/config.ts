@@ -24,7 +24,7 @@ export let BlockUrl: string = isMain
   ? "https://bscscan.com/tx/"
   : "https://testnet.bscscan.com/tx/";
 export const BitNumber = 8;
-export const GoTo = "https://node.pijswap.com/";
+export const GoTo = "https://airdrop.pijswap.com/";
 // Documentation
 export const Documentation = "https://pijswap.gitbook.io/pijswap";
 // InviteRebateKOLApplication
