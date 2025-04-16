@@ -1,0 +1,267 @@
+.invite_container {
+  width: 100%;
+  .my_invite_title {
+    font-family: MiSans;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #bcc6cf;
+    margin: 14px 0px 12px;
+  }
+  .my_invite_content {
+    margin-top: 12px;
+    border-radius: 12px;
+    background: #1f2021;
+    box-sizing: border-box;
+    border: 1px solid #232323;
+    backdrop-filter: blur(143px);
+    padding: 24px;
+    font-family: MiSans;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: normal;
+    text-align: justify; /* 浏览器可能不支持 */
+    letter-spacing: normal;
+    color: #bcc6cf;
+    .invite_box {
+      margin-top: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .item {
+        font-family: MiSans;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: #bcc6cf;
+        > div {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: 8px;
+          border-radius: 6px;
+          background: #292a2b;
+          box-sizing: border-box;
+          border: 1px solid #232323;
+          backdrop-filter: blur(143px);
+          padding: 12px 24px;
+          img {
+            /* 自动布局子元素 */
+            width: 24px;
+            height: 24px;
+            z-index: 1;
+            margin-left: 64px;
+          }
+        }
+      }
+      .invite_box_left {
+        > div {
+          font-family: MiSans;
+          font-size: 18px;
+          font-weight: 500;
+          line-height: normal;
+          text-align: center;
+          letter-spacing: 0.75em;
+          color: #ffffff;
+        }
+      }
+      .invite_box_right {
+        > div {
+          word-break: break-all;
+          font-family: MiSans;
+          font-size: 18px;
+          font-weight: 500;
+          line-height: normal;
+          text-align: left;
+          letter-spacing: normal;
+          color: #ffffff;
+        }
+      }
+    }
+  }
+  .my_invite_list {
+    margin-top: 18px;
+    font-family: MiSans;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #bcc6cf;
+    .table {
+      overflow: hidden;
+      margin-top: 8px;
+      border-radius: 12px;
+      box-sizing: border-box;
+      border: 1px solid #0a0a0a;
+      .items {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .item {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 15px 0px;
+        }
+      }
+      .table_title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .item {
+          padding: 15px 0px;
+          box-sizing: border-box;
+          border-width: 0px 1px 1px 0px;
+          border-style: solid;
+          border-color: #0a0a0a;
+          background: #292a2b;
+        }
+      }
+      .table_content {
+        .item {
+          background: #1f2021;
+          box-sizing: border-box;
+          border-width: 0px 1px 1px 0px;
+          border-style: solid;
+          border-color: #0a0a0a;
+        }
+      }
+    }
+  }
+  @media (max-width: 1024px) {
+    .my_invite_content .invite_box {
+      display: block;
+
+      .item {
+        margin-top: 14px;
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    .my_invite_title {
+      font-family: MiSans;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #bcc6cf;
+    }
+    .my_invite_content {
+      border-radius: 8px;
+      background: #1f2021;
+      box-sizing: border-box;
+      border: 1px solid #232323;
+      backdrop-filter: blur(143px);
+      padding: 14px;
+      .invite_box {
+        margin-top: 14px;
+        .item {
+          font-family: MiSans;
+          font-size: 12px;
+          font-weight: normal;
+          line-height: normal;
+          letter-spacing: normal;
+          color: #bcc6cf;
+          > div {
+            font-family: MiSans;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: normal;
+            text-align: center;
+            letter-spacing: 0.75em;
+            color: #ffffff;
+            padding: 6px 12px;
+            img {
+              margin-left: 35px;
+            }
+          }
+        }
+        .invite_box_right {
+          > div {
+            font-family: MiSans;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: normal;
+            text-align: left;
+            letter-spacing: normal;
+            color: #ffffff;
+          }
+        }
+      }
+    }
+    .my_invite_list {
+      font-family: MiSans;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #bcc6cf;
+      .mobile_table {
+        margin-top: 8px;
+        .mobile_table_item {
+          margin-bottom: 10px;
+          border-radius: 8px;
+          background: #292a2b;
+          box-sizing: border-box;
+          // border: 1px solid #232323;
+          backdrop-filter: blur(143px);
+          .mobile_table_item_top {
+            display: flex;
+            align-items: center;
+
+            padding: 12px 14px;
+            font-family: MiSans;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 16px;
+            letter-spacing: normal;
+            color: #ffffff;
+            div {
+              margin-left: 10px;
+              font-family: MiSans;
+              font-size: 12px;
+              font-weight: 500;
+              line-height: 16px;
+              letter-spacing: normal;
+              color: #ffffff;
+            }
+          }
+          .mobile_table_item_bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 0px 0px 8px 8px;
+            background: #0a0a0a;
+            box-sizing: border-box;
+            // border: 1px solid #232323;
+            // backdrop-filter: blur(143px);
+            .item {
+              flex: 1;
+              div {
+                font-family: MiSans;
+                font-size: 10px;
+                font-weight: 500;
+                line-height: 16px;
+                letter-spacing: normal;
+                color: #bcc6cf;
+                margin-bottom: 4px;
+                text-align: left;
+              }
+              font-family: MiSans;
+              font-size: 12px;
+              font-weight: 500;
+              line-height: 16px;
+              text-align: left;
+              letter-spacing: normal;
+              color: #ffffff;
+            }
+          }
+        }
+      }
+    }
+  }
+}

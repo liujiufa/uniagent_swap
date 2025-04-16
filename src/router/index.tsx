@@ -13,6 +13,7 @@ const PledgeRedeem = React.lazy(() => import("../view/PledgeRedeem"));
 const SigleCoinPledgeRedeem = React.lazy(
   () => import("../view/SigleCoinPledgeRedeem")
 );
+const PersonCenter = React.lazy(() => import("../view/PersonCenter"));
 export default function Router() {
   return (
     <Suspense fallback={<DataPageLoding></DataPageLoding>}>
@@ -37,6 +38,7 @@ export default function Router() {
               element={<SigleCoinPledgeRedeem />}
             ></Route>
             <Route path="Pool" element={<Pool />}></Route>
+            <Route path="PersonCenter" element={<PersonCenter />}></Route>
           </Route>
           <Route path="" element={<SwapBox />}></Route>
         </Route>

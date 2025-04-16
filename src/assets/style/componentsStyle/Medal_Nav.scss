@@ -1,0 +1,69 @@
+.medal_container {
+  width: 100%;
+  .items {
+    // margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-row-gap: 16px;
+    grid-column-gap: 16px;
+    .item {
+      border-radius: 12px;
+      box-sizing: border-box;
+      border: 1px solid #232323;
+      backdrop-filter: blur(143px);
+      // padding: 16px 20.41px;
+      img {
+        width: 100%;
+      }
+      div {
+        margin-top: 16px;
+        background: #1f2021;
+        border-radius: 6px;
+        background: #393a3b;
+        padding: 8px;
+        font-family: MiSans;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 16px;
+        text-align: center;
+        letter-spacing: normal;
+        color: #c5ccd4;
+      }
+    }
+    .no_margin_left {
+      margin-right: 0px;
+    }
+  }
+  @media (max-width: 1024px) {
+    .items {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-row-gap: 16px;
+      grid-column-gap: 16px;
+    }
+  }
+  @media (max-width: 768px) {
+    .items {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-row-gap: 15px;
+      grid-column-gap: 15px;
+      .item {
+        img {
+          border-radius: 8px;
+        }
+        div {
+          font-family: MiSans;
+          font-size: 10px;
+          font-weight: normal;
+          line-height: 16px;
+          text-align: center;
+          letter-spacing: normal;
+          color: #c5ccd4;
+          padding: 6px;
+          margin-top: 6px;
+        }
+      }
+    }
+  }
+}

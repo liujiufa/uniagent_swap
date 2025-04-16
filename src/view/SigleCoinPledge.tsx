@@ -580,8 +580,8 @@ export default function Rank() {
                 <div>
                   我的持仓
                   <div className="value">
-                    {(CurrentLP?.pledgeUser?.pledgeNum ?? 0) +
-                      (InputAmount ?? 0)}
+                    {Number(CurrentLP?.pledgeUser?.pledgeNum ?? 0) +
+                      Number(InputAmount ?? 0)}
                   </div>
                 </div>
               </MyHold>

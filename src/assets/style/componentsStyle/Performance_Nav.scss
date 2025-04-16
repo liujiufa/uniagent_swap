@@ -1,0 +1,260 @@
+.performance_container {
+  width: 100%;
+  .filter_box {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .filter_box_left {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 6px;
+      background: #1f2021;
+      div {
+        font-family: MiSans;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: normal;
+        text-align: center;
+        letter-spacing: normal;
+        color: #c5ccd4;
+        padding: 8px 24px;
+      }
+      .active {
+        color: #0a0a0a;
+        border-radius: 6px;
+        background: #f4c134;
+      }
+    }
+    .filter_box_right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-family: MiSans;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: normal;
+      text-align: center;
+      letter-spacing: normal;
+      color: #c5ccd4;
+
+      .LangDropDown {
+        .ant-dropdown-menu {
+          padding: 8px;
+          border-radius: 6px;
+          opacity: 1;
+          background: #191e22;
+          .ant-dropdown-menu-item {
+            padding: 0;
+            .LangItem {
+              cursor: pointer;
+              margin-bottom: 20px;
+            }
+            /* 语言切换下拉 */
+            .ReallyLangItem {
+              margin-bottom: 10px;
+            }
+            &:last-child {
+              .LangItem {
+                margin-bottom: 0px;
+              }
+            }
+            .LangItem {
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-family: MiSans;
+              font-size: 14px;
+              font-weight: 500;
+              line-height: normal;
+              text-align: center;
+              letter-spacing: normal;
+              color: #c5ccd4;
+            }
+          }
+        }
+      }
+      .CoinBox {
+        margin-left: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 6px;
+        background: #393a3b;
+        padding: 8px 16px 8px 24px;
+        font-family: MiSans;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: normal;
+        text-align: center;
+        letter-spacing: normal;
+        color: #c5ccd4;
+        img {
+          /* 自动布局子元素 */
+          width: 14px;
+          height: 14px;
+          z-index: 1;
+          margin-left: 16px;
+        }
+      }
+    }
+  }
+  .items {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-row-gap: 16px;
+    grid-column-gap: 16px;
+    .item {
+      border-radius: 12px;
+      background: #1f2021;
+      box-sizing: border-box;
+      border: 1px solid #232323;
+      backdrop-filter: blur(143px);
+      padding: 16px 20.41px;
+      .item_title {
+        display: flex;
+        align-items: center;
+        font-family: MiSans;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: normal;
+        letter-spacing: normal;
+        color: #c5ccd4;
+        .coin_box {
+          margin-right: 8px;
+
+          img {
+            &:nth-child(1) {
+              width: 23.62px;
+              height: 23.59px;
+            }
+            &:nth-child(2) {
+              width: 29.84px;
+              height: 29.79px;
+              margin-top: 7.21px;
+              margin-left: -7.21px;
+            }
+          }
+        }
+        .siglecoin_box {
+          margin-right: 8px;
+          img {
+            width: 36px;
+            height: 36px;
+          }
+        }
+      }
+      .devider {
+        margin: 20px 0px;
+        height: 1px;
+        width: 100%;
+        background: #2e2f30;
+      }
+      .item_content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .data_detail {
+          flex: 1;
+          .tag {
+            width: fit-content;
+            font-family: MiSans;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            color: #c5ccd4;
+            padding: 4px 12px;
+            border-radius: 13.5px;
+            background: #292a2b;
+          }
+          .amount {
+            font-family: MiSans;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: normal;
+            text-align: left;
+            letter-spacing: normal;
+            color: #ffffff;
+            margin-top: 12px;
+          }
+          .value {
+            font-family: MiSans;
+            font-size: 12px;
+            font-weight: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            color: #c5ccd4;
+            margin-top: 4px;
+          }
+        }
+      }
+    }
+    .no_margin_left {
+      margin-right: 0px;
+    }
+  }
+  @media (max-width: 1024px) {
+    .items {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-row-gap: 16px;
+      grid-column-gap: 16px;
+      .item {
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    .items {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      grid-row-gap: 16px;
+      grid-column-gap: 16px;
+      .item {
+      }
+    }
+    .filter_box .filter_box_left {
+      div {
+        font-family: MiSans;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: normal;
+        text-align: center;
+        letter-spacing: normal;
+        color: #c5ccd4;
+        padding: 6px 12px;
+      }
+      .active {
+      }
+    }
+    .filter_box .filter_box_right {
+      font-family: MiSans;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: normal;
+      text-align: center;
+      letter-spacing: normal;
+      color: #c5ccd4;
+      .CoinBox {
+        font-family: MiSans;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: normal;
+        text-align: center;
+        letter-spacing: normal;
+        color: #c5ccd4;
+        padding: 6px 10px;
+        img {
+          /* 自动布局子元素 */
+          width: 10px;
+          height: 10px;
+          z-index: 1;
+          margin-left: 8px;
+        }
+      }
+    }
+  }
+}

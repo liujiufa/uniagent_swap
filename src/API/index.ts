@@ -219,12 +219,6 @@ export function getKineData(token: any, time: any) {
     method: "get",
   });
 }
-export function getNodeUserInfo() {
-  return axois.request({
-    url: `/pledge/getNodeUserInfo`,
-    method: "get",
-  });
-}
 export function getNodeUserEarnDetail(data: any) {
   return axois.request({
     url: `/pledge/getNodeUserEarnDetail`,
@@ -265,6 +259,36 @@ export function getPriceInfo() {
 export function getNodeRedeemInfo(type: any) {
   return axois.request({
     url: `/pledge/getNodeRedeemInfo/${type}`,
+    method: "get",
+  });
+}
+export function getNodeUserInfo() {
+  return axois.request({
+    url: `/pledge/getNodeUserInfo`,
+    method: "get",
+  });
+}
+export function getMedalInfo() {
+  return axois.request({
+    url: `/user/getMedalInfo`,
+    method: "get",
+  });
+}
+export function getPiotnsAccount() {
+  return axois.request({
+    url: `/user/getPiotnsAccount`,
+    method: "get",
+  });
+}
+export function getPiotnsAccountRecord() {
+  return axois.request({
+    url: `/user/getPiotnsAccountRecord`,
+    method: "get",
+  });
+}
+export function getNodeUserInfoList() {
+  return axois.request({
+    url: `/pledge/getNodeUserInfoList`,
     method: "get",
   });
 }

@@ -352,7 +352,7 @@ const Select_All_Box = styled(FlexCCBox)`
   .active {
     border-radius: 2px;
     opacity: 1;
-    background: #F4C134;
+    background: #f4c134;
   }
 `;
 const Select_All_Box1 = styled(FlexCCBox)`
@@ -368,7 +368,7 @@ const Select_All_Box1 = styled(FlexCCBox)`
   .active {
     border-radius: 2px;
     opacity: 1;
-    background: #F4C134;
+    background: #f4c134;
   }
 `;
 const Selected_Box = styled(FlexCCBox)`
@@ -411,7 +411,7 @@ const Modal_Footer_Right = styled(FlexSBCBox)`
 const Staking_Btn = styled(FlexCCBox)`
   border-radius: 8px;
   opacity: 1;
-  background: #F4C134;
+  background: #f4c134;
   font-family: "Space Grotesk";
   font-size: 16px;
   font-weight: bold;
@@ -429,10 +429,7 @@ const Staking_Btn = styled(FlexCCBox)`
 let NodeInter: any = null;
 export default function ModalContent(props: any) {
   const { t } = useTranslation();
-  const {
-    address: web3ModalAccount,
-    isConnected,
-  } = useAppKitAccount();
+  const { address: web3ModalAccount, isConnected } = useAppKitAccount();
   const { width } = useViewport();
   const [PageNum, setPageNum] = useState(1);
   const [RecordList3, setRecordList3] = useState<any>([]);

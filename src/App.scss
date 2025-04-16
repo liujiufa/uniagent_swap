@@ -1,12 +1,18 @@
 @import "assets/style/_theme_colors_scheme.scss";
 @import "assets/style/_variables.scss";
 
+// html {
+//   font-size: 1920px * 12px / 1920px;
+//   @media (max-width: 1176px) {
+//     font-size: 100vw * 12px / 1176px;
+//   }
+// }
+
 .Mask {
   position: absolute;
   top: 0px;
   left: 0px;
   width: 100vw;
-  // max-width: 450px;
   height: 100%;
   background: rgba(0, 0, 0, 0.8) !important;
   top: 0;

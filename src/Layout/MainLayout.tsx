@@ -69,6 +69,7 @@ import newLogo from "../assets/image/layout/logo.png";
 import c_img1 from "../assets/image/layout/c_img1.png";
 import c_img2 from "../assets/image/layout/c_img2.png";
 import c_img3 from "../assets/image/layout/c_img3.png";
+import wallet_img0_1 from "../assets/image/layout/wallet_img0_1.png";
 import wallet_img0 from "../assets/image/layout/wallet_img0.png";
 import wallet_img1 from "../assets/image/layout/wallet_img1.png";
 import wallet_img2 from "../assets/image/layout/wallet_img2.png";
@@ -792,21 +793,26 @@ const MainLayout: any = () => {
   );
 
   let connectedObj = [
+    // {
+    //   value: "节点收益",
+    //   key: "wallet_item0",
+    //   img: wallet_img0,
+    // },
     {
-      value: "节点收益",
+      value: "个人中心",
       key: "wallet_item0",
-      img: wallet_img0,
+      img: wallet_img0_1,
     },
     {
       value: "绑定推荐码",
       key: "wallet_item1",
       img: wallet_img1,
     },
-    {
-      value: "我的邀请码",
-      key: "wallet_item2",
-      img: wallet_img2,
-    },
+    // {
+    //   value: "我的邀请码",
+    //   key: "wallet_item2",
+    //   img: wallet_img2,
+    // },
     {
       value: "断开连接",
       key: "wallet_item3",
@@ -902,7 +908,8 @@ const MainLayout: any = () => {
               className="LangItem"
               onClick={() => {
                 if (item?.key === "wallet_item0") {
-                  setRewardRecordModalState(true);
+                  // setRewardRecordModalState(true);
+                  Navigate("/View/PersonCenter");
                 } else if (item?.key === "wallet_item1") {
                   if (!UserInfo?.isBind) {
                     setBindModal(true);

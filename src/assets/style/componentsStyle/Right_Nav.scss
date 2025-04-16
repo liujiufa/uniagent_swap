@@ -1,0 +1,462 @@
+.right_container {
+  width: 100%;
+  .right_values {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #2d3033 5%, #1d1f21 100%);
+    padding: 30px 24px;
+    .right_value {
+      flex: 1;
+      font-family: MiSans;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #c5ccd4;
+      font-family: MiSans;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #c5ccd4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      div {
+        margin-top: 12px;
+        font-family: MiSans;
+        font-size: 24px;
+        font-weight: 500;
+        line-height: normal;
+        text-align: left;
+        letter-spacing: normal;
+        color: #ffffff;
+      }
+    }
+  }
+  .my_invite_list {
+    margin-top: 24px;
+
+    .manage_box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .tabs {
+        width: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 6px;
+        background: #1f2021;
+        div {
+          font-family: MiSans;
+          font-size: 14px;
+          font-weight: 500;
+          line-height: normal;
+          text-align: center;
+          letter-spacing: normal;
+          color: #c5ccd4;
+          padding: 8px 24px;
+        }
+        .active {
+          color: #0a0a0a;
+          border-radius: 6px;
+          background: #f4c134;
+        }
+      }
+      .filter_box_right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        font-family: MiSans;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: normal;
+        text-align: center;
+        letter-spacing: normal;
+        color: #c5ccd4;
+
+        .LangDropDown {
+          .ant-dropdown-menu {
+            padding: 8px;
+            border-radius: 6px;
+            opacity: 1;
+            background: #191e22;
+            .ant-dropdown-menu-item {
+              padding: 0;
+              .LangItem {
+                cursor: pointer;
+                margin-bottom: 20px;
+              }
+              /* 语言切换下拉 */
+              .ReallyLangItem {
+                margin-bottom: 10px;
+              }
+              &:last-child {
+                .LangItem {
+                  margin-bottom: 0px;
+                }
+              }
+              .LangItem {
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: MiSans;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: normal;
+                text-align: center;
+                letter-spacing: normal;
+                color: #c5ccd4;
+              }
+            }
+          }
+        }
+        .CoinBox {
+          margin-left: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          border-radius: 6px;
+          background: #393a3b;
+          padding: 8px 16px 8px 24px;
+          font-family: MiSans;
+          font-size: 14px;
+          font-weight: 500;
+          line-height: normal;
+          text-align: center;
+          letter-spacing: normal;
+          color: #c5ccd4;
+          img {
+            /* 自动布局子元素 */
+            width: 14px;
+            height: 14px;
+            z-index: 1;
+            margin-left: 16px;
+          }
+        }
+      }
+    }
+
+    .table {
+      overflow: hidden;
+      margin-top: 14px;
+      border-radius: 12px;
+      box-sizing: border-box;
+      border: 1px solid #0a0a0a;
+      .items {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .item {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 15px 0px;
+        }
+      }
+      .table_title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .item {
+          padding: 15px 0px;
+          box-sizing: border-box;
+          border-width: 0px 1px 1px 0px;
+          border-style: solid;
+          border-color: #0a0a0a;
+          background: #292a2b;
+          font-family: MiSans;
+          font-size: 12px;
+          font-weight: 500;
+          line-height: 16px;
+          text-align: center;
+          letter-spacing: normal;
+          color: #bcc6cf;
+        }
+      }
+      .table_content {
+        .item {
+          background: #1f2021;
+          box-sizing: border-box;
+          border-width: 0px 1px 1px 0px;
+          border-style: solid;
+          border-color: #0a0a0a;
+          font-family: MiSans;
+          font-size: 12px;
+          font-weight: normal;
+          line-height: 16px;
+          text-align: center;
+          letter-spacing: normal;
+          color: #bcc6cf;
+        }
+        .manage {
+          font-family: MiSans;
+          font-size: 12px;
+          font-weight: normal;
+          line-height: 16px;
+          text-align: center;
+          letter-spacing: normal;
+          text-decoration: underline;
+          color: #f4c134;
+        }
+        .managed {
+          font-family: MiSans;
+          font-size: 12px;
+          font-weight: normal;
+          line-height: 16px;
+          text-align: center;
+          letter-spacing: normal;
+          text-decoration: underline;
+          color: #616568;
+        }
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    .right_values {
+      padding: 17px 14px;
+      .right_value {
+        font-family: MiSans;
+        font-size: 12px;
+        font-weight: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: #c5ccd4;
+        &:nth-child(1) {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        &:nth-child(2) {
+          border-right: 1px solid #2e2f30;
+          border-left: 1px solid #2e2f30;
+        }
+        &:nth-child(3) {
+          flex-direction: column;
+          align-items: flex-end;
+        }
+        div {
+          margin-top: 4px;
+          font-family: MiSans;
+          font-size: 16px;
+          font-weight: 500;
+          line-height: normal;
+          text-align: right;
+          letter-spacing: normal;
+          color: #ffffff;
+        }
+      }
+    }
+
+    .my_invite_list {
+      margin-top: 18px;
+      .manage_box {
+        .tabs {
+          div {
+            font-family: MiSans;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: normal;
+            text-align: center;
+            letter-spacing: normal;
+            color: #c5ccd4;
+            padding: 6px 12px;
+          }
+        }
+        .filter_box_right {
+          font-family: MiSans;
+          font-size: 12px;
+          font-weight: 500;
+          line-height: normal;
+          text-align: center;
+          letter-spacing: normal;
+          color: #c5ccd4;
+          .CoinBox {
+            padding: 6px 12px;
+            font-family: MiSans;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: normal;
+            text-align: center;
+            letter-spacing: normal;
+            color: #c5ccd4;
+            img {
+              /* 自动布局子元素 */
+              width: 10px;
+              height: 10px;
+              z-index: 1;
+              margin-left: 8px;
+            }
+          }
+        }
+      }
+      .mobile_table {
+        margin-top: 16px;
+        .mobile_table_item {
+          margin-bottom: 10px;
+          border-radius: 8px;
+          background: #292a2b;
+          box-sizing: border-box;
+          // border: 1px solid #232323;
+          backdrop-filter: blur(143px);
+          .mobile_table_item_top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            font-family: MiSans;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 16px;
+            letter-spacing: normal;
+            color: #ffffff;
+            div {
+              margin-left: 10px;
+              font-family: MiSans;
+              font-size: 12px;
+              font-weight: 500;
+              line-height: 16px;
+              letter-spacing: normal;
+              color: #ffffff;
+            }
+            .manage {
+              font-family: MiSans;
+              font-size: 12px;
+              font-weight: 500;
+              line-height: 16px;
+              letter-spacing: normal;
+              text-decoration: underline;
+              color: #f4c134;
+            }
+            .managed {
+              font-family: MiSans;
+              font-size: 12px;
+              font-weight: 500;
+              line-height: 16px;
+              letter-spacing: normal;
+              text-decoration: underline;
+              color: #616568;
+            }
+          }
+          .mobile_table_item_bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-radius: 0px 0px 8px 8px;
+            background: #0a0a0a;
+            box-sizing: border-box;
+            // border: 1px solid #232323;
+            // backdrop-filter: blur(143px);
+            .item {
+              flex: 1;
+              div {
+                font-family: MiSans;
+                font-size: 10px;
+                font-weight: 500;
+                line-height: 16px;
+                letter-spacing: normal;
+                color: #bcc6cf;
+                margin-bottom: 4px;
+                text-align: center;
+              }
+              font-family: MiSans;
+              font-size: 12px;
+              font-weight: 500;
+              line-height: 16px;
+              text-align: center;
+              letter-spacing: normal;
+              color: #ffffff;
+              &:nth-child(1) {
+                div {
+                  font-family: MiSans;
+                  font-size: 10px;
+                  font-weight: 500;
+                  line-height: 16px;
+                  letter-spacing: normal;
+                  color: #bcc6cf;
+                  margin-bottom: 4px;
+                  text-align: left;
+                }
+                font-family: MiSans;
+                font-size: 12px;
+                font-weight: 500;
+                line-height: 16px;
+                text-align: left;
+                letter-spacing: normal;
+                color: #ffffff;
+              }
+              &:nth-child(3) {
+                div {
+                  text-align: right;
+                }
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+      .mobile_record {
+        margin-top: 16px;
+        .mobile_record_item {
+          border-radius: 8px;
+          background: #1f2021;
+          box-sizing: border-box;
+          padding: 14px;
+          font-family: MiSans;
+          font-size: 12px;
+          font-weight: 500;
+          line-height: 16px;
+          letter-spacing: normal;
+          color: #c5ccd4;
+          margin-bottom: 10px;
+          .mobile_record_item_box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+            .left {
+              display: flex;
+              align-items: center;
+              img {
+                /* 自动布局子元素 */
+                width: 16px;
+                height: 16px;
+                z-index: 0;
+                margin-right: 8px;
+              }
+              font-family: MiSans;
+              font-size: 12px;
+              font-weight: normal;
+              line-height: 16px;
+              letter-spacing: normal;
+              color: #c5ccd4;
+            }
+            .green {
+              font-family: MiSans;
+              font-size: 14px;
+              font-weight: 500;
+              line-height: normal;
+              text-align: right;
+              letter-spacing: normal;
+              color: #22b573;
+            }
+            .yellow {
+              font-family: MiSans;
+              font-size: 14px;
+              font-weight: 500;
+              line-height: normal;
+              text-align: right;
+              letter-spacing: normal;
+              color: #f4c134;
+            }
+          }
+        }
+      }
+    }
+  }
+}
