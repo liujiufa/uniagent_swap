@@ -114,7 +114,7 @@ const InviteNav = () => {
             }}
             className={FilterActive === 1 ? "active" : ""}
           >
-            流动性挖矿
+            {t("流动性挖矿")}
           </div>
           <div
             onClick={() => {
@@ -122,11 +122,11 @@ const InviteNav = () => {
             }}
             className={FilterActive === 2 ? "active" : ""}
           >
-            糖浆池
+            {t("糖浆池")}
           </div>
         </div>
         <div className="filter_box_right">
-          币种
+          {t("币种")}
           <Dropdown
             overlay={FilterActive === 1 ? coinsMenu : singleCoinsMenu}
             placement="bottom"
@@ -176,31 +176,42 @@ const InviteNav = () => {
                 <div className="devider"></div>
                 <div className="item_content">
                   <div className="data_detail">
-                    <div className="tag">质押</div>
+                    <div className="tag">{t("质押")}</div>
                     <div className="amount">
                       {item?.pledgeUser?.pledgeNum ?? 0}{" "}
-                      {FilterActive === 1 ? "LP" : CurrentActiveSigleCoin}
+                      <span>
+                        {" "}
+                        {FilterActive === 1 ? "LP" : CurrentActiveSigleCoin}
+                      </span>
                     </div>
                     <div className="value">
                       $
                       {NumSplic1(
                         Number(item?.pledgeUser?.pledgeNum) *
-                          Number(PriceInfo?.lpPrice),
+                          Number(
+                            FilterActive === 1
+                              ? PriceInfo?.lpPrice
+                              : PriceInfo?.pijsPrice
+                          ),
                         4
                       )}
                     </div>
                   </div>
                   <div className="data_detail">
-                    <div className="tag">收益</div>
+                    <div className="tag">{t("收益")}</div>
                     <div className="amount">
                       {item?.pledgeUser?.earnNum ?? 0}{" "}
-                      {item?.pledgeUser?.coinName ?? "-"}
+                      <span> {item?.pledgeUser?.coinName ?? "-"}</span>
                     </div>
                     <div className="value">
                       $
                       {NumSplic1(
                         Number(item?.pledgeUser?.earnNum) *
-                          Number(PriceInfo?.pijsPrice),
+                          Number(
+                            FilterActive === 1
+                              ? PriceInfo?.lpPrice
+                              : PriceInfo?.pijsPrice
+                          ),
                         4
                       )}
                     </div>

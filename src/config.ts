@@ -15,9 +15,8 @@ export const curentBSCChainId = isMain ? 56 : 97;
 export const curentUNIChainId = isMain ? 656898 : 656231;
 export const LOCAL_KEY = "PIJS_LANG";
 export let baseUrl: string = isMain
-  ? `https://pijswap.xyz/pjisswap-api`
-  : // "http://192.168.1.37:8880/";
-    "http://82.156.97.39:8880/";
+  ? window.location.origin + "/api/"
+  : "http://82.156.97.39:8880/";
 
 export let ContractUrl: string = isMain
   ? "https://bscscan.com/address/"
@@ -162,6 +161,7 @@ interface contractAddressType {
 export const abiObj: abiObjType = {
   USDTBSC: Token,
   USDTUNI: Token,
+  LPToken: Token,
   NFTManage: NFTManage,
   Stake: Nstake,
   NFT: NFT,
@@ -189,21 +189,24 @@ export const Main: contractAddressType = {
 };
 
 const Test = {
-  USDTBSC: "0x2b11640f31b84dc727841FE6B5a905D366A00e78",
+  USDTBSC: "0xEF8e449696AEd4Dd98193485E19f8b8614b40643",
   BridgeBSC: "0x31221fBcCa8d331E867dd44B9a01086aF35ad851",
   USDTUNI: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
   BridgeUNI: "0x69B92335D53C6fe719169BD4BDeffd6ED2833a4a",
-  PIJSBSC: "0xEa96D3e27fBe6baf623A6f66dC1C7a6B6811b7D3",
+  PIJSBSC: "0x13E34f9CD20608f3a6c708f6226B86d776311255",
   PiBSC: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
   UACFactory: "0x82d3B7112eFD2127cD1eE771286D1cA1Ee3EfC2a",
   WUAC: "0xFB572Ae3f87E322f65D2869e08a8b283501614aF",
   UACRouter: "0xf9D1e5Ce5b2851625A9E73859b15A14bbad39dC8",
+
   WBNB: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
-  PIJSFactory: "0x748C54e7bd5592F755DDFFE6Ad59b6Ef519E0635",
-  PIJSRouter: "0x83728DF7204BDbDE3cd23122a224F36C0Dbd6892",
-  NodeDistribute: "0x7CE667BEb42c5E706eb70531170d5380f9f9420a",
-  StakingRewardDistribute: "0x1b918363140E92ed10e485d7666ff23bf9493d8B",
+  PIJSFactory: "0x85e3bF8fD6234b9AA278a7C3738A254861bDAe02",
+  PIJSRouter: "0x3fc1d9B004387d8464F1e89a471D226194d88F90",
+
+  NodeDistribute: "0x3FA2dc7af032b0a31A1426a4A9e811105dF8F0C4",
+  StakingRewardDistribute: "0xa12a0EB1BaB4f9fE924749411e3133ea8479Cc94",
   // LP&&单币
-  LPPledge: "0x16b5a6446999414Fae04D86BedA1D9756eADEE80",
+  LPPledge: "0x598175B1C823bbADa7256763267e3ec8080f0178",
+  LPToken: "0xB030F713f504645864c13A9E98942a40D93d7181",
 };
 export const contractAddress: contractAddressType = isMain ? Main : Test;

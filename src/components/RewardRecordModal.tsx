@@ -96,7 +96,7 @@ export const ModalContainer_Title = styled(FlexBox)`
   width: 100%;
   align-items: center;
   justify-content: left;
-  font-family: MiSans;
+  font-family: "MiSans";
   font-size: 24px;
   font-weight: normal;
   line-height: normal;
@@ -110,7 +110,7 @@ export const ModalContainer_Title = styled(FlexBox)`
 const ModalContainer_Content = styled.div`
   width: 100%;
   margin-top: 18.5px;
-  font-family: MiSans;
+  font-family: "MiSans";
   font-size: 18px;
   font-weight: normal;
   line-height: normal;
@@ -118,7 +118,7 @@ const ModalContainer_Content = styled.div`
   color: #ffffff;
   @media (max-width: 1200px) {
     margin-top: 20px;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 14px;
     font-weight: 500;
     line-height: normal;
@@ -175,7 +175,7 @@ const Items = styled(FlexBox)`
     flex: 1;
     padding: 15px;
     border-right: 1px solid #c2c2c2;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 12px;
     font-weight: normal;
     line-height: 16px;
@@ -341,7 +341,7 @@ const MyInvitedInfo_Earns = styled(FlexSBCBox)`
   }
 `;
 const Earn = styled.div`
-  font-family: MiSans;
+  font-family: "MiSans";
   font-size: 14px;
   font-weight: normal;
   line-height: normal;
@@ -354,7 +354,7 @@ const Code = styled.div`
     align-items: center;
     justify-content: flex-end;
     > div {
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 18px;
       font-weight: normal;
       line-height: normal;
@@ -371,7 +371,7 @@ const Code = styled.div`
   @media (max-width: 1200px) {
     .code {
       > div {
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 14px;
         font-weight: normal;
         line-height: normal;
@@ -395,7 +395,7 @@ const InvitedTip = styled.div`
   color: #bcc6cf;
   @media (max-width: 768px) {
     margin-top: 16px;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 12px;
     font-weight: normal;
     line-height: normal;
@@ -414,7 +414,7 @@ const ModalContainer_Avtor = styled(FlexBox)`
     margin-right: 16px;
   }
   > div {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 18px;
     font-weight: normal;
     line-height: normal;
@@ -422,7 +422,7 @@ const ModalContainer_Avtor = styled(FlexBox)`
     color: #ffffff;
     > div {
       margin-top: 4px;
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 14px;
       font-weight: normal;
       line-height: normal;
@@ -438,14 +438,14 @@ const ModalContainer_Avtor = styled(FlexBox)`
       margin-right: 12px;
     }
     > div {
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 16px;
       font-weight: normal;
       line-height: normal;
       letter-spacing: 0em;
       color: #ffffff;
       > div {
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 14px;
         font-weight: normal;
         line-height: normal;
@@ -484,7 +484,7 @@ const RewardData1 = styled(RewardData)`
 const RewardData_Left = styled.div`
   opacity: 1;
   .title {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 14px;
     font-weight: normal;
     line-height: normal;
@@ -493,7 +493,7 @@ const RewardData_Left = styled.div`
     color: #c5ccd4;
     margin-bottom: 12px;
   }
-  font-family: MiSans;
+  font-family: "MiSans";
   font-size: 24px;
   font-weight: 500;
   line-height: normal;
@@ -506,7 +506,7 @@ const RewardData_Left = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 20px;
     font-weight: 500;
     line-height: normal;
@@ -521,7 +521,7 @@ const RewardData_Left = styled.div`
       opacity: 1;
       background: #f4c134;
       backdrop-filter: blur(143px);
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 14px;
       font-weight: 500;
       line-height: normal;
@@ -533,7 +533,7 @@ const RewardData_Left = styled.div`
   }
   @media (max-width: 768px) {
     .title {
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 12px;
       font-weight: normal;
       line-height: normal;
@@ -543,7 +543,7 @@ const RewardData_Left = styled.div`
       text-align: left;
       margin-bottom: 4px;
     }
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 20px;
     font-weight: 500;
     line-height: normal;
@@ -553,7 +553,7 @@ const RewardData_Left = styled.div`
     color: #ffffff;
     .bottom {
       display: block;
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 14px;
       font-weight: 500;
       line-height: normal;
@@ -582,7 +582,7 @@ const RewardData_Right = styled.div`
     }
   }
   .title {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 14px;
     font-weight: normal;
     line-height: normal;
@@ -591,7 +591,7 @@ const RewardData_Right = styled.div`
     color: #c5ccd4;
   }
   .content {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 14px;
     font-weight: 500;
     line-height: normal;

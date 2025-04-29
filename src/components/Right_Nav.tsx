@@ -108,7 +108,7 @@ const InviteNav = () => {
     if (type === 1) {
       getReward(
         () => {
-          setTip("收益提取成功");
+          setTip(t("收益提取成功"));
           setShowSuccessTipModal(true);
           call();
         },
@@ -119,7 +119,7 @@ const InviteNav = () => {
           type: 2,
         },
         () => {
-          setTip("收益提取中");
+          setTip(t("收益提取中"));
           setShowTipModal(true);
         },
         () => {
@@ -129,7 +129,7 @@ const InviteNav = () => {
     } else {
       getReward(
         () => {
-          setTip("收益提取成功");
+          setTip(t("收益提取成功"));
           setShowSuccessTipModal(true);
           call();
         },
@@ -140,7 +140,7 @@ const InviteNav = () => {
           type: 2,
         },
         () => {
-          setTip("收益提取中");
+          setTip(t("收益提取中"));
           setShowTipModal(true);
         },
         () => {
@@ -166,16 +166,16 @@ const InviteNav = () => {
     <div className="right_container">
       <div className="right_values">
         <div className="right_value">
-          权益收入价值
+          {t("权益收入价值")}
           <div>$ {NodeUserInfo?.earnAmount ?? "0"}</div>
         </div>
         <div className="right_value">
-          已提收益价值
-          <div>$ {NodeUserInfo?.totalUsdNum ?? "0"}</div>
+          {t("已提收益价值")}
+          <div>$ {NodeUserInfo?.alreadyTotal ?? "0"}</div>
         </div>
         <div className="right_value">
-          待提收益价值
-          <div>$ {NodeUserInfo?.treatUsdNum ?? "0"}</div>
+          {t("待提收益价值")}
+          <div>$ {NodeUserInfo?.treatAmount ?? "0"}</div>
         </div>
       </div>
       <div className="my_invite_list">
@@ -187,7 +187,7 @@ const InviteNav = () => {
               }}
               className={ActiveTab === "1" ? "active" : "tab"}
             >
-              权益
+              {t("权益")}
             </div>
             <div
               onClick={() => {
@@ -195,13 +195,13 @@ const InviteNav = () => {
               }}
               className={ActiveTab === "2" ? "active" : "tab"}
             >
-              记录
+              {t("记录")}
             </div>
           </div>
 
           {ActiveTab === "2" && (
             <div className="filter_box_right">
-              币种
+              {t("币种")}
               <Dropdown
                 overlay={singleCoinsMenu}
                 placement="bottom"
@@ -228,11 +228,11 @@ const InviteNav = () => {
           (width > 768 ? (
             <div className="table">
               <div className="table_title items">
-                <div className="item">币种</div>
-                <div className="item">总收益</div>
-                <div className="item">已提收益</div>
-                <div className="item">待提收益</div>
-                <div className="item">操作</div>
+                <div className="item">{t("币种")}</div>
+                <div className="item">{t("总收益")}</div>
+                <div className="item">{t("已提收益")}</div>
+                <div className="item">{t("待提收益")}</div>
+                <div className="item">{t("操作")}</div>
               </div>
               {NodeUserInfoList?.map((item: any, index: any) => (
                 <div className="table_content items" key={index}>
@@ -257,7 +257,7 @@ const InviteNav = () => {
                       }
                     }}
                   >
-                    提收益
+                    {t("提收益")}
                   </div>
                 </div>
               ))}
@@ -285,20 +285,20 @@ const InviteNav = () => {
                         }
                       }}
                     >
-                      提收益
+                      {t("提收益")}
                     </div>
                   </div>
                   <div className="mobile_table_item_bottom">
                     <div className="item">
-                      <div>总收益</div>
+                      <div>{t("总收益")}</div>
                       {item?.totalAmount}
                     </div>
                     <div className="item">
-                      <div>已提收益</div>
+                      <div>{t("已提收益")}</div>
                       {item?.treatNum}
                     </div>
                     <div className="item">
-                      <div>待提收益</div>
+                      <div>{t("待提收益")}</div>
                       {item?.amount}
                     </div>
                   </div>
@@ -311,14 +311,14 @@ const InviteNav = () => {
             {width > 768 ? (
               <div className="table">
                 <div className="table_title items">
-                  <div className="item">收益类型</div>
-                  <div className="item">时间</div>
-                  <div className="item">币种</div>
-                  <div className="item">数量</div>
+                  <div className="item">{t("收益类型")}</div>
+                  <div className="item">{t("时间")}</div>
+                  <div className="item">{t("币种")}</div>
+                  <div className="item">{t("数量")}</div>
                 </div>
                 {RecordList3?.list?.map((item: any, index: any) => (
                   <div className="table_content items" key={index}>
-                    <div className="item">{rewardObj[item?.type]}</div>
+                    <div className="item">{t(rewardObj[item?.type])}</div>
                     <div className="item">
                       {" "}
                       {dateFormat("YY-mm-dd HH:MM", new Date(item?.createTime))}

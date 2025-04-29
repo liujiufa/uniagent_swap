@@ -39,7 +39,7 @@
       justify-content: space-between;
       align-items: center;
       .tab {
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 16px;
         font-weight: 500;
         line-height: normal;
@@ -53,7 +53,7 @@
         border-radius: 19px;
         opacity: 1;
         background: #f4c134;
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 16px;
         font-weight: 500;
         line-height: normal;
@@ -98,7 +98,7 @@
             }
           }
           .coins_info_right {
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 20px;
             font-weight: 600;
             line-height: normal;
@@ -109,7 +109,7 @@
           }
         }
         .tip {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 14px;
           font-weight: 500;
           line-height: normal;
@@ -130,7 +130,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 16px;
             font-weight: normal;
             line-height: normal;
@@ -141,7 +141,7 @@
             &:last-child {
               margin-bottom: 0px;
               span {
-                font-family: MiSans;
+                font-family: "MiSans";
                 font-size: 16px;
                 font-weight: 500;
                 line-height: normal;
@@ -152,7 +152,7 @@
               }
             }
             span {
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 16px;
               font-weight: 500;
               line-height: normal;
@@ -175,7 +175,7 @@
               justify-content: space-between;
               align-items: center;
               .reward_data {
-                font-family: MiSans;
+                font-family: "MiSans";
                 font-size: 14px;
                 font-weight: normal;
                 line-height: normal;
@@ -184,7 +184,7 @@
                 color: #c5ccd4;
                 div {
                   margin-top: 2px;
-                  font-family: MiSans;
+                  font-family: "MiSans";
                   font-size: 16px;
                   font-weight: 500;
                   line-height: normal;
@@ -199,7 +199,7 @@
                 opacity: 1;
                 background: #f4c134;
                 backdrop-filter: blur(143px);
-                font-family: MiSans;
+                font-family: "MiSans";
                 font-size: 14px;
                 font-weight: 500;
                 line-height: normal;
@@ -211,7 +211,7 @@
               }
             }
             .time {
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 12px;
               font-weight: normal;
               line-height: normal;
@@ -233,7 +233,7 @@
               justify-content: space-between;
               .my {
                 flex: 1;
-                font-family: MiSans;
+                font-family: "MiSans";
                 font-size: 14px;
                 font-weight: normal;
                 line-height: normal;
@@ -241,7 +241,7 @@
                 font-variation-settings: "opsz" auto;
                 color: #c5ccd4;
                 .num {
-                  font-family: MiSans;
+                  font-family: "MiSans";
                   font-size: 16px;
                   font-weight: 500;
                   line-height: normal;
@@ -250,9 +250,12 @@
                   font-variation-settings: "opsz" auto;
                   color: #ffffff;
                   margin: 2px 0px;
+                  span {
+                    font-size: 12px;
+                  }
                 }
                 .value {
-                  font-family: MiSans;
+                  font-family: "MiSans";
                   font-size: 12px;
                   font-weight: normal;
                   line-height: normal;
@@ -266,7 +269,7 @@
               display: flex;
               flex-direction: column;
               align-items: center;
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 16px;
               font-weight: normal;
               line-height: normal;
@@ -300,7 +303,7 @@
                 box-sizing: border-box;
                 border: 1px solid #f4c134;
                 backdrop-filter: blur(143px);
-                font-family: MiSans;
+                font-family: "MiSans";
                 font-size: 14px;
                 font-weight: 500;
                 line-height: normal;
@@ -314,7 +317,7 @@
                 opacity: 1;
                 background: #f4c134;
                 backdrop-filter: blur(143px);
-                font-family: MiSans;
+                font-family: "MiSans";
                 font-size: 14px;
                 font-weight: 500;
                 line-height: normal;
@@ -328,7 +331,7 @@
                 opacity: 1;
                 background: #383e45;
                 backdrop-filter: blur(143px);
-                font-family: MiSans;
+                font-family: "MiSans";
                 font-size: 14px;
                 font-weight: 500;
                 line-height: normal;
@@ -362,7 +365,7 @@
       .tabs {
         margin: auto;
         .tab {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 14px;
           font-weight: 500;
           line-height: normal;
@@ -372,7 +375,7 @@
           color: #c5ccd4;
         }
         .active {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 14px;
           font-weight: 500;
           line-height: normal;
@@ -394,7 +397,7 @@
             }
           }
           .coins_info_right {
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 18px;
             font-weight: 600;
             line-height: normal;
@@ -405,7 +408,7 @@
           }
         }
         .tip {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 14px;
           font-weight: 500;
           line-height: normal;

@@ -33,7 +33,7 @@ function getLibrary(provider: any): Web3 {
 }
 
 // 1. Get projectId
-const projectId = "fc4103ba4b36ce5b29b1355c0fadb477";
+const projectId = "1897be8f4fbbb78c746ad82615800d67";
 // const projectId = 'YOUR_PROJECT_ID'
 
 // 2. Set chains
@@ -42,7 +42,7 @@ const projectId = "fc4103ba4b36ce5b29b1355c0fadb477";
 const metadata = {
   name: "UniAgent",
   description: "UniAgent",
-  url: "https://nft.uniagent.co/",
+  url: "https://alpha.pijswap.com/",
   // url: "https://kf-panda.com/",
   icons: ["https://nft.uniagent.co/uniagent_logo.png"],
   // icons: ["http://yhhyn.com/vtb.png"],
@@ -79,12 +79,13 @@ const metadata = {
 
 createAppKit({
   adapters: [new EthersAdapter()],
-  networks: [
-    customNetwork_BSC,
-    customNetwork_BSC_TEST,
-    customNetwork_UNI,
-    customNetwork_UNI_TEST,
-  ],
+  // networks: [
+  //   customNetwork_BSC,
+  //   customNetwork_BSC_TEST,
+  //   customNetwork_UNI,
+  //   customNetwork_UNI_TEST,
+  // ],
+  networks: [bscTestnet],
   metadata,
   projectId,
   themeMode: "dark",
@@ -99,7 +100,8 @@ createAppKit({
     analytics: true, // Optional - defaults to your Cloud configuration
     connectMethodsOrder: ["wallet"],
   },
-  defaultNetwork: isMain ? customNetwork_BSC : customNetwork_BSC_TEST,
+  defaultNetwork: bscTestnet,
+  // defaultNetwork: isMain ? customNetwork_BSC : customNetwork_BSC_TEST,
 });
 
 const root = ReactDOM.createRoot(

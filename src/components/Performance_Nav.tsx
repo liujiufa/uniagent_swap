@@ -70,7 +70,7 @@ const InviteNav = () => {
             }}
             className={FilterActive === 1 ? "active" : ""}
           >
-            流动性挖矿
+            {t("流动性挖矿")}
           </div>
           <div
             onClick={() => {
@@ -78,11 +78,11 @@ const InviteNav = () => {
             }}
             className={FilterActive === 2 ? "active" : ""}
           >
-            糖浆池
+            {t("糖浆池")}
           </div>
         </div>
         <div className="filter_box_right">
-          币种
+          {t("币种")}
           <Dropdown
             overlay={FilterActive === 1 ? coinsMenu : singleCoinsMenu}
             placement="bottom"
@@ -128,12 +128,12 @@ const InviteNav = () => {
             <div className="devider"></div>
             <div className="item_content">
               <div className="data_detail">
-                <div className="tag">本轮新增</div>
+                <div className="tag">{t("本轮新增")}</div>
                 <div className="amount">10000000 LP</div>
                 <div className="value">$10000000</div>
               </div>
               <div className="data_detail">
-                <div className="tag">上轮业绩</div>
+                <div className="tag">{t("上轮业绩")}</div>
                 <div className="amount">10000000 PIJS</div>
                 <div className="value">$10000000</div>
               </div>

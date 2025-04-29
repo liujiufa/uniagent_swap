@@ -34,7 +34,7 @@ const FooterContainer_Top = styled(FlexSBCBox)`
       /* max-width: 120px; */
       > div {
         cursor: pointer;
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 13px;
         font-weight: normal;
         line-height: normal;
@@ -43,7 +43,7 @@ const FooterContainer_Top = styled(FlexSBCBox)`
         color: #c5ccd4;
         margin-bottom: 12px;
         &:first-child {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 13px;
           font-weight: 500;
           line-height: normal;

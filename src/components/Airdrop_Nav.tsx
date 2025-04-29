@@ -68,7 +68,7 @@ const InviteNav = () => {
               }}
               className={ActiveTab === "1" ? "active" : "tab"}
             >
-              空投资产
+              {t("空投资产")}
             </div>
             <div
               onClick={() => {
@@ -76,13 +76,13 @@ const InviteNav = () => {
               }}
               className={ActiveTab === "2" ? "active" : "tab"}
             >
-              记录
+              {t("记录")}
             </div>
           </div>
 
           {ActiveTab === "2" && (
             <div className="filter_box_right">
-              币种
+              {t("币种")}
               <Dropdown
                 overlay={singleCoinsMenu}
                 placement="bottom"
@@ -109,11 +109,11 @@ const InviteNav = () => {
           (width > 768 ? (
             <div className="table">
               <div className="table_title items">
-                <div className="item">币种</div>
-                <div className="item">总收益</div>
-                <div className="item">余额</div>
-                <div className="item">已处理</div>
-                <div className="item">操作</div>
+                <div className="item">{t("币种")}</div>
+                <div className="item">{t("总收益")}</div>
+                <div className="item">{t("余额")}</div>
+                <div className="item">{t("已处理")}</div>
+                <div className="item">{t("操作")}</div>
               </div>
               <div className="table_content items">
                 <div className="item">πPionts</div>
@@ -121,7 +121,7 @@ const InviteNav = () => {
                 <div className="item">{PiotnsAccount?.amount ?? 0}</div>
                 <div className="item">0</div>
                 <div className={false ? "item manage" : "item managed"}>
-                  兑换
+                  {t("兑换")}
                 </div>
               </div>
             </div>
@@ -130,19 +130,19 @@ const InviteNav = () => {
               <div className="mobile_table_item">
                 <div className="mobile_table_item_top">
                   πPionts{" "}
-                  <div className={false ? "manage" : "managed"}>兑换</div>
+                  <div className={false ? "manage" : "managed"}>{t("兑换")}</div>
                 </div>
                 <div className="mobile_table_item_bottom">
                   <div className="item">
-                    <div>总收益</div>
+                    <div>{t("总收益")}</div>
                     {PiotnsAccount?.totalEarn ?? 0}
                   </div>
                   <div className="item">
-                    <div>余额</div>
+                    <div>{t("余额")}</div>
                     {PiotnsAccount?.amount ?? 0}
                   </div>
                   <div className="item">
-                    <div>已处理</div>0
+                    <div>{t("已处理")}</div>0
                   </div>
                 </div>
               </div>
@@ -152,10 +152,10 @@ const InviteNav = () => {
           (width > 768 ? (
             <div className="table">
               <div className="table_title items">
-                <div className="item">收益类型</div>
-                <div className="item">时间</div>
-                <div className="item">币种</div>
-                <div className="item">数量</div>
+                <div className="item">{t("收益类型")}</div>
+                <div className="item">{t("时间")}</div>
+                <div className="item">{t("币种")}</div>
+                <div className="item">{t("数量")}</div>
               </div>
               <div className="table_content items">
                 <div className="item">
@@ -201,15 +201,6 @@ const InviteNav = () => {
                     </div>
                   </div>
                 </div>
-                {/* <div className="mobile_record_item">
-                完成XXX任务
-                <div className="mobile_record_item_box">
-                  <div className="left">
-                    <img src={time} alt="" /> 2024-07-15 12:35
-                  </div>
-                  <div className={false ? "yellow" : "green"}>+500.00 PIJS</div>
-                </div>
-              </div> */}
               </div>
             )
           ))}

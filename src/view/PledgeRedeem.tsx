@@ -140,7 +140,7 @@ const SwapContainer_Title = styled(FlexBox)`
 const SwapItem = styled.div``;
 
 const SwapItem_Title = styled(FlexSBCBox)`
-  font-family: MiSans;
+  font-family: "MiSans";
   font-size: 18px;
   font-weight: 500;
   line-height: normal;
@@ -153,7 +153,7 @@ const SwapItem_Title = styled(FlexSBCBox)`
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 18px;
     font-weight: 500;
     line-height: normal;
@@ -176,7 +176,7 @@ const SwapItem_Title = styled(FlexSBCBox)`
   }
 
   span {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 16px;
     font-weight: 500;
     line-height: normal;
@@ -227,7 +227,7 @@ const LiquidityItem = styled.div`
   overflow: hidden;
 
   .tip {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 18px;
     font-weight: 500;
     line-height: normal;
@@ -237,7 +237,7 @@ const LiquidityItem = styled.div`
     margin-bottom: 8px;
   }
   > input {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 32px;
     font-weight: 500;
     line-height: 42px;
@@ -251,7 +251,7 @@ const LiquidityItem = styled.div`
   @media (max-width: 768px) {
     padding: 14px 12px;
     > input {
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 18px;
       font-weight: 500;
       line-height: 24px;
@@ -272,7 +272,7 @@ const PercentageBox = styled(FlexBox)`
     border-radius: 24px;
     opacity: 1;
     background: #383e45;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 16px;
     font-weight: 500;
     line-height: normal;
@@ -437,6 +437,9 @@ export default function Rank() {
           setSuccessFulHash(res?.transactionHash);
           setTip(t("本金提取成功"));
           getInitData();
+          setTimeout(() => {
+            getInitData();
+          }, 5000);
           return setShowSuccessTipModal(true);
         } else if (res?.status === false) {
           setShowTipModal(false);
@@ -445,7 +448,7 @@ export default function Rank() {
       },
       () => {
         setTip(
-          t("批准 100.0000 LP", {
+          t("1000000LP", {
             num: Number(Amount ?? 0),
           })
         );
@@ -553,18 +556,18 @@ export default function Rank() {
                       }}
                     ></div>
                   )}
-                  <span>我的质押</span>
+                  <span>{t("我的质押")}</span>
                 </div>
 
                 <span>
-                  当前持仓: {CurrentLP?.pledgeUser?.pledgeNum ?? 0}{" "}
+                  {t("当前持仓")}: {CurrentLP?.pledgeUser?.pledgeNum ?? 0}{" "}
                   {CurrentLP?.title}
                 </span>
               </SwapItem_Title>
 
               <SwapItem>
                 <LiquidityItem>
-                  <div className="tip">输入撤出比例</div>
+                  <div className="tip">{t("输入撤出比例")}</div>
                   <input type="text" value={PercentValue} />
                   <PercentageBox>
                     <div
@@ -612,14 +615,16 @@ export default function Rank() {
                         }}
                       ></div>
                     )}
-                    <span>超级节点权益质押</span>
+                    <span>{t("超级节点权益质押")}</span>
                   </div>
 
-                  <span>权益已兑付 {NodeRedeemInfo?.redeemRate ?? 0}%</span>
+                  <span>
+                    {t("权益已兑付")} {NodeRedeemInfo?.redeemRate ?? 0}%
+                  </span>
                 </SwapItem_Title>
                 <SwapItem>
                   <LiquidityItem>
-                    <div className="tip">权益质押只能一次性提取</div>
+                    <div className="tip">{t("权益质押只能一次性提取")}</div>
                     <input
                       type="text"
                       value={NodeRedeemInfo?.totalPledgeNum ?? 0 + " " + "LP"}

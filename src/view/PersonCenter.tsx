@@ -100,7 +100,7 @@ import { userTypeObj } from "../components/ReferListModal";
 const HomeContainerBox = styled.div<{ src: string }>`
   padding-top: 64px;
   width: 100%;
-  /* min-height: 100vh; */
+  min-height: calc(100vh - 255px);
   background-image: ${({ src }) => `url(${src})`};
   background-position: center;
   background-size: cover; //根据你图片的大小自定义
@@ -254,7 +254,7 @@ export default function Rank() {
                   </div>
                   <div className="address">
                     {AddrHandle(web3ModalAccount as string, 6, 4)}{" "}
-                    <div>{userTypeObj[UserInfo?.nodeType]}</div>
+                    <div>{t(userTypeObj[UserInfo?.nodeType ?? 0])}</div>
                   </div>
                 </div>
                 <img src={level} alt="" />
@@ -275,7 +275,7 @@ export default function Rank() {
                   </div>
                   <div className="address">
                     {AddrHandle(web3ModalAccount as string, 6, 4)}{" "}
-                    <div>{userTypeObj[UserInfo?.nodeType]}</div>
+                    <div>{t(userTypeObj[UserInfo?.nodeType])}</div>
                   </div>
                 </div>
                 <img src={level} alt="" />
@@ -298,7 +298,7 @@ export default function Rank() {
                         src={ActiveNav === "nav1" ? nav1_active : nav1}
                         alt=""
                       />
-                      挖矿
+                      {t("挖矿")}
                     </div>
                   </div>
                   <div
@@ -313,7 +313,7 @@ export default function Rank() {
                         src={ActiveNav === "nav2" ? nav2_active : nav2}
                         alt=""
                       />
-                      邀请
+                      {t("邀请")}
                     </div>
                   </div>
                   <div
@@ -328,7 +328,7 @@ export default function Rank() {
                         src={ActiveNav === "nav3" ? nav3_active : nav3}
                         alt=""
                       />
-                      权益
+                      {t("权益")}
                     </div>
                   </div>
                   <div
@@ -343,7 +343,7 @@ export default function Rank() {
                         src={ActiveNav === "nav4" ? nav4_active : nav4}
                         alt=""
                       />
-                      业绩
+                      {t("业绩")}
                     </div>
                   </div>
                   <div
@@ -358,7 +358,7 @@ export default function Rank() {
                         src={ActiveNav === "nav5" ? nav5_active : nav5}
                         alt=""
                       />
-                      空投
+                      {t("空投")}
                     </div>
                   </div>
                   <div
@@ -373,7 +373,7 @@ export default function Rank() {
                         src={ActiveNav === "nav6" ? nav6_active : nav6}
                         alt=""
                       />
-                      勋章
+                      {t("勋章")}
                     </div>
                   </div>
                 </div>
@@ -386,7 +386,7 @@ export default function Rank() {
                   }}
                 >
                   <div className={ActiveNav === "nav1" ? "active nav" : "nav"}>
-                    挖矿 <div className="bottom_line"></div>
+                    {t("挖矿")} <div className="bottom_line"></div>
                   </div>
                 </div>
                 <div
@@ -395,7 +395,7 @@ export default function Rank() {
                   }}
                 >
                   <div className={ActiveNav === "nav2" ? "active nav" : "nav"}>
-                    邀请 <div className="bottom_line"></div>
+                    {t("邀请")} <div className="bottom_line"></div>
                   </div>
                 </div>
                 <div
@@ -404,7 +404,7 @@ export default function Rank() {
                   }}
                 >
                   <div className={ActiveNav === "nav3" ? "active nav" : "nav"}>
-                    权益 <div className="bottom_line"></div>
+                    {t("权益")} <div className="bottom_line"></div>
                   </div>
                 </div>
                 <div
@@ -413,7 +413,7 @@ export default function Rank() {
                   }}
                 >
                   <div className={ActiveNav === "nav4" ? "active nav" : "nav"}>
-                    业绩 <div className="bottom_line"></div>
+                    {t("业绩")} <div className="bottom_line"></div>
                   </div>
                 </div>
                 <div
@@ -422,7 +422,7 @@ export default function Rank() {
                   }}
                 >
                   <div className={ActiveNav === "nav5" ? "active nav" : "nav"}>
-                    空投 <div className="bottom_line"></div>
+                    {t("空投")} <div className="bottom_line"></div>
                   </div>
                 </div>
                 <div
@@ -431,7 +431,7 @@ export default function Rank() {
                   }}
                 >
                   <div className={ActiveNav === "nav6" ? "active nav" : "nav"}>
-                    勋章 <div className="bottom_line"></div>
+                    {t("勋章")} <div className="bottom_line"></div>
                   </div>
                 </div>
               </div>

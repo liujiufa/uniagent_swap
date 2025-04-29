@@ -9,13 +9,13 @@
     padding: 30px 24px;
     .right_value {
       flex: 1;
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 14px;
       font-weight: normal;
       line-height: normal;
       letter-spacing: normal;
       color: #c5ccd4;
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 14px;
       font-weight: normal;
       line-height: normal;
@@ -26,7 +26,7 @@
       align-items: center;
       div {
         margin-top: 12px;
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 24px;
         font-weight: 500;
         line-height: normal;
@@ -51,7 +51,7 @@
         border-radius: 6px;
         background: #1f2021;
         div {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 14px;
           font-weight: 500;
           line-height: normal;
@@ -70,7 +70,7 @@
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 14px;
         font-weight: 500;
         line-height: normal;
@@ -104,7 +104,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-family: MiSans;
+                font-family: "MiSans";
                 font-size: 14px;
                 font-weight: 500;
                 line-height: normal;
@@ -123,7 +123,7 @@
           border-radius: 6px;
           background: #393a3b;
           padding: 8px 16px 8px 24px;
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 14px;
           font-weight: 500;
           line-height: normal;
@@ -170,7 +170,7 @@
           border-style: solid;
           border-color: #0a0a0a;
           background: #292a2b;
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 12px;
           font-weight: 500;
           line-height: 16px;
@@ -186,7 +186,7 @@
           border-width: 0px 1px 1px 0px;
           border-style: solid;
           border-color: #0a0a0a;
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 12px;
           font-weight: normal;
           line-height: 16px;
@@ -195,7 +195,7 @@
           color: #bcc6cf;
         }
         .manage {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 12px;
           font-weight: normal;
           line-height: 16px;
@@ -205,7 +205,7 @@
           color: #f4c134;
         }
         .managed {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 12px;
           font-weight: normal;
           line-height: 16px;
@@ -221,7 +221,7 @@
     .right_values {
       padding: 17px 14px;
       .right_value {
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 12px;
         font-weight: normal;
         line-height: normal;
@@ -241,7 +241,7 @@
         }
         div {
           margin-top: 4px;
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 16px;
           font-weight: 500;
           line-height: normal;
@@ -257,7 +257,7 @@
       .manage_box {
         .tabs {
           div {
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 12px;
             font-weight: 500;
             line-height: normal;
@@ -268,7 +268,7 @@
           }
         }
         .filter_box_right {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 12px;
           font-weight: 500;
           line-height: normal;
@@ -277,7 +277,7 @@
           color: #c5ccd4;
           .CoinBox {
             padding: 6px 12px;
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 12px;
             font-weight: 500;
             line-height: normal;
@@ -308,7 +308,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 12px 14px;
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 12px;
             font-weight: 500;
             line-height: 16px;
@@ -316,7 +316,7 @@
             color: #ffffff;
             div {
               margin-left: 10px;
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 12px;
               font-weight: 500;
               line-height: 16px;
@@ -324,7 +324,7 @@
               color: #ffffff;
             }
             .manage {
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 12px;
               font-weight: 500;
               line-height: 16px;
@@ -333,7 +333,7 @@
               color: #f4c134;
             }
             .managed {
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 12px;
               font-weight: 500;
               line-height: 16px;
@@ -355,7 +355,7 @@
             .item {
               flex: 1;
               div {
-                font-family: MiSans;
+                font-family: "MiSans";
                 font-size: 10px;
                 font-weight: 500;
                 line-height: 16px;
@@ -364,7 +364,7 @@
                 margin-bottom: 4px;
                 text-align: center;
               }
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 12px;
               font-weight: 500;
               line-height: 16px;
@@ -373,7 +373,7 @@
               color: #ffffff;
               &:nth-child(1) {
                 div {
-                  font-family: MiSans;
+                  font-family: "MiSans";
                   font-size: 10px;
                   font-weight: 500;
                   line-height: 16px;
@@ -382,7 +382,7 @@
                   margin-bottom: 4px;
                   text-align: left;
                 }
-                font-family: MiSans;
+                font-family: "MiSans";
                 font-size: 12px;
                 font-weight: 500;
                 line-height: 16px;
@@ -407,7 +407,7 @@
           background: #1f2021;
           box-sizing: border-box;
           padding: 14px;
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 12px;
           font-weight: 500;
           line-height: 16px;
@@ -429,7 +429,7 @@
                 z-index: 0;
                 margin-right: 8px;
               }
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 12px;
               font-weight: normal;
               line-height: 16px;
@@ -437,7 +437,7 @@
               color: #c5ccd4;
             }
             .green {
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 14px;
               font-weight: 500;
               line-height: normal;
@@ -446,7 +446,7 @@
               color: #22b573;
             }
             .yellow {
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 14px;
               font-weight: 500;
               line-height: normal;

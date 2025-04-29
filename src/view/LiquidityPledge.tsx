@@ -330,11 +330,11 @@ export default function Rank() {
     // }
   }, [web3ModalAccount, chainId, token]);
 
-  useEffect(() => {
-    if (!token) {
-      setPledgeCoinList([]);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!token) {
+  //     setPledgeCoinList([]);
+  //   }
+  // }, []);
 
   const MyBox = (item: any) => {
     if (!web3ModalAccount)
@@ -343,7 +343,7 @@ export default function Rank() {
           <div className="mybox_bottom">
             <div className="no_my_box">
               <img src={no_my_img} alt="" />
-              未找到持仓
+              {t("未找到持仓")}
             </div>
 
             <div className="btns">
@@ -353,7 +353,7 @@ export default function Rank() {
                   open();
                 }}
               >
-                连接钱包
+                {t("连接钱包")}
               </div>
             </div>
           </div>
@@ -366,7 +366,7 @@ export default function Rank() {
           <div className="mybox_bottom">
             <div className="no_my_box">
               <img src={no_my_img} alt="" />
-              未找到持仓
+              {t("未找到持仓")}
             </div>
             <div className="btns">
               <div
@@ -375,7 +375,7 @@ export default function Rank() {
                   Navigate("/View/", { state: { tab: "Liquidity" } });
                 }}
               >
-                添加LP
+                {t("添加LP")}
               </div>
               <div
                 className="btn_mid"
@@ -383,7 +383,7 @@ export default function Rank() {
                   Navigate(`/View/LPPledge/${item?.id}`);
                 }}
               >
-                添加质押
+                {t("添加质押")}
               </div>
             </div>
           </div>
@@ -395,7 +395,7 @@ export default function Rank() {
         <div className="mybox_top">
           <div className="mybox_top_reward">
             <div className="reward_data">
-              待提收益
+              {t("待提收益")}
               <div>{item?.pledgeUser?.treatDrawNum ?? 0} PiJS</div>
             </div>
             <div
@@ -405,7 +405,7 @@ export default function Rank() {
                   getReward(
                     () => {
                       getInitData();
-                      setTip("收益提取成功");
+                      setTip(t("收益提取成功"));
                       setShowSuccessTipModal(true);
                     },
                     contractAddress?.StakingRewardDistribute,
@@ -415,7 +415,7 @@ export default function Rank() {
                       type: 1,
                     },
                     () => {
-                      setTip("收益提取中");
+                      setTip(t("收益提取中"));
                       setShowTipModal(true);
                     },
                     () => {
@@ -425,28 +425,30 @@ export default function Rank() {
                 }
               }}
             >
-              提收益
+              {t("提收益")}
             </div>
           </div>
           {!!item?.pledgeUser?.nextDrawTime &&
             (ServerTime > item?.pledgeUser?.nextDrawTime ? (
               <div className="time">
-                下次提取：
+                {t("下次提取")}：
                 {dateFormat(
                   "YYYY-mm-dd HH:MM",
                   new Date(item?.pledgeUser?.nextDrawTime)
                 )}
               </div>
             ) : (
-              <div className="time">收益每7天可提取一次</div>
+              <div className="time">{t("收益每7天可提取一次")}</div>
             ))}
         </div>
         <div className="devider"></div>
         <div className="mybox_bottom">
           <div className="my_data">
             <div className="my">
-              我的质押
-              <div className="num">{item?.pledgeUser?.pledgeNum} LP</div>
+              {t("我的质押")}
+              <div className="num">
+                {item?.pledgeUser?.pledgeNum} <span>LP</span>
+              </div>
               <div className="value">
                 $
                 {NumSplic1(
@@ -457,9 +459,10 @@ export default function Rank() {
               </div>
             </div>
             <div className="my">
-              我的收益
+              {t("我的收益")}
               <div className="num">
-                {item?.pledgeUser?.earnNum} {item?.pledgeUser?.coinName}
+                {item?.pledgeUser?.earnNum}{" "}
+                <span>{item?.pledgeUser?.coinName}</span>
               </div>
               <div className="value">
                 $
@@ -479,23 +482,25 @@ export default function Rank() {
                 Navigate(`/View/PledgeRedeem/${item?.id}`);
               }}
             >
-              提本金
+              {t("提本金")}
             </div>
             <div
-              className="btn_mid"
+              className="btn_left"
+              // className="btn_mid"
               onClick={() => {
                 Navigate("/View/", { state: { tab: "Liquidity" } });
               }}
             >
-              添加LP
+              {t("添加LP")}
             </div>
             <div
-              className="btn_right"
+              className="btn_mid"
+              // className="btn_right"
               onClick={() => {
                 Navigate(`/View/LPPledge/${item?.id}`);
               }}
             >
-              添加质押
+              {t("添加质押")}
             </div>
           </div>
         </div>
@@ -518,7 +523,7 @@ export default function Rank() {
                 setActiveTab(-1);
               }}
             >
-              全部
+              {t("全部")}
             </div>
             <div
               className={ActiveTab === 1 ? "active tab" : "tab"}
@@ -526,7 +531,7 @@ export default function Rank() {
                 setActiveTab(1);
               }}
             >
-              进行中
+              {t("进行中")}
             </div>
             <div
               className={ActiveTab === 2 ? "active tab" : "tab"}
@@ -534,7 +539,7 @@ export default function Rank() {
                 setActiveTab(2);
               }}
             >
-              已结束
+              {t("已结束")}
             </div>
           </div>
 
@@ -550,16 +555,19 @@ export default function Rank() {
                 </div>
 
                 <div className="tip">
-                  根据质押价值动态计算产出系数，产出根据您的LP质押价值权重占比分配。
+                  {t(
+                    "根据质押价值动态计算产出系数，产出根据您的LP质押价值权重占比分配。"
+                  )}
                 </div>
                 <div className="all_info">
                   <div>
                     {" "}
-                    质押的流动性 <span>${item?.pledgeTotalNum ?? "0"}</span>
+                    {t("质押的流动性")}{" "}
+                    <span>${item?.pledgeTotalNum ?? "0"}</span>
                   </div>
                   <div>
                     {" "}
-                    产出系数 <span>{item?.outputNumRate ?? "0"}%</span>
+                    {t("产出系数")} <span>{item?.outputNumRate ?? "0"}%</span>
                   </div>
                   <div>
                     {" "}
@@ -569,84 +577,6 @@ export default function Rank() {
                 {MyBox(item)}
               </div>
             ))}
-            {/* <div className="item">
-              <div className="coins_info">
-                <div className="coins_info_left">
-                  <img src={usdtIcon} alt="" />
-                  <img src={pijsIcon} alt="" />
-                </div>
-                <div className="coins_info_right">PiJS - USDT</div>
-              </div>
-
-              <div className="tip">
-                根据质押价值动态计算产出系数，产出根据您的LP质押价值权重占比分配。
-              </div>
-              <div className="all_info">
-                <div>
-                  {" "}
-                  质押的流动性 <span>$10000000</span>
-                </div>
-                <div>
-                  {" "}
-                  产出系数 <span>10%</span>
-                </div>
-                <div>
-                  {" "}
-                  APR <span>45.67%</span>
-                </div>
-              </div>
-              <div className="mybox">
-                <div className="mybox_bottom">
-                  <div className="no_my_box">
-                    <img src={no_my_img} alt="" />
-                    未找到持仓
-                  </div>
-                  <div className="btns">
-                    <div className="btn_left">添加LP</div>
-                    <div className="btn_mid">添加质押</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="item">
-              <div className="coins_info">
-                <div className="coins_info_left">
-                  <img src={usdtIcon} alt="" />
-                  <img src={pijsIcon} alt="" />
-                </div>
-                <div className="coins_info_right">PiJS - USDT</div>
-              </div>
-
-              <div className="tip">
-                根据质押价值动态计算产出系数，产出根据您的LP质押价值权重占比分配。
-              </div>
-              <div className="all_info">
-                <div>
-                  {" "}
-                  质押的流动性 <span>$10000000</span>
-                </div>
-                <div>
-                  {" "}
-                  产出系数 <span>10%</span>
-                </div>
-                <div>
-                  {" "}
-                  APR <span>45.67%</span>
-                </div>
-              </div>
-              <div className="mybox">
-                <div className="mybox_bottom">
-                  <div className="no_my_box">
-                    <img src={no_my_img} alt="" />
-                    未找到持仓
-                  </div>
-
-                  <div className="btns">
-                    <div className="btn_mid">连接钱包</div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
           </div>
 
           <ModalContent

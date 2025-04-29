@@ -1,7 +1,7 @@
 .invite_container {
   width: 100%;
   .my_invite_title {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 18px;
     font-weight: 500;
     line-height: normal;
@@ -17,7 +17,7 @@
     border: 1px solid #232323;
     backdrop-filter: blur(143px);
     padding: 24px;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 14px;
     font-weight: normal;
     line-height: normal;
@@ -30,7 +30,7 @@
       align-items: center;
       justify-content: space-between;
       .item {
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 14px;
         font-weight: normal;
         line-height: normal;
@@ -58,7 +58,7 @@
       }
       .invite_box_left {
         > div {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 18px;
           font-weight: 500;
           line-height: normal;
@@ -70,7 +70,7 @@
       .invite_box_right {
         > div {
           word-break: break-all;
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 18px;
           font-weight: 500;
           line-height: normal;
@@ -83,7 +83,7 @@
   }
   .my_invite_list {
     margin-top: 18px;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 16px;
     font-weight: 500;
     line-height: normal;
@@ -142,7 +142,7 @@
   }
   @media (max-width: 768px) {
     .my_invite_title {
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 16px;
       font-weight: 500;
       line-height: normal;
@@ -159,14 +159,14 @@
       .invite_box {
         margin-top: 14px;
         .item {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 12px;
           font-weight: normal;
           line-height: normal;
           letter-spacing: normal;
           color: #bcc6cf;
           > div {
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 16px;
             font-weight: 500;
             line-height: normal;
@@ -181,7 +181,7 @@
         }
         .invite_box_right {
           > div {
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 14px;
             font-weight: normal;
             line-height: normal;
@@ -193,7 +193,7 @@
       }
     }
     .my_invite_list {
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 14px;
       font-weight: 500;
       line-height: normal;
@@ -213,7 +213,7 @@
             align-items: center;
 
             padding: 12px 14px;
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 12px;
             font-weight: 500;
             line-height: 16px;
@@ -221,7 +221,7 @@
             color: #ffffff;
             div {
               margin-left: 10px;
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 12px;
               font-weight: 500;
               line-height: 16px;
@@ -242,7 +242,7 @@
             .item {
               flex: 1;
               div {
-                font-family: MiSans;
+                font-family: "MiSans";
                 font-size: 10px;
                 font-weight: 500;
                 line-height: 16px;
@@ -251,7 +251,7 @@
                 margin-bottom: 4px;
                 text-align: left;
               }
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 12px;
               font-weight: 500;
               line-height: 16px;

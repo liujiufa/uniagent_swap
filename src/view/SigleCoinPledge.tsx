@@ -140,7 +140,7 @@ const SwapItemBottom = styled.div`
 `;
 
 const SwapItem_Title = styled(FlexSBCBox)`
-  font-family: MiSans;
+  font-family: "MiSans";
   font-size: 18px;
   font-weight: 500;
   line-height: normal;
@@ -150,7 +150,7 @@ const SwapItem_Title = styled(FlexSBCBox)`
   margin: 36px 0px 15px;
 
   span {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 16px;
     font-weight: 500;
     line-height: normal;
@@ -197,7 +197,7 @@ const LiquidityItem = styled.div`
   opacity: 1;
   background: #000000;
   > input {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 32px;
     font-weight: 500;
     line-height: normal;
@@ -211,7 +211,7 @@ const LiquidityItem = styled.div`
   @media (max-width: 768px) {
     padding: 14px;
     > input {
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 28px;
       font-weight: 500;
       line-height: normal;
@@ -229,7 +229,7 @@ const PercentageBox = styled(FlexBox)`
     border-radius: 24px;
     opacity: 1;
     background: #383e45;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 16px;
     font-weight: 500;
     line-height: normal;
@@ -246,7 +246,7 @@ const PercentageBox = styled(FlexBox)`
       opacity: 1;
       background: #383e45;
       padding: 6px 24px;
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 14px;
       font-weight: 500;
       line-height: normal;
@@ -270,7 +270,7 @@ const MyHold = styled(FlexBox)`
   width: fit-content;
   margin-bottom: 298px;
   > div {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 16px;
     font-weight: normal;
     line-height: normal;
@@ -287,7 +287,7 @@ const MyHold = styled(FlexBox)`
       opacity: 1;
       background: #383e45;
       height: 54px;
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 18px;
       font-weight: 500;
       line-height: normal;
@@ -304,7 +304,7 @@ const MyHold = styled(FlexBox)`
     margin-bottom: 130px;
 
     > div {
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 12px;
       font-weight: normal;
       line-height: normal;
@@ -315,7 +315,7 @@ const MyHold = styled(FlexBox)`
         margin-top: 8px;
         height: 44px;
         padding: 0px 10px;
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 13px;
         font-weight: 500;
         line-height: normal;
@@ -521,7 +521,8 @@ export default function Rank() {
             <SwapItem_Title>
               {t("输入质押数量")}{" "}
               <span>
-                {CurrentLP?.title}余额: {NumSplic1(LPTOKENBalance, 4) ?? 0}
+                {CurrentLP?.title}
+                {t("余额")}: {NumSplic1(LPTOKENBalance, 4) ?? 0}
               </span>
             </SwapItem_Title>
             <SwapItem>
@@ -530,31 +531,47 @@ export default function Rank() {
                 <PercentageBox>
                   <div
                     onClick={() => {
-                      setInputAmount(10);
+                      setInputAmount(
+                        Math.round(
+                          0.25 * Number(NumSplic1(LPTOKENBalance, 4)) * 10000
+                        ) / 10000
+                      );
                     }}
                   >
-                    10
+                    25%
                   </div>
                   <div
                     onClick={() => {
-                      setInputAmount(20);
+                      setInputAmount(
+                        Math.round(
+                          0.5 * Number(NumSplic1(LPTOKENBalance, 4)) * 10000
+                        ) / 10000
+                      );
                     }}
                   >
-                    20
+                    50%
                   </div>
                   <div
                     onClick={() => {
-                      setInputAmount(50);
+                      setInputAmount(
+                        Math.round(
+                          0.75 * Number(NumSplic1(LPTOKENBalance, 4)) * 10000
+                        ) / 10000
+                      );
                     }}
                   >
-                    50
+                    75%
                   </div>
                   <div
                     onClick={() => {
-                      setInputAmount(100);
+                      setInputAmount(
+                        Math.round(
+                          1 * Number(NumSplic1(LPTOKENBalance, 4)) * 10000
+                        ) / 10000
+                      );
                     }}
                   >
-                    100
+                    100%
                   </div>
                 </PercentageBox>
               </LiquidityItem>
@@ -562,7 +579,7 @@ export default function Rank() {
             <SwapItemBottom>
               <MyHold>
                 <div>
-                  已持仓
+                  {t("已持仓")}
                   <div className="value">
                     {CurrentLP?.pledgeUser?.pledgeNum ?? 0}
                   </div>
@@ -571,14 +588,14 @@ export default function Rank() {
                   <div className="value oddValue"> +</div>
                 </div>
                 <div>
-                  增加持仓
+                  {t("增加持仓")}
                   <div className="value">{InputAmount ?? 0}</div>
                 </div>
                 <div>
                   <div className="value oddValue"> =</div>
                 </div>
                 <div>
-                  我的持仓
+                  {t("我的持仓")}
                   <div className="value">
                     {Number(CurrentLP?.pledgeUser?.pledgeNum ?? 0) +
                       Number(InputAmount ?? 0)}

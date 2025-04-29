@@ -1,3 +1,4 @@
+  //@ts-ignore
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -211,7 +212,7 @@ const SetBox = styled.div`
     border-radius: 16px;
     opacity: 1;
     background: #383e45;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 14px;
     font-weight: 500;
     line-height: normal;
@@ -238,7 +239,7 @@ const SetBox = styled.div`
     border-radius: 124px;
     opacity: 1;
     background: #f4c134;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 14px;
     font-weight: 500;
     line-height: 14px;
@@ -282,7 +283,7 @@ const SetBox = styled.div`
           display: flex;
           align-items: center;
           justify-content: flex-start;
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 14px;
           font-weight: 500;
           line-height: normal;
@@ -451,7 +452,7 @@ const MobileSlider_Menu = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 16px;
     font-weight: normal;
     line-height: normal;
@@ -486,7 +487,7 @@ const MobileSlider_Menu = styled.div`
       padding-left: 24px;
       > div {
         > div {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 16px;
           font-weight: normal;
           line-height: normal;
@@ -507,7 +508,7 @@ const NavContainer = styled(FlexBox)`
   flex: 1;
   /* padding: 0px 35.5px ; */
   .menu {
-    font-family: MiSans;
+    font-family: "MiSans";
     font-size: 16px;
     font-weight: normal;
     line-height: normal;
@@ -540,7 +541,7 @@ const NodePartner = styled(FlexCCBox)<{ src: string }>`
   background-position: center;
   background-size: 100% 100%; //根据你图片的大小自定义
   background-repeat: no-repeat;
-  font-family: MiSans;
+  font-family: "MiSans";
   font-size: 16px;
   font-weight: 500;
   line-height: normal;
@@ -562,7 +563,7 @@ const NodePartner = styled(FlexCCBox)<{ src: string }>`
 const SelectMenu = styled(FlexBox)`
   min-width: 200px;
   padding: 12px 15px;
-  font-family: MiSans;
+  font-family: "MiSans";
   font-size: 14px;
   font-weight: normal;
   line-height: normal;
@@ -804,7 +805,7 @@ const MainLayout: any = () => {
       img: wallet_img0_1,
     },
     {
-      value: "绑定推荐码",
+      value: !!UserInfo?.isBind ? "已绑定" : "绑定推荐码",
       key: "wallet_item1",
       img: wallet_img1,
     },
@@ -821,7 +822,7 @@ const MainLayout: any = () => {
   ];
   let ChainObj = [
     {
-      value: "BNB Chain",
+      value: isMain ? "BNB Chain" : "BSC Testnet",
       chainId: curentBSCChainId,
       key: "chain_item1",
       img: chain_img1,
@@ -954,29 +955,26 @@ const MainLayout: any = () => {
                 onClick={() => {
                   new Contracts(walletProvider);
                   if (item?.chainId === curentBSCChainId) {
+                    debugger;
                     switchNetwork(
                       isMain ? customNetwork_BSC : customNetwork_BSC_TEST
                     );
-                  } else if (item?.chainId === curentUNIChainId) {
-                    // debugger;
-                    // window?.ethereum?.request({
-                    //   method: "wallet_addEthereumChain",
-                    //   params: [NETWORK_PARAMS],
-                    // });
-
-                    try {
-                      // 请求添加网络
-                      window.ethereum.request({
-                        method: "wallet_addEthereumChain",
-                        params: [NETWORK_PARAMS],
-                      });
-                    } catch (error) {
-                      console.error("Error adding network:", error);
-                    }
-                    switchNetwork(
-                      isMain ? customNetwork_UNI : customNetwork_UNI_TEST
-                    );
-                  } else {
+                  }
+                  // else if (item?.chainId === curentUNIChainId) {
+                  //   try {
+                  //     // 请求添加网络
+                  //     window.ethereum.request({
+                  //       method: "wallet_addEthereumChain",
+                  //       params: [NETWORK_PARAMS],
+                  //     });
+                  //   } catch (error) {
+                  //     console.error("Error adding network:", error);
+                  //   }
+                  //   switchNetwork(
+                  //     isMain ? customNetwork_UNI : customNetwork_UNI_TEST
+                  //   );
+                  // }
+                  else {
                     return addMessage(t("Coming soon"));
                   }
                 }}
@@ -1292,7 +1290,8 @@ const MainLayout: any = () => {
                 }}
               >
                 <img src={hotIcon} alt="" />
-                {t("空投季")}
+                {t("Alpha")}
+                {/* {t("空投季")} */}
               </NodePartner>
               <div
                 className={
@@ -1337,6 +1336,8 @@ const MainLayout: any = () => {
                   String(ItemActive) === "/Bridge" ? "active menu" : "menu"
                 }
                 onClick={() => {
+                  return addMessage("Coming soon");
+
                   Navigate("/View/Bridge");
                 }}
               >
@@ -1353,6 +1354,19 @@ const MainLayout: any = () => {
                 }}
               >
                 DAO
+              </div>
+              <div
+                className={
+                  String(ItemActive) === "/Dao" ? "active menu" : "menu"
+                }
+                onClick={() => {
+                  window.open(
+                    window.location.origin +
+                      "/PIJSwap Finance Whitepaper Version 1.0.pdf"
+                  );
+                }}
+              >
+                {t("WhitePaper")}
               </div>
             </NavContainer>
           )}
@@ -1535,7 +1549,8 @@ const MainLayout: any = () => {
                 }}
               >
                 <img src={hotIcon} alt="" />
-                {t("空投季")}
+                {t("Alpha")}
+                {/* {t("空投季")} */}
               </NodePartner>
             </div>
 
@@ -1585,6 +1600,8 @@ const MainLayout: any = () => {
                 String(ItemActive) === "/Bridge" ? "active menu" : "menu"
               }
               onClick={() => {
+                return addMessage("Coming soon");
+
                 Navigate("/View/Bridge");
                 setShowMask(false);
               }}
@@ -1600,6 +1617,18 @@ const MainLayout: any = () => {
               }}
             >
               DAO
+            </div>
+            <div
+              className={String(ItemActive) === "/Dao" ? "active menu" : "menu"}
+              onClick={() => {
+                setShowMask(false);
+                window.open(
+                  window.location.origin +
+                    "/PIJSwap Finance Whitepaper Version 1.0.pdf"
+                );
+              }}
+            >
+              {t("WhitePaper")}
             </div>
 
             <div

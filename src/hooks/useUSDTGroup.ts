@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import { useCallback, useEffect, useState } from "react";
 import Web3 from "web3";
-import { addMessage, showLoding, decimalNum } from "../utils/tool";
+import { addMessage, showLoding, decimalNum, NumSplic1 } from "../utils/tool";
 import { t } from "i18next";
 import { Contracts } from "../web3";
 import { useNoGas } from "./useNoGas";
@@ -45,7 +45,7 @@ export default function useUSDTGroup(
       console.log(balance, "balance");
 
       setTOKENBalance(
-        decimalNum(Web3.utils.fromWei(!!balance ? balance.toString() : "0"), 2)
+        decimalNum(Web3.utils.fromWei(!!balance ? balance.toString() : "0"), 6)
       );
     }
   }, [web3ModalAccount, contractAddress, tokenAddress]);
@@ -136,13 +136,14 @@ export default function useUSDTGroup(
       onDoingFun: () => void,
       failFun: () => void
     ) => {
-      if (Number(TOKENBalance) >= Number(price)) {
-        if (Number(TOKENAllowance) >= Number(price)) {
+      if (Number(TOKENBalance) >= Number(NumSplic1(price, 4))) {
+        if (Number(TOKENAllowance) >= Number(NumSplic1(price, 4))) {
           await transactionCallBack(handleUSDTRefresh);
         } else {
           await handleApprove(price, transactionCallBack, onDoingFun, failFun);
         }
       } else {
+        // debugger
         addMessage(`${symbol} ${t("Insufficient balance")}`);
       }
     },

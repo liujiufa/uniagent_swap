@@ -12,7 +12,7 @@
       border-radius: 6px;
       background: #1f2021;
       div {
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 14px;
         font-weight: 500;
         line-height: normal;
@@ -31,7 +31,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 14px;
       font-weight: 500;
       line-height: normal;
@@ -65,7 +65,7 @@
               display: flex;
               align-items: center;
               justify-content: center;
-              font-family: MiSans;
+              font-family: "MiSans";
               font-size: 14px;
               font-weight: 500;
               line-height: normal;
@@ -84,7 +84,7 @@
         border-radius: 6px;
         background: #393a3b;
         padding: 8px 16px 8px 24px;
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 14px;
         font-weight: 500;
         line-height: normal;
@@ -117,7 +117,7 @@
       .item_title {
         display: flex;
         align-items: center;
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 16px;
         font-weight: 500;
         line-height: normal;
@@ -161,7 +161,7 @@
           flex: 1;
           .tag {
             width: fit-content;
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 14px;
             font-weight: normal;
             line-height: normal;
@@ -172,7 +172,7 @@
             background: #292a2b;
           }
           .amount {
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 16px;
             font-weight: 600;
             line-height: normal;
@@ -182,7 +182,7 @@
             margin-top: 12px;
           }
           .value {
-            font-family: MiSans;
+            font-family: "MiSans";
             font-size: 12px;
             font-weight: normal;
             line-height: normal;
@@ -221,7 +221,7 @@
     }
     .filter_box .filter_box_left {
       div {
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 12px;
         font-weight: 500;
         line-height: normal;
@@ -234,7 +234,7 @@
       }
     }
     .filter_box .filter_box_right {
-      font-family: MiSans;
+      font-family: "MiSans";
       font-size: 12px;
       font-weight: 500;
       line-height: normal;
@@ -242,7 +242,7 @@
       letter-spacing: normal;
       color: #c5ccd4;
       .CoinBox {
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 12px;
         font-weight: 500;
         line-height: normal;

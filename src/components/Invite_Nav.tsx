@@ -17,7 +17,7 @@ import styled from "styled-components";
 
 const WalletTip = styled.div`
   margin: 20px 0px 16px;
-  font-family: MiSans;
+  font-family: "MiSans";
   font-size: 18px;
   font-weight: 500;
   line-height: normal;
@@ -81,15 +81,13 @@ const InviteNav = (props: any) => {
   return (
     <div className="invite_container">
       <div className="my_invite_title">
-        我的邀请码
+        {t("我的邀请码")}
         <div className="my_invite_content">
-          分享你的邀请码，邀请更多人参与，您将获得 15% 的挖矿收益以及 5%
-          的节点返佣奖励！分享你的邀请码，邀请更多人参与，您将获得 15%
-          的挖矿收益以及 5% 的节点返佣奖励！
+          {t("分享你的邀请码，邀请更多人参与，您将获得")}
           {!!token ? (
             <div className="invite_box">
               <div className="invite_box_left item">
-                邀请码
+                {t("邀请码")}
                 <div>
                   {String(props?.userInfo?.inviteCode)}{" "}
                   <img
@@ -102,7 +100,7 @@ const InviteNav = (props: any) => {
                 </div>
               </div>
               <div className="invite_box_right item">
-                邀请链接
+                {t("邀请链接")}
                 <div>
                   {window.location.origin +
                     `?inviteCode=${props?.userInfo?.inviteCode}`}{" "}
@@ -129,11 +127,11 @@ const InviteNav = (props: any) => {
         {width > 768 ? (
           <div className="table">
             <div className="table_title items">
-              <div className="item">Number</div>
-              <div className="item">Address</div>
-              <div className="item">Contribution USDT</div>
-              <div className="item">Contribution PIJS</div>
-              <div className="item">Contribution πPionts</div>
+              <div className="item">{t("Number")}</div>
+              <div className="item">{t("Address")}</div>
+              <div className="item">{t("Contribution")} USDT</div>
+              <div className="item">{t("Contribution")} PIJS</div>
+              <div className="item">{t("Contribution")} πPionts</div>
             </div>
             {RecordList3?.list?.map((item: any, index: any) => (
               <div className="table_content items" key={index}>
@@ -157,15 +155,16 @@ const InviteNav = (props: any) => {
                 </div>
                 <div className="mobile_table_item_bottom">
                   <div className="item">
-                    <div>Contribution USDT</div>
+                    <div>{t("Contribution")} USDT</div>
                     {item?.num}
                   </div>
                   <div className="item">
-                    <div>Contribution PIJS</div>
+                    <div>{t("Contribution")} PIJS</div>
                     {item?.pijsNum}
                   </div>
                   <div className="item">
-                    <div>Contribution πPionts</div>1{item?.piontsNum}00
+                    <div>{t("Contribution")} πPionts</div>
+                    {item?.piontsNum}
                   </div>
                 </div>
               </div>

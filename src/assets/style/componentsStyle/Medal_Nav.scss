@@ -15,13 +15,14 @@
       img {
         width: 100%;
       }
+
       div {
         margin-top: 16px;
         background: #1f2021;
         border-radius: 6px;
         background: #393a3b;
         padding: 8px;
-        font-family: MiSans;
+        font-family: "MiSans";
         font-size: 12px;
         font-weight: normal;
         line-height: 16px;
@@ -30,6 +31,7 @@
         color: #c5ccd4;
       }
     }
+
     .no_margin_left {
       margin-right: 0px;
     }
@@ -53,7 +55,7 @@
           border-radius: 8px;
         }
         div {
-          font-family: MiSans;
+          font-family: "MiSans";
           font-size: 10px;
           font-weight: normal;
           line-height: 16px;

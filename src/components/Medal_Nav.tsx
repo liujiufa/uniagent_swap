@@ -5,6 +5,8 @@ import { Dropdown, Menu } from "antd";
 import { useTranslation } from "react-i18next";
 import dropDownIcon from "../assets/image/layout/dropDownIcon.png";
 import medal_img from "../assets/image/PersonCenter/medal_img.png";
+import normal_medal from "../assets/image/PersonCenter/normal_medal.png";
+import super_medal from "../assets/image/PersonCenter/super_medal.png";
 import pijsIcon from "../assets/image/Swap/pijsIcon.png";
 import { getMedalInfo } from "../API";
 import { useSelector } from "react-redux";
@@ -38,16 +40,16 @@ const InviteNav = () => {
             <div>πConnect Badge</div>
           </div>
         )}
-        {Number(MedalInfo?.nodeType) === 1 && (
-          <div className={"item no_margin_left"}>
-            <img src={medal_img} alt="" />
-            <div>普通节点</div>
+        {Number(MedalInfo?.nodeType) === 2 && (
+          <div className={"item no_margin_left no_the_last_big"}>
+            <img src={normal_medal} alt="" />
+            <div>{t("普通节点")}</div>
           </div>
         )}
-        {Number(MedalInfo?.nodeType) === 2 && (
-          <div className={"item no_margin_left"}>
-            <img src={medal_img} alt="" />
-            <div>超级节点</div>
+        {Number(MedalInfo?.nodeType) === 1 && (
+          <div className={"item no_margin_left no_the_last_big"}>
+            <img src={super_medal} alt="" />
+            <div>{t("超级节点")}</div>
           </div>
         )}
       </div>

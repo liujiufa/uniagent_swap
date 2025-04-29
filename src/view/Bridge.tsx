@@ -992,7 +992,7 @@ export default function Rank() {
               <SwapItem_Title>
                 {t("发送")}{" "}
                 <div>
-                  {t("余额")}: {TOKENBalance ?? "0"}{" "}
+                  {t("余额")}: {NumSplic1(TOKENBalance, 4) ?? "0"}{" "}
                   <span
                     onClick={() => {
                       setFromInputAmount(TOKENBalance);

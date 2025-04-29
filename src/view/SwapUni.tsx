@@ -60,6 +60,7 @@ import {
   useAppKit,
   useAppKitAccount,
   useAppKitNetwork,
+  useAppKitProvider,
   useAppKitState,
   useDisconnect,
 } from "@reown/appkit/react";
@@ -1037,6 +1038,8 @@ export default function Rank() {
   const { selectedNetworkId } = useAppKitState();
   const { caipNetwork, caipNetworkId, chainId, switchNetwork } =
     useAppKitNetwork();
+  const { walletProvider } = useAppKitProvider("eip155");
+
   const [IsBindState, setIsBindState] = useState(false);
   const { token } = useSelector<stateType, stateType>((state) => state);
   const [Tip, setTip] = useState("");
@@ -1225,7 +1228,7 @@ export default function Rank() {
         let value: any = 0;
         if (String(item?.name) === "UAC") {
           try {
-            value = await Contracts.example.getBalance(
+            value = await Contracts.example?.getBalance(
               web3ModalAccount as string
             );
           } catch (error: any) {}
@@ -1513,7 +1516,6 @@ export default function Rank() {
   };
   // 原生代币和ERC-20代币
   const AddLiquidityFun = async () => {
-    // return addMessage(t("Coming soon"));
     let USDTAmount =
       String(AddLiquidityToken1) === "USDT"
         ? AddLiquidityTokenAmount1
@@ -1534,7 +1536,7 @@ export default function Rank() {
         try {
           if (!!(await isNoGasFun())) return;
           setTip(
-            t("Adding UAC-USDT LP", {
+            t("Adding UACUSDT LP", {
               AddLiquidityToken1: AddLiquidityToken1,
               AddLiquidityToken2: AddLiquidityToken2,
             })
@@ -1584,7 +1586,7 @@ export default function Rank() {
           setShowAddLiquiditySuccessTipModal(true);
           setTitle(t("Liquidity Added Successfully"));
           return setTip(
-            t("Received 12.0000 UAC-USDT LP", {
+            t("Received 12.0000 UACUSDT LP", {
               amount: NumSplic1(EthertoWei(lastEvent?.value ?? "0"), 4),
               AddLiquidityToken1: AddLiquidityToken1,
               AddLiquidityToken2: AddLiquidityToken2,
@@ -1617,7 +1619,7 @@ export default function Rank() {
     try {
       if (!!(await isNoGasFun())) return;
       setTip(
-        t("Adding UAC-USDT LP", {
+        t("Adding UACUSDT LP", {
           AddLiquidityToken1: AddLiquidityToken1,
           AddLiquidityToken2: AddLiquidityToken2,
         })
@@ -1663,7 +1665,7 @@ export default function Rank() {
       setShowAddLiquiditySuccessTipModal(true);
       setTitle(t("Liquidity Added Successfully"));
       return setTip(
-        t("Received 12.0000 UAC-USDT LP", {
+        t("Received 12.0000 UACUSDT LP", {
           amount: NumSplic1(EthertoWei(lastEvent?.value ?? "0"), 4),
           AddLiquidityToken1: AddLiquidityToken1,
           AddLiquidityToken2: AddLiquidityToken2,
@@ -1677,8 +1679,6 @@ export default function Rank() {
   };
 
   const RemoveLiquidityFun = async () => {
-    // return addMessage(t("Coming soon"));
-
     LPhandleTransaction(
       (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
         Number(LPBalance ?? 0) +
@@ -1918,6 +1918,15 @@ export default function Rank() {
       CurrentAddLiquidityToken2?.tokenAddress,
       CurrentAddLiquidityToken1?.contractAddress
     );
+
+    let LPbalance = await Contracts.example.balanceOf(
+      web3ModalAccount as string,
+      lpAddress
+    );
+    let lpAllAmount: any = await Contracts.example?.totalsupply(
+      web3ModalAccount as string,
+      contractAddress.LPToken
+    );
     let LiquidityTokenBalance1: any = await Contracts.example.balanceOf(
       lpAddress as string,
       CurrentAddLiquidityToken1?.tokenAddress
@@ -1926,8 +1935,16 @@ export default function Rank() {
       lpAddress as string,
       CurrentAddLiquidityToken2?.tokenAddress
     );
-    setAddLiquidityTokenBalance1(EthertoWei(LiquidityTokenBalance1 ?? "0"));
-    setAddLiquidityTokenBalance2(EthertoWei(LiquidityTokenBalance2 ?? "0"));
+    setAddLiquidityTokenBalance1(
+      (LPbalance / lpAllAmount) *
+        Number(EthertoWei(LiquidityTokenBalance1 ?? "0")) +
+        ""
+    );
+    setAddLiquidityTokenBalance2(
+      (LPbalance / lpAllAmount) *
+        Number(EthertoWei(LiquidityTokenBalance2 ?? "0")) +
+        ""
+    );
   };
 
   const getContractData = async () => {
@@ -2011,6 +2028,9 @@ export default function Rank() {
     handleUSDTRefresh();
   }, [web3ModalAccount, token, chainId]);
   useEffect(() => {
+    if (!web3ModalAccount) return;
+    new Contracts(walletProvider);
+
     getCoinList();
   }, [
     TabActive,
@@ -2184,6 +2204,7 @@ export default function Rank() {
                   CurrentAddLiquidity2handleUSDTRefresh();
                   call();
                   setShowTipModal(false);
+                  return addMessage(AddLiquidityToken1 + " " + t("授权成功"));
                 },
                 () => {
                   setTip(
@@ -2221,6 +2242,8 @@ export default function Rank() {
                   CurrentAddLiquidity2handleUSDTRefresh();
                   call();
                   setShowTipModal(false);
+                  return addMessage(AddLiquidityToken2 + " " + t("授权成功"));
+
                   // debugger;
                 },
                 () => {
@@ -2508,7 +2531,14 @@ export default function Rank() {
                   </Item>
                 </SwapItem>
                 <SwapToIcon>
-                  <img src={toSwaps} alt="" />
+                  <img
+                    src={toSwaps}
+                    alt=""
+                    onClick={() => {
+                      setFromToken(ToToken);
+                      setToToken(FromToken);
+                    }}
+                  />
                 </SwapToIcon>
 
                 <SwapItem>
@@ -2603,7 +2633,7 @@ export default function Rank() {
                 >
                   {" "}
                   <img src={toIcon} alt="" />{" "}
-                  {t("Remove UAC-USDT Liquidity", {
+                  {t("Remove UACUSDT Liquidity", {
                     coin1: AddLiquidityToken1,
                     coin2: AddLiquidityToken2,
                   })}
@@ -2842,8 +2872,8 @@ export default function Rank() {
                       <SwapInfo_Item>
                         <SwapInfo_Item_Left>
                           <div>
-                            <img src={roundIcon} alt="" />
-                            <img src={roundIcon} alt="" />
+                            <img src={CurrentAddLiquidityToken1?.icon} alt="" />
+                            <img src={CurrentAddLiquidityToken2?.icon} alt="" />
                             {AddLiquidityToken1}-{AddLiquidityToken2} V2 LP
                           </div>
                           {NumSplic1(LPBalance, 4)}LP

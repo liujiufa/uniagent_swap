@@ -56,21 +56,27 @@ export class Contracts {
       );
     }
   }
-  //合约的方法
-
   //查询gas
   getGasPrice(addr: string) {
     return this.web3.eth.getGasPrice();
   }
   //查询BNB余额
   getBalance(addr: string) {
-    return this.web3.eth.getBalance(addr);
+    return this.web3.eth?.getBalance(addr);
   }
+
   //查询余额
   balanceOf(addr: string, tokenAddress: string) {
     let obj = new this.web3.eth.Contract(abiObj["USDTBSC"], tokenAddress);
     // debugger;
     return obj?.methods.balanceOf(addr).call({ from: addr });
+  }
+  //查询总量
+  totalsupply(addr: string, tokenAddress: string) {
+    let obj = new this.web3.eth.Contract(abiObj["USDTBSC"], tokenAddress);
+    // debugger;
+    debugger;
+    return obj?.methods.totalSupply().call({ from: addr });
   }
   //查询授权
   Tokenapprove(addr: string, toaddr: string, tokenAddress: string) {
@@ -446,4 +452,26 @@ export class Contracts {
       .unstakePIJS(LPamounted)
       .send({ from: addr, gasPrice: "2000000000" });
   }
+
+  // const Test = {
+  //   USDTBSC: "0x60B7f60C6e81FE76faC9178085597Bb59ED09569",
+  //   BridgeBSC: "0x31221fBcCa8d331E867dd44B9a01086aF35ad851",
+  //   USDTUNI: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
+  //   BridgeUNI: "0x69B92335D53C6fe719169BD4BDeffd6ED2833a4a",
+  //   PIJSBSC: "0x1207c978eC4f4c17274625455C1dad4c18263f80",
+  //   PiBSC: "0xBda69B1320e7FEa4b16Ac82aD60116e0424A006f",
+  //   UACFactory: "0x82d3B7112eFD2127cD1eE771286D1cA1Ee3EfC2a",
+  //   WUAC: "0xFB572Ae3f87E322f65D2869e08a8b283501614aF",
+  //   UACRouter: "0xf9D1e5Ce5b2851625A9E73859b15A14bbad39dC8",
+
+  //   WBNB: "0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd",
+  //   PIJSFactory: "0x85e3bF8fD6234b9AA278a7C3738A254861bDAe02",
+  //   PIJSRouter: "0x3fc1d9B004387d8464F1e89a471D226194d88F90",
+
+  //   NodeDistribute: "0x3e6095Cd5eD6d0ff13EE4526FBF99756C708ff3e",
+  //   StakingRewardDistribute: "0x80dC5C850336f31473F8e3b0ee827cD3B1dA8410",
+  //   // LP&&单币
+  //   LPPledge: "0x62fad1cDd070B2933A65724d4C7f9477594ED631",
+  //   LPToken: "0xbd3F777431363B39ACDf41bdfe5668fe4ED64cC5",
+  // };
 }
