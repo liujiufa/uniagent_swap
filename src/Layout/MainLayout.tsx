@@ -1,4 +1,4 @@
-  //@ts-ignore
+//@ts-ignore
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -787,8 +787,7 @@ const MainLayout: any = () => {
     setOpenList(Arr);
     console.log(Arr, "Arr");
   };
-  // const initalToken =
-  //   "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI1ODkyIiwic3ViIjoie1widXNlckFkZHJlc3NcIjpcIjB4YjdhY2NiZjQ5ZDMyZjY4MDA0OWRiMDQ0YjhlZmIxZTJmMTgzMzVhZlwiLFwiaWRcIjo1ODkyfSIsImlzcyI6ImFkbWluIiwiaWF0IjoxNzI5NjY2MTcyLCJleHAiOjE3NjA3NzAxNzJ9.muZSze-DNH4RkqBRYQkqh-_HxLuBceKlKjiTHF85Am0";
+
   const initalToken = localStorage.getItem(
     (web3ModalAccount as string)?.toLowerCase()
   );
@@ -925,6 +924,10 @@ const MainLayout: any = () => {
                     dispatch(
                       createLoginSuccessAction(web3ModalAccount as string, "")
                     );
+                    localStorage.setItem(
+                      (web3ModalAccount as string)?.toLowerCase(),
+                      ""
+                    );
                   }
                 }
               }}
@@ -955,7 +958,6 @@ const MainLayout: any = () => {
                 onClick={() => {
                   new Contracts(walletProvider);
                   if (item?.chainId === curentBSCChainId) {
-                    debugger;
                     switchNetwork(
                       isMain ? customNetwork_BSC : customNetwork_BSC_TEST
                     );
@@ -1041,40 +1043,45 @@ const MainLayout: any = () => {
     async (inviteCode = "", NewUserState = false) => {
       if (web3ModalAccount) {
         // debugger;
-        await signFun((res: any) => {
-          Login({
-            ...res,
-            userAddress: web3ModalAccount as string,
-            chainName: loginNetworkId.find(
-              (item: any) => Number(item?.id) === Number(chainId)
-            )?.name,
-            inviteCode: inviteCode,
-          }).then((res: any) => {
-            if (res.code === 200) {
-              showLoding(false);
-              // debugger;
-              dispatch(
-                createLoginSuccessAction(
-                  web3ModalAccount as string,
+        if (!initalToken) {
+          await signFun((res: any) => {
+            Login({
+              ...res,
+              userAddress: web3ModalAccount as string,
+              chainName: loginNetworkId.find(
+                (item: any) => Number(item?.id) === Number(chainId)
+              )?.name,
+              inviteCode: inviteCode,
+            }).then((res: any) => {
+              if (res.code === 200) {
+                showLoding(false);
+                // debugger;
+                dispatch(
+                  createLoginSuccessAction(
+                    web3ModalAccount as string,
+                    res.data.token
+                  )
+                );
+                localStorage.setItem(
+                  (web3ModalAccount as string)?.toLowerCase(),
                   res.data.token
-                )
-              );
-
-              localStorage.setItem(
-                (web3ModalAccount as string)?.toLowerCase(),
-                res.data.token
-              );
-              getInitData();
-              if (!!res?.data?.isLoginReferee && !!inviteCode) {
-                return addMessage(t("推荐码已绑定"));
+                );
+                getInitData();
+                if (!!res?.data?.isLoginReferee && !!inviteCode) {
+                  return addMessage(t("推荐码已绑定"));
+                }
+              } else {
+                disconnect();
+                showLoding(false);
+                addMessage(res.msg);
               }
-            } else {
-              disconnect();
-              showLoding(false);
-              addMessage(res.msg);
-            }
-          });
-        }, `userAddress=${web3ModalAccount as string}`);
+            });
+          }, `userAddress=${web3ModalAccount as string}`);
+        } else {
+          dispatch(
+            createLoginSuccessAction(web3ModalAccount as string, initalToken)
+          );
+        }
       }
     },
     [web3ModalAccount, chainId]
@@ -1232,15 +1239,6 @@ const MainLayout: any = () => {
 
   useEffect(() => {
     if (chainId) {
-      // debugger;
-      console.log(
-        chainId,
-        ChainObj?.find(
-          (item: any) => Number(item?.chainId) === Number(chainId)
-        ),
-        ChainObj,
-        "chainId"
-      );
       if (
         Object.keys(
           ChainObj?.find(

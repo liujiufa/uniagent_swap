@@ -1702,9 +1702,10 @@ export default function Rank() {
                 ?.filter((item: any) => item?.chainId === chainId)
                 ?.find((item: any) => String(item?.name) === String("USDT"))
                 ?.tokenAddress,
-              (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
-                Number(LPBalance ?? 0) +
-                "",
+              NumSplic1(
+                (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
+                  Number(LPBalance ?? 0)
+              ) + "",
               CurrentAddLiquidityToken1?.Router
             );
           } else {
@@ -1713,9 +1714,10 @@ export default function Rank() {
               web3ModalAccount as string,
               CurrentAddLiquidityToken1?.tokenAddress,
               CurrentAddLiquidityToken2?.tokenAddress,
-              (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
-                Number(LPBalance ?? 0) +
-                "",
+              NumSplic1(
+                (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
+                  Number(LPBalance ?? 0)
+              ) + "",
               CurrentAddLiquidityToken1?.Router
             );
           }

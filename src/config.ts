@@ -16,8 +16,7 @@ export const curentUNIChainId = isMain ? 656898 : 656898;
 export const LOCAL_KEY = "PIJS_LANG";
 export let baseUrl: string = isMain
   ? window.location.origin + "/api/"
-  : "http://47.129.204.7/api/";
-// "https://alpha.pijswap.com/api/";
+  : "https://alpha.pijswap.com/api/";
 
 export let ContractUrl: string = isMain
   ? "https://bscscan.com/address/"
