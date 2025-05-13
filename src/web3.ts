@@ -74,8 +74,7 @@ export class Contracts {
   //查询总量
   totalsupply(addr: string, tokenAddress: string) {
     let obj = new this.web3.eth.Contract(abiObj["USDTBSC"], tokenAddress);
-    // debugger;
-    debugger;
+
     return obj?.methods.totalSupply().call({ from: addr });
   }
   //查询授权

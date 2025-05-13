@@ -1399,7 +1399,7 @@ export default function Rank() {
           () => {
             setTip(
               t("Approve 100.0000 USDT", {
-                num: InputAmount,
+                num: NumSplic1(InputAmount),
                 coin: FromToken,
               })
             );
@@ -1502,7 +1502,7 @@ export default function Rank() {
         () => {
           setTip(
             t("Approve 100.0000 USDT", {
-              num: InputAmount,
+              num: NumSplic1(InputAmount),
               coin: FromToken,
             })
           );
@@ -1601,7 +1601,7 @@ export default function Rank() {
       () => {
         setTip(
           t("Approve 100.0000 USDT", {
-            num: USDTAmount,
+            num: NumSplic1(USDTAmount),
             coin: "USDT",
           })
         );
@@ -1760,9 +1760,10 @@ export default function Rank() {
       () => {
         setTip(
           t("Approve 100.0000 UAC-USDT", {
-            num:
+            num: NumSplic1(
               (parseFloat(String(PercentValue)?.replace("%", "")) / 100) *
-              Number(LPBalance ?? 0),
+                Number(LPBalance ?? 0)
+            ),
             token1: AddLiquidityToken1,
             token2: AddLiquidityToken2,
           })
@@ -2209,7 +2210,7 @@ export default function Rank() {
                 () => {
                   setTip(
                     t("Approve 100.0000 USDT", {
-                      num: AddLiquidityTokenAmount1,
+                      num: NumSplic1(AddLiquidityTokenAmount1),
                       coin: AddLiquidityToken1,
                     })
                   );
@@ -2249,7 +2250,7 @@ export default function Rank() {
                 () => {
                   setTip(
                     t("Approve 100.0000 USDT", {
-                      num: AddLiquidityTokenAmount2,
+                      num: NumSplic1(AddLiquidityTokenAmount2),
                       coin: AddLiquidityToken2,
                     })
                   );
@@ -2867,7 +2868,7 @@ export default function Rank() {
 
                 <SwapInfo>
                   <SwapInfo_Title>{t("Your Position")}</SwapInfo_Title>
-                  {Number(LPBalance) > 0 ? (
+                  {Number(NumSplic1(LPBalance, 4)) > 0 ? (
                     <SwapInfo_Content>
                       <SwapInfo_Item>
                         <SwapInfo_Item_Left>

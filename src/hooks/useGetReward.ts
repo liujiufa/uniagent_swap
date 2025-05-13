@@ -34,13 +34,17 @@ export const useGetReward = () => {
             return addMessage(t("failed"));
           }
         }
-        onFailed();
         if (!!value?.status) {
           // addMessage(t("Received successfully"));
-          await callbackFun();
+          setTimeout(async () => {
+            onFailed();
+            await callbackFun();
+          }, 5000);
         } else if (value?.status === false) {
           onFailed();
           // addMessage(t("failed"));
+        } else {
+          onFailed();
         }
       } else {
         onFailed();

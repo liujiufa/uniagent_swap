@@ -449,7 +449,7 @@ export default function Rank() {
       () => {
         setTip(
           t("1000000LP", {
-            num: Number(Amount ?? 0),
+            num: NumSplic1(Number(Amount ?? 0)),
           })
         );
         setShowTipModal(true);

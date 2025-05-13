@@ -207,11 +207,7 @@ const InviteNav = () => {
                       $
                       {NumSplic1(
                         Number(item?.pledgeUser?.earnNum) *
-                          Number(
-                            FilterActive === 1
-                              ? PriceInfo?.lpPrice
-                              : PriceInfo?.pijsPrice
-                          ),
+                          Number(PriceInfo?.pijsPrice),
                         4
                       )}
                     </div>

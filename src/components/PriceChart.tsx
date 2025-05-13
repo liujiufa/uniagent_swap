@@ -5,7 +5,7 @@ import { tokenList } from "../view/SwapUni";
 import styled from "styled-components";
 import { FlexBox, FlexSBCBox } from "./FlexBox";
 import { getKineData } from "../API";
-import { dateFormat } from "../utils/tool";
+import { NumSplic1, dateFormat } from "../utils/tool";
 import nodata from "../assets/image/Swap/nodata.png";
 import { curentUNIChainId } from "../config";
 import { useAppKitNetwork } from "@reown/appkit/react";
@@ -136,12 +136,12 @@ export default function PriceChart(props: any) {
   const [ChartData, setChartData] = useState<any>([]);
   const { caipNetwork, caipNetworkId, chainId, switchNetwork } =
     useAppKitNetwork();
-  let TokenObj: any = tokenList?.find(
-    (item: any) =>
-      String(item?.name) ===
-      String(chainId === curentUNIChainId ? "UAC" : props?.FromCoinName)
-    // (item: any) => String(item?.name) === String(props?.FromCoinName)
+  const [TokenObj, setTokenObj] = useState<any>(
+    tokenList?.find(
+      (item: any) => String(item?.name) === String(props?.FromCoinName)
+    )
   );
+
   let getOption = () => {
     let option = {
       xAxis: {
@@ -260,7 +260,33 @@ export default function PriceChart(props: any) {
       String(props?.FromCoinName) === "UAC" ||
       String(props?.ToCoinName) === "UAC"
     ) {
+      setTokenObj(
+        tokenList?.find((item: any) => String(item?.name) === String("UAC"))
+      );
       getKineData("UAC", Time).then((res: any) => {
+        setChartData(res?.data || []);
+        if (Number(Time) === 1) {
+          setTimeString(
+            res?.data.map((item: any) =>
+              dateFormat("mm-dd HH:MM", new Date(item.createTime))
+            )
+          );
+        } else {
+          setTimeString(
+            res?.data.map((item: any) =>
+              dateFormat("mm-dd", new Date(item.createTime))
+            )
+          );
+        }
+      });
+    } else if (
+      String(props?.FromCoinName) === "PIJS" ||
+      String(props?.ToCoinName) === "PIJS"
+    ) {
+      setTokenObj(
+        tokenList?.find((item: any) => String(item?.name) === String("PIJS"))
+      );
+      getKineData("PIJS", Time).then((res: any) => {
         setChartData(res?.data || []);
         if (Number(Time) === 1) {
           setTimeString(
@@ -288,11 +314,11 @@ export default function PriceChart(props: any) {
       {ChartData.map((item: any) => item.price)?.length > 0 && (
         <PriceBox>
           $
-          {
+          {NumSplic1(
             ChartData.map((item: any) => item.price)[
               ChartData.map((item: any) => item.price)?.length - 1
             ]
-          }
+          )}
         </PriceBox>
       )}
       {ChartData.map((item: any) => item.price)?.length > 0 ? (

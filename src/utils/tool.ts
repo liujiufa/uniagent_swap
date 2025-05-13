@@ -75,7 +75,7 @@ export function NumSplic(val: any, len: number = 6) {
   return s;
 }
 // 不补0
-export function NumSplic1(val: any, len: number = 6) {
+export function NumSplic1(val: any, len: number = 4) {
   var f = parseFloat(val);
   if (isNaN(f)) {
     return "-";

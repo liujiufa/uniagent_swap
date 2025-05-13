@@ -52,8 +52,6 @@ import { useNoGas } from "../hooks/useNoGas";
 import ModalContent from "../components/ModalContent";
 import ModalContentSuccess from "../components/ModalContentSuccess";
 import { useGetReward } from "../hooks/useGetReward";
-import FromStakingMiningModal from "../components/FromStakingMiningModal";
-import ToStakingMiningModal from "../components/ToStakingMiningModal";
 import MainBg from "../assets/image/layout/MainBg.png";
 import pledge_bg from "../assets/image/Pledge/pledge_bg.png";
 import mainBgMobile from "../assets/image/layout/mainBgMobile.png";
@@ -251,7 +249,7 @@ export default function Rank() {
             setSuccessFulHash(res?.transactionHash);
             setShowTipModal(false);
             setShowSuccessTipModal(true);
-            return setTip(t("Bridge successful", { num: Amount }));
+            return setTip(t("Bridge successful", { num: NumSplic1(Amount) }));
             // setShowTipModal(true);
           } else if (res?.status === false) {
             setShowTipModal(false);
@@ -265,7 +263,7 @@ export default function Rank() {
       () => {
         setTip(
           t("Approve 100.0000 USDT (BSC)", {
-            num: FromInputAmount,
+            num: NumSplic1(FromInputAmount),
             chain: LinkType1,
           })
         );
@@ -563,7 +561,7 @@ export default function Rank() {
                   <div>
                     {" "}
                     {t("质押的流动性")}{" "}
-                    <span>${item?.pledgeTotalNum ?? "0"}</span>
+                    <span>${NumSplic1(item?.pledgeTotalNum) ?? "0"}</span>
                   </div>
                   <div>
                     {" "}
@@ -571,7 +569,7 @@ export default function Rank() {
                   </div>
                   <div>
                     {" "}
-                    APR <span>{item?.apr ?? "0"}%</span>
+                    APR <span>{NumSplic1(item?.apr) ?? "0"}%</span>
                   </div>
                 </div>
                 {MyBox(item)}

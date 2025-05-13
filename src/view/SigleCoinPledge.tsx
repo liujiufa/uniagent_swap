@@ -448,7 +448,7 @@ export default function Rank() {
       () => {
         setTip(
           t("批准 100.0000 PIJS", {
-            num: Number(InputAmount ?? 0),
+            num: NumSplic1(Number(InputAmount ?? 0)),
           })
         );
         setShowTipModal(true);

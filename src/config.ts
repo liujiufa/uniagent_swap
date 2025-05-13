@@ -12,11 +12,12 @@ import { defineChain } from "@reown/appkit/networks";
 // 正式
 export const isMain = false;
 export const curentBSCChainId = isMain ? 56 : 97;
-export const curentUNIChainId = isMain ? 656898 : 656231;
+export const curentUNIChainId = isMain ? 656898 : 656898;
 export const LOCAL_KEY = "PIJS_LANG";
 export let baseUrl: string = isMain
   ? window.location.origin + "/api/"
-  : "http://82.156.97.39:8880/";
+  : "http://47.129.204.7/api/";
+// "https://alpha.pijswap.com/api/";
 
 export let ContractUrl: string = isMain
   ? "https://bscscan.com/address/"
@@ -103,8 +104,8 @@ export const customNetwork_UNI = defineChain({
 });
 
 export const customNetwork_UNI_TEST = defineChain({
-  id: 656231,
-  caipNetworkId: "eip155:656231",
+  id: 656898,
+  caipNetworkId: "eip155:656898",
   chainNamespace: "eip155",
   name: "UNI",
   nativeCurrency: {
@@ -135,7 +136,7 @@ export const defaultNetwork: any = {
 };
 export const loginNetworkId = [
   { id: isMain ? 56 : 97, name: "BSC", bridgeChainId: 1 },
-  { id: isMain ? 656898 : 656231, name: "UniAgent", bridgeChainId: 2 },
+  { id: isMain ? 656898 : 656898, name: "UniAgent", bridgeChainId: 2 },
 ];
 
 export const NETWORK_PARAMS = {
@@ -209,4 +210,5 @@ const Test = {
   LPPledge: "0x598175B1C823bbADa7256763267e3ec8080f0178",
   LPToken: "0xB030F713f504645864c13A9E98942a40D93d7181",
 };
+
 export const contractAddress: contractAddressType = isMain ? Main : Test;

@@ -597,52 +597,6 @@ export default function ModalContent(props: any) {
       }
     }, 8000);
   };
-  const inputFun = (amount: any, num = 0) => {
-    let amounted: any = Number(amount) + num;
-    // debugger;
-    let filteredValue: any = String(amounted)?.replace(/[+-]/g, "");
-    // Remove + and - characters
-    const decimalIndex = filteredValue?.replace(/[^0-9]/g, "");
-    // debugger;
-    if (Number(decimalIndex) <= 0) return;
-    setAmount(decimalIndex);
-  };
-  const stakeFun = async (amount: any) => {
-    if (Number(Balance) < Number(amount))
-      return addMessage(t("Insufficient balance"));
-    let res: any = null;
-    try {
-      if (!!(await isNoGasFun())) return;
-      props.close();
-      props?.allTipFun(
-        2,
-        t("Pledge 600 UAC to get 1 edge node", { amount: amount, num: Amount })
-      );
-      res = await Contracts.example?.stakeEdgeNode(
-        web3ModalAccount as string,
-        Amount,
-        amount
-      );
-      if (!!res?.status) {
-        props?.allTipFun(4);
-        props?.allTipFun(
-          3,
-          t("Edge node staking mining is successful"),
-          res?.transactionHash
-        );
-      } else {
-        if (res?.status === false) {
-          props?.allTipFun(4);
-          return addMessage(t("failed"));
-        }
-      }
-    } catch (error: any) {
-      if (error?.code === 4001) {
-        props?.allTipFun(4);
-        return addMessage(t("failed"));
-      }
-    }
-  };
 
   useEffect(() => {
     if (!!token) {

@@ -840,7 +840,7 @@ export default function Rank() {
             setSuccessFulHash(res?.transactionHash);
             setShowTipModal(false);
             setShowSuccessTipModal(true);
-            return setTip(t("Bridge successful", { num: Amount }));
+            return setTip(t("Bridge successful", { num: NumSplic1(Amount) }));
             // setShowTipModal(true);
           } else if (res?.status === false) {
             setShowTipModal(false);
@@ -854,7 +854,7 @@ export default function Rank() {
       () => {
         setTip(
           t("Approve 100.0000 USDT (BSC)", {
-            num: FromInputAmount,
+            num: NumSplic1(FromInputAmount),
             chain: LinkType1,
           })
         );

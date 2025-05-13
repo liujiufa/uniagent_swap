@@ -45,7 +45,7 @@ export default function useUSDTGroup(
       console.log(balance, "balance");
 
       setTOKENBalance(
-        decimalNum(Web3.utils.fromWei(!!balance ? balance.toString() : "0"), 6)
+        decimalNum(Web3.utils.fromWei(!!balance ? balance.toString() : "0"), 4)
       );
     }
   }, [web3ModalAccount, contractAddress, tokenAddress]);
@@ -136,7 +136,18 @@ export default function useUSDTGroup(
       onDoingFun: () => void,
       failFun: () => void
     ) => {
-      if (Number(TOKENBalance) >= Number(NumSplic1(price, 4))) {
+      const balance = await Contracts.example?.balanceOf(
+        web3ModalAccount as string,
+        tokenAddress
+      );
+      if (
+        Number(
+          decimalNum(
+            Web3.utils.fromWei(!!balance ? balance.toString() : "0"),
+            4
+          )
+        ) >= Number(NumSplic1(price, 4))
+      ) {
         if (Number(TOKENAllowance) >= Number(NumSplic1(price, 4))) {
           await transactionCallBack(handleUSDTRefresh);
         } else {
@@ -189,8 +200,8 @@ export default function useUSDTGroup(
   useEffect(() => {
     new Contracts(walletProvider);
     if (!!web3ModalAccount && tokenAddress) {
-      initTOKENAllowance();
       initTOKENBalance();
+      initTOKENAllowance();
       initSymbol();
     }
   }, [web3ModalAccount, hash, tokenAddress, contractAddress, chainId]);
